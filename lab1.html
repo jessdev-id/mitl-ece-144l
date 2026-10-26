@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chapter 1: Introducing Packet Tracer | ECE144L | Mapúa MCL
+  </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] }, colors: { mapua: { red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C' } } } } }</script>
+  <style>html,body{font-family:"Montserrat",sans-serif!important}button,input,select,textarea{font-family:inherit}nav,header{font-family:"Montserrat",sans-serif!important}.glass-panel{background:rgba(15,26,46,.92);backdrop-filter:blur(14px);border:1px solid rgba(227,27,35,.25)}.glass-panel-navy{background:rgba(22,37,64,.95);border:1px solid rgba(35,56,92,.6)}.pill{border:1px solid #23385C;background:#162540;border-radius:.65rem;padding:.7rem 1rem;font-size:.78rem;font-weight:700}.pill:hover,.pill.active{background:#E31B23;color:white;border-color:#FF2E36}.tab-content{display:none}.tab-content.active{display:block}.step{border:1px solid #23385C;border-radius:.8rem;padding:1rem;background:#162540}.step.done{border-color:#10b981}code,pre{font-family:'Fira Code',monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere}section{scroll-margin-top:6rem}</style>
+ <style>
+.practice-field{background:#080D1A;border:1px solid #23385C;border-radius:8px;padding:10px;color:#fff;min-width:105px;max-width:100%;font-family:"Fira Code",monospace}.practice-field:focus{outline:2px solid #E31B23}.practice-feedback{min-height:22px;margin-top:12px;font-size:13px}.practice-chip{border:1px solid #23385C;background:#162540;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}.practice-chip[aria-pressed=true]{background:#E31B23;border-color:#FF2E36}.practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}.practice-code{background:#080D1A;border:1px solid #23385C;border-radius:12px;padding:20px;line-height:2.9;font-family:"Fira Code",monospace;font-size:12px;overflow-x:auto}.practice-code input{width:160px}.practice-action{background:#E31B23;border:1px solid #FF2E36;border-radius:9px;padding:10px 18px;color:white;font-size:12px;font-weight:800;cursor:pointer}.practice-action:hover{background:#FF2E36}.practice-note{color:#CBD5E1;font-size:12px;line-height:1.8}.practice-card{background:#162540;border:1px solid #23385C;border-radius:12px;padding:18px}
+</style>
+</head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAPÚA MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      Interface Explorer
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Lab Challenge
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 01 · PART I: PACKET TRACER FUNDAMENTALS
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 1:
+      <br/>
+      <span class="text-slate-200">
+       Introducing Packet Tracer
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Get ready to design, inspect, and troubleshoot simulated networks. Learn how to navigate Cisco Packet Tracer, inspect a sample topology, and use a switch's command-line interface before your first network-building lab.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026–2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2"></i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Mapúa Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+   <section class="glass-panel rounded-2xl p-6">
+    <h2 class="text-xl font-extrabold mb-4">
+     <i class="fa-solid fa-bullseye text-mapua-redBright mr-2">
+     </i>
+     Learning Outcomes
+    </h2>
+    <div class="grid md:grid-cols-1 gap-3 text-sm text-slate-300">
+     <p>
+      01 · Explain the purpose of Packet Tracer and distinguish simulation from emulation.
+     </p>
+     <p>
+      02 · Identify installation requirements and obtain Packet Tracer.
+     </p>
+     <p>
+      03 · Navigate logical workspaces, device tabs, and sample files.
+     </p>
+     <p>
+      04 · Inspect host IP settings and basic switch CLI output.
+     </p>
+    </div>
+   </section>
+   <section id="lecture">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3">
+     </i>
+     Lecture &amp; Discussion Notes
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Explore each topic before proceeding to the practical exercises.
+    </p>
+    <div class="flex flex-wrap gap-2 mb-5" id="tabs">
+     <button class="pill active" data-tab="purpose">
+      Packet Tracer Fundamentals
+     </button>
+     <button class="pill" data-tab="install">
+      Access &amp; Installation
+     </button>
+     <button class="pill" data-tab="workspace">
+      Workspace &amp; Devices
+     </button>
+     <button class="pill" data-tab="cli">
+      Cisco IOS Preview
+     </button>
+    </div>
+    <div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+     <div class="tab-content active" id="purpose">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       What is Cisco Packet Tracer?
+      </h3>
+      <p>
+       Packet Tracer is a free Cisco Networking Academy network simulator for practicing physical and logical network configurations. It supports activities involving routers, switches, PCs, wireless networks, IoT, and security features.
+      </p>
+      <div class="grid md:grid-cols-2 gap-4 mt-5">
+       <div class="bg-mapua-panel rounded-xl p-4">
+        <h4 class="text-white font-bold mb-2">
+         Simulation
+        </h4>
+        <p>
+         Packet Tracer models device and network behavior rather than running a complete production network operating system. This generally makes it practical on modest computers.
+        </p>
+       </div>
+       <div class="bg-mapua-panel rounded-xl p-4">
+        <h4 class="text-white font-bold mb-2">
+         Emulation
+        </h4>
+        <p>
+         Tools such as GNS3 and EVE-NG can run actual network operating-system images and typically require more computing resources.
+        </p>
+       </div>
+      </div>
+      <p class="mt-4 text-xs text-slate-400">
+       Engineering connection: use simulation to explore behavior, then validate important real-world assumptions on physical equipment when necessary.
+      </p>
+     </div>
+     <div class="tab-content" id="install">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Getting Packet Tracer
+      </h3>
+      <p>
+       The textbook describes Packet Tracer 8.2.1 and later versions. Its stated 8.2.1 requirements include a 64-bit x86-64 computer, at least 4 GB RAM, and 1.4 GB available disk space, with supported Windows, macOS, or Ubuntu releases. Requirements may differ for newer versions.
+      </p>
+      <ol class="list-decimal list-inside mt-4 space-y-2">
+       <li>
+        Visit the official
+        <a class="text-mapua-redBright underline" href="https://www.netacad.com/" rel="noopener" target="_blank">
+         Cisco Networking Academy
+        </a>
+        website.
+       </li>
+       <li>
+        Sign in or create an eligible free account and find the Packet Tracer download or introductory course.
+       </li>
+       <li>
+        Choose the installer compatible with your operating system.
+       </li>
+       <li>
+        Install and launch Packet Tracer; complete any required sign-in.
+       </li>
+       <li>
+        Confirm that a blank
+        <strong>
+         Logical
+        </strong>
+        workspace opens.
+       </li>
+      </ol>
+      <p class="text-xs text-slate-400 mt-4">
+       The book illustrates an older Skills for All download flow (Figures 1.1–1.7). Website menus may have changed; use Cisco's current official instructions.
+      </p>
+     </div>
+     <div class="tab-content" id="workspace">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Anatomy of the Workspace
+      </h3>
+      <p>
+       The main canvas displays the topology. The device-selection area provides network devices and end devices. Clicking a device opens its simulated controls. The chapter's sample exercise uses
+       <strong>
+        File → Open Samples → 01 Networking → DHCP → dhcp_reservation
+       </strong>
+       , if that sample is available in your installed version.
+      </p>
+      <p class="mt-4">
+       For a PC, use
+       <strong>
+        Physical
+       </strong>
+       to inspect the device and
+       <strong>
+        Desktop → IP Configuration
+       </strong>
+       to inspect its network settings. For a switch, use
+       <strong>
+        Physical
+       </strong>
+       for hardware inspection and
+       <strong>
+        CLI
+       </strong>
+       for Cisco IOS commands.
+      </p>
+     </div>
+     <div class="tab-content" id="cli">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       A First Look at the Cisco IOS CLI
+      </h3>
+      <p>
+       When you open a switch's CLI, press Enter to access the prompt. The symbol at the end of the prompt indicates the current mode. Chapter 1 introduces privileged EXEC mode and viewing the active configuration.
+      </p>
+      <div class="bg-mapua-darkBg rounded-lg p-4 mt-4">
+       <pre class="text-emerald-400 text-xs sm:text-sm">Switch&gt; enable
+Switch# show running-config</pre>
+      </div>
+      <p class="mt-3">
+       <code class="text-mapua-redBright">
+        enable
+       </code>
+       enters privileged EXEC mode;
+       <code class="text-mapua-redBright">
+        show running-config
+       </code>
+       displays the active configuration. Use the spacebar when output is paginated. This chapter does not yet require editing router or switch configurations.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="explorer">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-computer-mouse text-mapua-redBright mr-3">
+     </i>
+     Interactive Packet Tracer Interface Explorer
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Select a workspace element to see where to find it and why it matters.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="bg-mapua-darkBg rounded-xl border border-mapua-border overflow-hidden">
+      <div class="bg-mapua-panel p-3 flex gap-3 text-xs font-mono">
+       <span class="text-mapua-redBright">
+        File
+       </span>
+       <span>
+        Edit
+       </span>
+       <span>
+        Options
+       </span>
+       <span>
+        View
+       </span>
+       <span>
+        Tools
+       </span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-mapua-card">
+       <button class="pill" data-inspect="samples">
+        File / Samples
+       </button>
+       <button class="pill" data-inspect="logical">
+        Logical Workspace
+       </button>
+       <button class="pill" data-inspect="palette">
+        Device Palette
+       </button>
+       <button class="pill" data-inspect="modes">
+        Realtime / Simulation
+       </button>
+      </div>
+      <div class="min-h-48 p-6 bg-[radial-gradient(#23385C_1px,transparent_1px)] [background-size:22px_22px] flex items-center justify-center gap-3 sm:gap-8 text-center text-xs">
+       <div>
+        <i class="fa-solid fa-desktop text-3xl text-mapua-redBright">
+        </i>
+        <p class="mt-2">
+         PC0
+        </p>
+       </div>
+       <div class="h-0.5 bg-slate-500 flex-1 max-w-24">
+       </div>
+       <div>
+        <i class="fa-solid fa-network-wired text-3xl text-sky-400">
+        </i>
+        <p class="mt-2">
+         Switch1
+        </p>
+       </div>
+       <div class="h-0.5 bg-slate-500 flex-1 max-w-24">
+       </div>
+       <div>
+        <i class="fa-solid fa-server text-3xl text-emerald-400">
+        </i>
+        <p class="mt-2">
+         Server
+        </p>
+       </div>
+      </div>
+      <div class="p-4 bg-mapua-panel border-t border-mapua-border">
+       <p class="text-mapua-redBright font-bold text-sm" id="inspectTitle">
+        Choose an element above
+       </p>
+       <p class="text-slate-300 text-xs sm:text-sm mt-2" id="inspectText">
+        This is a conceptual interface map, not an embedded Packet Tracer simulator.
+       </p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="quiz">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <div class="flex flex-wrap justify-between gap-3 mb-6">
+      <div>
+       <h2 class="text-2xl font-extrabold">
+        <i class="fa-solid fa-circle-question text-mapua-redBright mr-2">
+        </i>
+        Interactive Knowledge Check
+       </h2>
+       <p class="text-slate-400 text-xs mt-2">
+        One answer per question. Feedback appears immediately.
+       </p>
+      </div>
+      <div class="text-mapua-redBright font-black text-sm" id="score">
+       Score: 0 / 8
+      </div>
+     </div>
+     <div class="space-y-5" id="questions">
+     </div>
+     <button class="pill mt-6" id="reset">
+      <i class="fa-solid fa-rotate-left mr-2">
+      </i>
+      Reset Quiz
+     </button>
+    </div>
+   </section>
+   <section id="practice" class="scroll-mt-24"><h2 class="text-2xl sm:text-3xl font-extrabold mb-2"><i class="fa-solid fa-keyboard text-mapua-redBright mr-3"></i>Interactive Preparation</h2><p class="text-sm text-slate-400 mb-6">Practice here first, then follow the original laboratory steps in Cisco Packet Tracer.</p><div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6"><div class="practice-card"><h3 class="font-extrabold text-white mb-2">Practice 1 · Find the correct workspace</h3><p class="practice-note mb-4">Select the location you would use to view a PC's IPv4 address.</p><div class="practice-grid" data-choice-group="pc-location"><button type="button" class="practice-chip" data-choice="physical">PC → Physical</button><button type="button" class="practice-chip" data-choice="desktop">PC → Desktop → IP Configuration</button><button type="button" class="practice-chip" data-choice="cli">Switch → CLI</button></div><p class="practice-feedback" id="pc-location-feedback" aria-live="polite"></p></div><div class="practice-card"><h3 class="font-extrabold text-white mb-2">Practice 2 · Complete the switch commands</h3><p class="practice-note mb-4">Fill in the missing IOS keywords. These are the same read-only operations used in the Chapter 1 walkthrough.</p><div class="practice-code">Switch&gt; <input class="practice-field" aria-label="Command to enter privileged mode" id="c1a" autocomplete="off" placeholder="command"><br>Switch# <input class="practice-field" aria-label="Command to show active configuration" id="c1b" autocomplete="off" placeholder="show ..."></div><button type="button" class="practice-action mt-4" id="c1check">Check commands</button><button type="button" class="practice-chip ml-2" id="c1reset">Try again</button><p class="practice-feedback" id="c1feedback" aria-live="polite"></p></div><div class="practice-card"><h3 class="font-extrabold text-white mb-2">Practice 3 · Order the exploration steps</h3><p class="practice-note mb-4">Click the actions in the order they should occur. Your selection is displayed below.</p><div class="practice-grid" id="c1order"><button type="button" class="practice-chip" data-order="3">View IP Configuration</button><button type="button" class="practice-chip" data-order="1">Open sample topology</button><button type="button" class="practice-chip" data-order="4">Open switch CLI</button><button type="button" class="practice-chip" data-order="2">Open PC Desktop</button></div><p class="practice-note mt-4" id="c1sequence">Selected: none</p><button type="button" class="practice-action mt-3" id="c1ordercheck">Check order</button><button type="button" class="practice-chip ml-2" id="c1orderreset">Reset</button><p class="practice-feedback" id="c1orderfeedback" aria-live="polite"></p></div></div></section>
+<section id="lab">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-flask text-mapua-redBright mr-2">
+     </i>
+     Guided Laboratory 1.1: Explore a Sample Network
+    </h2>
+    <p class="text-slate-400 text-sm mb-6">
+     Follow the book's Chapter 1 exploration, with checkpoints added for classroom verification.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="flex flex-wrap justify-between gap-3 mb-5">
+      <p class="text-sm text-slate-300">
+       Mark each step when completed in your own Packet Tracer installation.
+      </p>
+      <p class="font-mono text-mapua-redBright text-sm" id="labProgress">
+       0 / 7 complete
+      </p>
+     </div>
+     <div class="space-y-3" id="steps">
+     </div>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-5 mt-6">
+      <h3 class="font-extrabold mb-3">
+       Lab Verification Questions
+      </h3>
+      <div class="space-y-4 text-sm">
+       <label class="block">
+        1. Which tab on a PC provides access to the IP Configuration app?
+        <select class="w-full mt-2 bg-mapua-panel border border-mapua-border rounded-lg p-3" data-check="Desktop">
+         <option value="">
+          Choose
+         </option>
+         <option>
+          Physical
+         </option>
+         <option>
+          Desktop
+         </option>
+         <option>
+          CLI
+         </option>
+        </select>
+       </label>
+       <label class="block">
+        2. Which command displays the switch's active configuration?
+        <select class="w-full mt-2 bg-mapua-panel border border-mapua-border rounded-lg p-3" data-check="show running-config">
+         <option value="">
+          Choose
+         </option>
+         <option>
+          show running-config
+         </option>
+         <option>
+          configure terminal
+         </option>
+         <option>
+          ping
+         </option>
+        </select>
+       </label>
+       <label class="block">
+        3. Which symbol normally identifies privileged EXEC mode?
+        <select class="w-full mt-2 bg-mapua-panel border border-mapua-border rounded-lg p-3" data-check="#">
+         <option value="">
+          Choose
+         </option>
+         <option>
+          &gt;
+         </option>
+         <option>
+          #
+         </option>
+         <option>
+          $
+         </option>
+        </select>
+       </label>
+      </div>
+      <button class="pill mt-5" id="verify">
+       Check Responses
+      </button>
+      <p aria-live="polite" class="text-sm mt-3" id="verifyResult">
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="challenge">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8 border-mapua-red/40">
+     <div class="text-xs font-black text-mapua-redBright mb-3">
+      INDEPENDENT PERFORMANCE TASK · SCENARIO ONLY
+     </div>
+     <h2 class="text-2xl font-extrabold mb-4">
+      Lab Challenge 1.2: Campus Network Familiarization
+     </h2>
+     <p class="text-sm text-slate-300 leading-7 mb-5">
+      You have joined the university's laboratory support team. Before the networking class begins, the laboratory supervisor asks you to inspect a small campus network model and prepare evidence that you understand the Packet Tracer workspace and basic device inspection. You must complete the task independently.
+     </p>
+     <div class="grid md:grid-cols-2 gap-5">
+      <div class="bg-mapua-panel rounded-xl p-5">
+       <h3 class="font-extrabold text-white mb-3">
+        Scenario Requirements
+       </h3>
+       <ul class="list-disc list-inside text-sm text-slate-300 space-y-3">
+        <li>
+         Create a new Packet Tracer project named
+         <code>
+          ECE144L_Ch1_Campus_Inspection.pkt
+         </code>
+         .
+        </li>
+        <li>
+         Represent one laboratory with two PCs, one switch, and one server.
+        </li>
+        <li>
+         Arrange and label devices clearly, and establish appropriate physical connections.
+        </li>
+        <li>
+         Inspect a PC's available IP settings and a switch's CLI.
+        </li>
+        <li>
+         Record the purpose of each device and identify two workspace controls used.
+        </li>
+       </ul>
+      </div>
+      <div class="bg-mapua-panel rounded-xl p-5">
+       <h3 class="font-extrabold text-white mb-3">
+        Submission &amp; Success Criteria
+       </h3>
+       <ul class="list-disc list-inside text-sm text-slate-300 space-y-3">
+        <li>
+         Submit the saved
+         <code>
+          .pkt
+         </code>
+         file.
+        </li>
+        <li>
+         Provide a screenshot of the labeled logical topology.
+        </li>
+        <li>
+         Provide a screenshot of the switch CLI showing a configuration display.
+        </li>
+        <li>
+         Provide a brief table of device roles and observed settings.
+        </li>
+        <li>
+         Explain how simulation differs from emulation in 2–3 sentences.
+        </li>
+       </ul>
+      </div>
+     </div>
+     <p class="text-xs text-slate-400 mt-5">
+      No IP addressing plan or inter-network reachability is required for this Chapter 1 challenge. Configuring and testing a new network is the focus of Chapter 2.
+     </p>
+     <div class="mt-6 border-t border-mapua-border pt-5">
+      <h3 class="font-bold mb-3">
+       Student Submission Readiness
+      </h3>
+      <div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables">
+      </div>
+      <p aria-live="polite" class="text-xs text-mapua-redBright mt-4" id="ready">
+      </p>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    © Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+  <script>
+const $ = s => document.querySelector(s); $('#menuBtn').onclick = () => { $('#links').classList.toggle('hidden'); $('#links').classList.toggle('flex'); $('#links').classList.toggle('flex-col'); $('#links').classList.toggle('absolute'); $('#links').classList.toggle('top-20'); $('#links').classList.toggle('right-3'); $('#links').classList.toggle('bg-mapua-card'); $('#links').classList.toggle('p-5') }; document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { document.querySelectorAll('[data-tab]').forEach(x => x.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active')); b.classList.add('active'); $('#' + b.dataset.tab).classList.add('active') }); const info = { samples: ['File → Open Samples', 'Browse the sample library. Chapter 1 uses 01 Networking → DHCP → dhcp_reservation; sample names can vary by release.'], logical: ['Logical Workspace', 'The primary canvas where you inspect a logical network topology and device connections.'], palette: ['Device Palette', 'Select routers, switches, end devices, and connections from the lower-left selection panels.'], modes: ['Realtime / Simulation', 'Realtime runs the model continuously; Simulation mode lets you inspect packet events. Detailed packet analysis comes in later activities.'] }; document.querySelectorAll('[data-inspect]').forEach(b => b.onclick = () => { let x = info[b.dataset.inspect]; $('#inspectTitle').textContent = x[0]; $('#inspectText').textContent = x[1] });
+const qs = [['What is Packet Tracer primarily used for?', ['Network simulation', 'Photo editing', 'Spreadsheet accounting', 'Operating-system installation'], 0, 'Packet Tracer simulates network devices, configurations, and communication.'], ['How does a simulator differ from an emulator?', ['A simulator models behavior; an emulator may run actual device software', 'Both always run identical real router images', 'Simulators require physical routers', 'An emulator cannot model networks'], 0, 'The chapter contrasts simulated behavior with emulation of network operating systems.'], ['Which device window tab provides access to a simulated PC’s IP Configuration application?', ['Physical', 'Desktop', 'Programming', 'Attributes'], 1, 'Desktop contains applications such as IP Configuration.'], ['Which tab allows access to a switch command-line interface?', ['Desktop', 'Services', 'CLI', 'Attributes'], 2, 'The switch CLI tab provides Cisco IOS command access.'], ['What does the enable command do at a Switch> prompt?', ['Enters privileged EXEC mode', 'Assigns an IP address', 'Deletes a topology', 'Closes Packet Tracer'], 0, 'enable changes the prompt to privileged EXEC mode, typically Switch#.'], ['Which command displays the active switch configuration?', ['show running-config', 'show startup-only', 'ipconfig', 'enable interface'], 0, 'show running-config displays the current running configuration.'], ['Which key can advance paginated CLI output?', ['Spacebar', 'Caps Lock', 'Tab only', 'Escape only'], 0, 'The chapter instructs using the spacebar to advance pages of output.'], ['Which menu path is used in the chapter to open an example topology?', ['File → Open Samples', 'Tools → Compile', 'Options → Theme', 'Help → Update'], 0, 'The chapter opens the included DHCP reservation sample through File → Open Samples.']]; let answers = {}; function renderQuiz() { answers = {}; $('#questions').innerHTML = qs.map((q, i) => `<div class="bg-mapua-panel border border-mapua-border rounded-xl p-5"><p class="font-bold text-sm mb-3">${i + 1}. ${q[0]}</p><div class="grid sm:grid-cols-2 gap-2">${q[1].map((o, j) => `<button class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright" data-q="${i}" data-a="${j}">${String.fromCharCode(65 + j)}. ${o}</button>`).join('')}</div><p class="text-xs mt-3 hidden" id="fb${i}" aria-live="polite"></p></div>`).join(''); $('#score').textContent = 'Score: 0 / ' + qs.length; document.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { let i = +b.dataset.q, j = +b.dataset.a; if (answers[i] !== undefined) return; answers[i] = j; document.querySelectorAll(`[data-q="${i}"]`).forEach(x => { x.disabled = true; x.classList.add(+x.dataset.a === qs[i][2] ? 'border-emerald-500' : 'opacity-60') }); b.classList.add(j === qs[i][2] ? 'bg-emerald-900/40' : 'bg-rose-900/40'); let f = $('#fb' + i); f.classList.remove('hidden'); f.textContent = (j === qs[i][2] ? 'Correct. ' : 'Not quite. ') + qs[i][3]; f.classList.add(j === qs[i][2] ? 'text-emerald-300' : 'text-rose-300'); $('#score').textContent = `Score: ${Object.entries(answers).filter(([k, v]) => qs[+k][2] === v).length} / ${qs.length}` }) } renderQuiz(); $('#reset').onclick = renderQuiz;
+const steps = [['Launch Packet Tracer', 'Open the application. Confirm that the initial Logical workspace is visible.'], ['Locate the sample file', 'Use File → Open Samples → 01 Networking → DHCP → dhcp_reservation, if available. If absent, choose another provided network sample and note its name.'], ['Inspect the logical topology', 'Identify the end devices, switches, and connections shown in the opened sample.'], ['Inspect a PC', 'Click PC0 (or an equivalent PC). Examine its Physical tab, then open Desktop → IP Configuration. Record the displayed IPv4 settings; do not assume a particular address.'], ['Inspect a switch', 'Close the PC window and click Switch1 (or an equivalent switch). Observe its Physical tab, then select CLI.'], ['Run read-only IOS commands', 'Press Enter to display the prompt. Type enable, then show running-config. Use the spacebar to page through the configuration.'], ['Finish and document', 'Capture screenshots or observations, close device windows, and close the sample without saving changes unless instructed.']]; let done = {}; $('#steps').innerHTML = steps.map((s, i) => `<label class="step flex items-start gap-4" id="step${i}"><input type="checkbox" class="mt-1 accent-red-600 w-5 h-5" data-step="${i}"><span><strong class="text-white text-sm">Step ${i + 1}: ${s[0]}</strong><span class="block text-slate-300 text-xs leading-6 mt-1">${s[1]}</span></span></label>`).join(''); document.querySelectorAll('[data-step]').forEach(c => c.onchange = () => { done[c.dataset.step] = c.checked; $('#step' + c.dataset.step).classList.toggle('done', c.checked); $('#labProgress').textContent = Object.values(done).filter(Boolean).length + ' / 7 complete' }); $('#verify').onclick = () => { let a = [...document.querySelectorAll('[data-check]')]; let n = a.filter(x => x.value === x.dataset.check).length; $('#verifyResult').textContent = `${n} / ${a.length} correct. ${n === a.length ? 'All lab verification responses are correct.' : 'Review the PC Desktop tab and switch CLI commands, then try again.'}`; $('#verifyResult').className = 'text-sm mt-3 ' + (n === a.length ? 'text-emerald-300' : 'text-mapua-redBright') }; let checks = ['Saved .pkt project', 'Labeled topology screenshot', 'Switch CLI screenshot', 'Device observation table', 'Simulation-versus-emulation explanation']; $('#deliverables').innerHTML = checks.map((s, i) => `<label class="flex gap-3 items-center bg-mapua-panel p-3 rounded-lg"><input type="checkbox" class="accent-red-600" data-del="${i}">${s}</label>`).join(''); document.querySelectorAll('[data-del]').forEach(x => x.onchange = () => { let n = [...document.querySelectorAll('[data-del]:checked')].length; $('#ready').textContent = `${n} / ${checks.length} deliverables checked. ${n === checks.length ? 'Ready for instructor review.' : 'Complete all deliverables before submission.'}` });
+</script>
+ <script>
+(() => { const el = id => document.getElementById(id); const norm = v => v.trim().toLowerCase().replace(/\s+/g, ' '); const feedback = (id, ok, yes, no) => { const e = el(id); e.textContent = ok ? yes : no; e.style.color = ok ? '#6ee7b7' : '#fda4af' }; document.querySelectorAll('[data-choice-group="pc-location"] button').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('[data-choice-group="pc-location"] button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); feedback('pc-location-feedback', b.dataset.choice === 'desktop', 'Correct. The Desktop tab contains IP Configuration.', 'Not yet. Open the PC Desktop tab, then IP Configuration.') })); el('c1check').addEventListener('click', () => feedback('c1feedback', norm(el('c1a').value) === 'enable' && norm(el('c1b').value) === 'show running-config', 'Correct. Both commands match the lab.', 'Check both commands: privileged EXEC mode and the active configuration.')); el('c1reset').addEventListener('click', () => { ['c1a', 'c1b'].forEach(id => el(id).value = ''); el('c1feedback').textContent = '' }); let order = []; document.querySelectorAll('#c1order button').forEach(b => b.addEventListener('click', () => { if (order.includes(b.dataset.order)) return; order.push(b.dataset.order); b.setAttribute('aria-pressed', 'true'); el('c1sequence').textContent = 'Selected: ' + order.map(n => document.querySelector('#c1order [data-order="' + n + '"]').textContent).join(' → ') })); el('c1ordercheck').addEventListener('click', () => feedback('c1orderfeedback', order.join(',') === '1,2,3,4', 'Correct. You have the exploration sequence.', 'Not quite. Start by opening the sample, then inspect the PC, and finally the switch.')); el('c1orderreset').addEventListener('click', () => { order = []; document.querySelectorAll('#c1order button').forEach(b => b.setAttribute('aria-pressed', 'false')); el('c1sequence').textContent = 'Selected: none'; el('c1orderfeedback').textContent = '' }) })();
+</script>
+</body>
+</html>

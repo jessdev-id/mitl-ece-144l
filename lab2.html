@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chapter 2: Building Your First Simulation | ECE144L | Map&uacute;a MCL
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>
+tailwind.config = { theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] }, colors: { mapua: { red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C' } } } } }
+</script>
+  <style>
+   html,body{font-family:"Montserrat",sans-serif!important}button,input,select,textarea{font-family:inherit}nav,header{font-family:"Montserrat",sans-serif!important}.glass-panel{background:rgba(15,26,46,.92);backdrop-filter:blur(14px);border:1px solid rgba(227,27,35,.25)}.glass-panel-navy{background:rgba(22,37,64,.95);border:1px solid rgba(35,56,92,.6)}.pill{border:1px solid #23385C;background:#162540;border-radius:.65rem;padding:.7rem 1rem;font-size:.78rem;font-weight:700}.pill:hover,.pill.active{background:#E31B23;color:white;border-color:#FF2E36}.tab-content{display:none}.tab-content.active{display:block}.step{border:1px solid #23385C;border-radius:.8rem;padding:1rem;background:#162540}.step.done{border-color:#10b981}code,pre{font-family:'Fira Code',monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere}section{scroll-margin-top:6rem}
+  </style>
+ <style>
+.practice-field{background:#080D1A;border:1px solid #23385C;border-radius:8px;padding:10px;color:#fff;min-width:105px;max-width:100%;font-family:"Fira Code",monospace}.practice-field:focus{outline:2px solid #E31B23}.practice-feedback{min-height:22px;margin-top:12px;font-size:13px}.practice-chip{border:1px solid #23385C;background:#162540;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}.practice-chip[aria-pressed=true]{background:#E31B23;border-color:#FF2E36}.practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}.practice-code{background:#080D1A;border:1px solid #23385C;border-radius:12px;padding:20px;line-height:2.9;font-family:"Fira Code",monospace;font-size:12px;overflow-x:auto}.practice-code input{width:160px}.practice-action{background:#E31B23;border:1px solid #FF2E36;border-radius:9px;padding:10px 18px;color:white;font-size:12px;font-weight:800;cursor:pointer}.practice-action:hover{background:#FF2E36}.practice-note{color:#CBD5E1;font-size:12px;line-height:1.8}.practice-card{background:#162540;border:1px solid #23385C;border-radius:12px;padding:18px}
+</style>
+</head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAP&Uacute;A MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      Topology Explorer
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 02 &middot; PART I: PACKET TRACER FUNDAMENTALS
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 2:
+      <br/>
+      <span class="text-slate-200">
+       Building Your First Simulation
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Build a five-device topology, configure two IPv4 networks, and verify end-to-end connectivity in Cisco Packet Tracer.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026&ndash;2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2">
+      </i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Map&uacute;a Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+   <section class="glass-panel rounded-2xl p-6" id="outcomes">
+    <h2 class="text-xl font-extrabold mb-4">
+     <i class="fa-solid fa-bullseye text-mapua-redBright mr-2">
+     </i>
+     Learning Outcomes
+    </h2>
+    <div class="grid md:grid-cols-1 gap-3 text-sm text-slate-300">
+     <p>
+      01 &middot; Assemble and cable a five-device network topology.
+     </p>
+     <p>
+      02 &middot; Distinguish the two IPv4 subnets and their default gateways.
+     </p>
+     <p>
+      03 &middot; Configure and enable router interfaces using Cisco IOS.
+     </p>
+     <p>
+      04 &middot; Test end-to-end reachability with ping and save the configuration.
+     </p>
+    </div>
+   </section>
+   <section id="lecture">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3">
+     </i>
+     Lecture &amp; Discussion Notes
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Explore the concepts before starting the guided laboratory.
+    </p>
+    <div class="flex flex-wrap gap-2 mb-5" id="tabs">
+     <button class="pill active" data-tab="topology">
+      Network Topology
+     </button>
+     <button class="pill" data-tab="addressing">
+      IPv4 Addressing
+     </button>
+     <button class="pill" data-tab="ios">
+      Cisco IOS Workflow
+     </button>
+     <button class="pill" data-tab="testing">
+      Connectivity Verification
+     </button>
+    </div>
+    <div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+     <div class="tab-content active" id="topology">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Building the first network
+      </h3>
+      <p>
+       Chapter 2 constructs a network consisting of one Cisco 2911 router, two 2950-24 switches, and two PCs. The arrangement is PC0 &mdash; Switch0 &mdash; Router0 &mdash; Switch1 &mdash; PC1. Devices are placed from the lower-left device palette and linked using the Connections tool (automatic cable selection).
+      </p>
+      <p class="mt-3">
+       Router interfaces may initially show red link indicators because they are administratively shut down. The
+       <code>
+        no shutdown
+       </code>
+       command enables each interface.
+      </p>
+     </div>
+     <div class="tab-content" id="addressing">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Two separate /24 networks
+      </h3>
+      <p>
+       PC0 and PC1 belong to different IPv4 networks. Router0 connects to both networks directly and acts as each PC's default gateway. Each PC must use an IP address, subnet mask, and gateway that match its local router interface.
+      </p>
+      <div class="overflow-x-auto mt-4">
+       <table class="w-full text-left text-xs">
+        <thead class="text-mapua-redBright">
+         <tr>
+          <th class="p-2">
+           Device
+          </th>
+          <th class="p-2">
+           Address
+          </th>
+          <th class="p-2">
+           Mask
+          </th>
+          <th class="p-2">
+           Gateway
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="p-2">
+           Router0 Gi0/0
+          </td>
+          <td>
+           192.168.1.1
+          </td>
+          <td>
+           255.255.255.0
+          </td>
+          <td>
+           &mdash;
+          </td>
+         </tr>
+         <tr>
+          <td class="p-2">
+           PC0
+          </td>
+          <td>
+           192.168.1.100
+          </td>
+          <td>
+           255.255.255.0
+          </td>
+          <td>
+           192.168.1.1
+          </td>
+         </tr>
+         <tr>
+          <td class="p-2">
+           Router0 Gi0/1
+          </td>
+          <td>
+           10.10.10.1
+          </td>
+          <td>
+           255.255.255.0
+          </td>
+          <td>
+           &mdash;
+          </td>
+         </tr>
+         <tr>
+          <td class="p-2">
+           PC1
+          </td>
+          <td>
+           10.10.10.100
+          </td>
+          <td>
+           255.255.255.0
+          </td>
+          <td>
+           10.10.10.1
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+     <div class="tab-content" id="ios">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Router configuration sequence
+      </h3>
+      <p>
+       Use
+       <code>
+        enable
+       </code>
+       to enter privileged EXEC mode,
+       <code>
+        configure terminal
+       </code>
+       to enter global configuration mode, and
+       <code>
+        interface
+       </code>
+       to select a router port. Apply
+       <code>
+        ip address
+       </code>
+       and
+       <code>
+        no shutdown
+       </code>
+       on both interfaces. Return to privileged EXEC mode with
+       <code>
+        end
+       </code>
+       and save with
+       <code>
+        copy running-config startup-config
+       </code>
+       .
+      </p>
+      <p class="mt-3">
+       Interface names depend on the router model. The book uses a 2911 with
+       <code>
+        GigabitEthernet0/0
+       </code>
+       and
+       <code>
+        GigabitEthernet0/1
+       </code>
+       .
+      </p>
+     </div>
+     <div class="tab-content" id="testing">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Verifying IP reachability
+      </h3>
+      <p>
+       From PC1's Desktop &rarr; Command Prompt, run
+       <code>
+        ping 192.168.1.100
+       </code>
+       . A successful reply indicates reachability to PC0 through Router0. An initial ping packet may time out while address resolution occurs; repeat the test if necessary.
+      </p>
+      <p class="mt-3">
+       Saving the
+       <code>
+        .pkt
+       </code>
+       topology is separate from saving the router's running configuration to startup configuration.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="explorer">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-network-wired text-mapua-redBright mr-3">
+     </i>
+     Interactive Topology Explorer
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Select any device to inspect its function and IP information.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="grid grid-cols-5 gap-2 items-center text-center" id="topologyNodes">
+      <button class="pill" data-node="pc0">
+       <i class="fa-solid fa-desktop text-xl block mb-2">
+       </i>
+       PC0
+      </button>
+      <button class="pill" data-node="sw0">
+       <i class="fa-solid fa-network-wired text-xl block mb-2">
+       </i>
+       Switch0
+      </button>
+      <button class="pill" data-node="r0">
+       <i class="fa-solid fa-route text-xl block mb-2">
+       </i>
+       Router0
+      </button>
+      <button class="pill" data-node="sw1">
+       <i class="fa-solid fa-network-wired text-xl block mb-2">
+       </i>
+       Switch1
+      </button>
+      <button class="pill" data-node="pc1">
+       <i class="fa-solid fa-desktop text-xl block mb-2">
+       </i>
+       PC1
+      </button>
+     </div>
+     <div class="bg-mapua-panel rounded-xl p-5 mt-5 text-sm">
+      <h3 class="font-extrabold text-mapua-redBright" id="nodeTitle">
+       Select a device
+      </h3>
+      <p class="text-slate-300 mt-2" id="nodeDesc">
+       The diagram is a conceptual representation; configure the actual topology in Cisco Packet Tracer.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="quiz">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <div class="flex flex-wrap justify-between gap-3 mb-6">
+      <div>
+       <h2 class="text-2xl font-extrabold">
+        <i class="fa-solid fa-circle-question text-mapua-redBright mr-2">
+        </i>
+        Interactive Knowledge Check
+       </h2>
+       <p class="text-slate-400 text-xs mt-2">
+        One answer per question; immediate feedback.
+       </p>
+      </div>
+      <p class="text-mapua-redBright font-black text-sm" id="score">
+       Score: 0 / 8
+      </p>
+     </div>
+     <div class="space-y-5" id="questions">
+     </div>
+     <button class="pill mt-6" id="reset">
+      Reset Quiz
+     </button>
+    </div>
+   </section>
+   <section id="practice" class="scroll-mt-24"><h2 class="text-2xl sm:text-3xl font-extrabold mb-2"><i class="fa-solid fa-keyboard text-mapua-redBright mr-3"></i>Interactive Preparation</h2><p class="text-sm text-slate-400 mb-6">Complete the practice tasks before configuring the network in the original textbook labs.</p><div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6"><div class="practice-card"><h3 class="font-extrabold text-white mb-2">Practice 1 · Build the topology in order</h3><p class="practice-note mb-4">Select the devices from left to right in the book's five-device topology. Click each device once.</p><div class="practice-grid" id="c2topology"><button type="button" class="practice-chip" data-device="Router0">Router0</button><button type="button" class="practice-chip" data-device="PC1">PC1</button><button type="button" class="practice-chip" data-device="Switch0">Switch0</button><button type="button" class="practice-chip" data-device="PC0">PC0</button><button type="button" class="practice-chip" data-device="Switch1">Switch1</button></div><p class="practice-note mt-4" id="c2sequence">Topology: none</p><button type="button" class="practice-action mt-3" id="c2topcheck">Check topology</button><button type="button" class="practice-chip ml-2" id="c2topreset">Reset</button><p class="practice-feedback" id="c2topfeedback" aria-live="polite"></p></div><div class="practice-card"><h3 class="font-extrabold text-white mb-2">Practice 2 · Complete the router configuration</h3><p class="practice-note mb-4">Enter the missing commands and values for Router0's first interface, as specified in Lab 2.2.</p><div class="practice-code">Router&gt; <input id="c2a" class="practice-field" aria-label="Privileged mode command" placeholder="command"><br>Router# <input id="c2b" class="practice-field" aria-label="Global configuration command" placeholder="command"><br>Router(config)# interface gigabitethernet 0/0<br>Router(config-if)# <input id="c2c" class="practice-field" aria-label="Enable interface command" placeholder="command"><br>Router(config-if)# ip address <input id="c2d" class="practice-field" aria-label="IP address and subnet mask" placeholder="IP and mask"></div><button type="button" class="practice-action mt-4" id="c2codecheck">Check configuration</button><button type="button" class="practice-chip ml-2" id="c2codereset">Try again</button><p class="practice-feedback" id="c2codefeedback" aria-live="polite"></p></div><div class="practice-card"><h3 class="font-extrabold text-white mb-2">Practice 3 · Complete the addressing table</h3><p class="practice-note mb-4">Supply the IPv4 address and default gateway for PC1. Use the values from the book.</p><div class="grid sm:grid-cols-2 gap-3"><label class="text-xs font-bold text-slate-200">PC1 IPv4 address<input id="c2ip" class="practice-field mt-2 w-full" placeholder="x.x.x.x"></label><label class="text-xs font-bold text-slate-200">PC1 default gateway<input id="c2gw" class="practice-field mt-2 w-full" placeholder="x.x.x.x"></label></div><button type="button" class="practice-action mt-4" id="c2ipcheck">Check addresses</button><button type="button" class="practice-chip ml-2" id="c2ipreset">Try again</button><p class="practice-feedback" id="c2ipfeedback" aria-live="polite"></p></div></div></section>
+<section id="lab">
+    <h2 class="text-2xl font-extrabold mb-2">
+     Textbook Labs 2.1 and 2.2 (pp. 16&ndash;22)
+    </h2>
+    <p class="text-slate-400 text-sm mb-6">
+     Follow the book's first topology build and IP reachability configuration.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="flex flex-wrap justify-between gap-3 mb-5">
+      <p class="text-sm text-slate-300">
+       Mark each step after performing it in Packet Tracer.
+      </p>
+      <p class="font-mono text-mapua-redBright text-sm" id="labProgress">
+       0 / 10 complete
+      </p>
+     </div>
+     <p class="text-mapua-redBright font-extrabold text-sm mb-3">
+      Lab 2.1 &middot; Building a Sample Lab (Steps 1&ndash;8 in the book)
+     </p>
+     <div class="space-y-3" id="steps">
+     </div>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-5 mt-6">
+      <h3 class="font-extrabold mb-2 text-white">
+       Lab 2.2 &middot; Router0 command reference
+      </h3>
+      <p class="text-xs text-slate-400 mb-3">
+       Commands used in the book's configuration procedure (pp. 20&ndash;21). Use the Cisco 2911 interfaces Gi0/0 and Gi0/1.
+      </p>
+      <pre class="text-emerald-400 text-xs sm:text-sm">enable
+configure terminal
+interface gigabitethernet 0/0
+no shutdown
+ip address 192.168.1.1 255.255.255.0
+exit
+interface gigabitethernet 0/1
+no shutdown
+ip address 10.10.10.1 255.255.255.0
+end
+copy running-config startup-config</pre>
+      <p class="text-xs text-slate-400 mt-3">
+       Press Enter to accept the default destination filename when saving.
+      </p>
+     </div>
+     <p class="text-mapua-redBright font-extrabold text-sm mt-6 mb-3">
+      Lab 2.2 &middot; Configuring IP Reachability (Steps 1&ndash;8 in the book)
+     </p>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-5 mt-6">
+      <h3 class="font-extrabold mb-3">
+       Lab Verification Checks
+      </h3>
+      <div class="space-y-4 text-sm">
+       <label class="block">
+        1. What is PC1's default gateway?
+        <select class="w-full mt-2 bg-mapua-panel border border-mapua-border rounded-lg p-3" data-check="10.10.10.1">
+         <option value="">
+          Choose
+         </option>
+         <option>
+          192.168.1.1
+         </option>
+         <option>
+          10.10.10.1
+         </option>
+         <option>
+          10.10.10.100
+         </option>
+        </select>
+       </label>
+       <label class="block">
+        2. Which command enables an administratively disabled router interface?
+        <select class="w-full mt-2 bg-mapua-panel border border-mapua-border rounded-lg p-3" data-check="no shutdown">
+         <option value="">
+          Choose
+         </option>
+         <option>
+          enable
+         </option>
+         <option>
+          no shutdown
+         </option>
+         <option>
+          copy running-config startup-config
+         </option>
+        </select>
+       </label>
+       <label class="block">
+        3. Which PC1 command tests connectivity to PC0?
+        <select class="w-full mt-2 bg-mapua-panel border border-mapua-border rounded-lg p-3" data-check="ping 192.168.1.100">
+         <option value="">
+          Choose
+         </option>
+         <option>
+          ping 192.168.1.100
+         </option>
+         <option>
+          ping 10.10.10.1
+         </option>
+         <option>
+          show running-config
+         </option>
+        </select>
+       </label>
+      </div>
+      <button class="pill mt-5" id="verify">
+       Check Responses
+      </button>
+      <p aria-live="polite" class="text-sm mt-3" id="verifyResult">
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="challenge">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <p class="text-xs font-black text-mapua-redBright mb-3">
+      TEXTBOOK CHAPTER REVIEW &middot; PAGE 22
+     </p>
+     <h2 class="text-2xl font-extrabold mb-4">
+      Chapter 2 Review: Verify Your First Simulation
+     </h2>
+     <p class="text-sm text-slate-300 leading-7">
+      The book contains
+      <strong>
+       Lab 2.1: Building a Sample Lab
+      </strong>
+      (pages 16&ndash;19) and
+      <strong>
+       Lab 2.2: Configuring IP Reachability
+      </strong>
+      (pages 19&ndash;22). There is no separate independent challenge in this chapter. Complete both labs as described and save the finished simulation.
+     </p>
+     <div class="grid md:grid-cols-2 gap-4 mt-5">
+      <div class="bg-mapua-panel rounded-xl p-5">
+       <h3 class="font-extrabold mb-2">
+        Lab 2.1 &middot; Topology
+       </h3>
+       <p class="text-sm text-slate-300">
+        One 2911 router, two 2950-24 switches, and two PCs. Connect PC0 &rarr; Switch0 &rarr; Router0 &rarr; Switch1 &rarr; PC1, then save the topology as
+        <code>
+         02 First Network
+        </code>
+        .
+       </p>
+      </div>
+      <div class="bg-mapua-panel rounded-xl p-5">
+       <h3 class="font-extrabold mb-2">
+        Lab 2.2 &middot; Reachability
+       </h3>
+       <p class="text-sm text-slate-300">
+        Configure the two router interfaces and PCs using the addressing table, save the router configuration, and test
+        <code>
+         ping 192.168.1.100
+        </code>
+        from PC1.
+       </p>
+      </div>
+     </div>
+     <p class="text-xs text-slate-400 mt-5">
+      Textbook source: Sequeira and Wong,
+      <em>
+       CCNA 200-301 Hands-on Mastery with Packet Tracer
+      </em>
+      , Chapter 2.
+     </p>
+     <div class="hidden" id="deliverables">
+     </div>
+     <p class="hidden" id="ready">
+     </p>
+    </div>
+   </section>
+   <section id="download">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <h2 class="text-xl font-extrabold mb-3">
+      <i class="fa-solid fa-file-arrow-down text-mapua-redBright mr-2">
+      </i>
+      Packet Tracer Reference File
+     </h2>
+     <p class="text-sm text-slate-300 mb-5">
+      Download the accompanying Packet Tracer file provided by your instructor, if applicable. The guided exercise above can also be constructed from a blank workspace.
+     </p>
+     <a class="inline-flex items-center gap-2 bg-mapua-red hover:bg-mapua-redBright text-white font-extrabold rounded-lg px-5 py-3 text-sm" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQBWkbMsTlnZQILuwibyPGvkATvsF-L-99CC1xiGxRYYNVQ?e=fWjOf3" id="pktDownload" rel="noopener noreferrer" target="_blank">
+      Download Packet Tracer Lab File: First Network
+     </a>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    &copy; Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+  <script>
+const $ = (selector) => document.querySelector(selector);
+$('#menuBtn').addEventListener('click', () => {
+    const links = $('#links');
+    ['hidden', 'flex', 'flex-col', 'absolute', 'top-20', 'right-3', 'bg-mapua-card', 'p-5'].forEach(cls => links.classList.toggle(cls));
+});
+document.querySelectorAll('[data-tab]').forEach(button => button.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(panel => panel.classList.remove('active'));
+    button.classList.add('active');
+    document.getElementById(button.dataset.tab).classList.add('active');
+}));
+const nodes = {
+    pc0: ['PC0 — Left LAN', '192.168.1.100 /24 · Gateway 192.168.1.1. Use Desktop → IP Configuration.'],
+    sw0: ['Switch0 — Left LAN', 'Layer 2 switch connecting PC0 to Router0; no management IP is required for this lab.'],
+    r0: ['Router0 — Interconnect', 'GigabitEthernet0/0: 192.168.1.1/24 · GigabitEthernet0/1: 10.10.10.1/24. Both interfaces must be enabled.'],
+    sw1: ['Switch1 — Right LAN', 'Layer 2 switch connecting Router0 to PC1.'],
+    pc1: ['PC1 — Right LAN', '10.10.10.100 /24 · Gateway 10.10.10.1. Ping 192.168.1.100 to test reachability.']
+};
+document.querySelectorAll('[data-node]').forEach(button => button.addEventListener('click', () => {
+    const [title, description] = nodes[button.dataset.node];
+    $('#nodeTitle').textContent = title;
+    $('#nodeDesc').textContent = description;
+    document.querySelectorAll('[data-node]').forEach(b => b.classList.remove('active'));
+    button.classList.add('active');
+}));
+const questions = [
+    ['Which device connects the two different IPv4 networks?', ['Router', 'Switch', 'PC', 'Cable'], 0, 'Router0 has an interface in each subnet and routes between them.'],
+    ['How many devices are in the book’s first network topology?', ['Three', 'Four', 'Five', 'Six'], 2, 'The topology uses one router, two switches, and two PCs.'],
+    ['What is the subnet mask used on both networks?', ['255.0.0.0', '255.255.0.0', '255.255.255.0', '255.255.255.252'], 2, 'Both subnets use a /24 mask.'],
+    ['What is the default gateway of PC0?', ['192.168.1.1', '192.168.1.100', '10.10.10.1', '10.10.10.100'], 0, 'The gateway is Router0’s interface on PC0’s subnet.'],
+    ['Which command activates a router interface?', ['shutdown', 'no shutdown', 'enable interface', 'show interface'], 1, 'no shutdown removes the administrative shutdown state.'],
+    ['Which command saves the running configuration?', ['copy running-config startup-config', 'configure terminal', 'ping', 'exit'], 0, 'Copying running-config to startup-config saves it for the next restart.'],
+    ['Where are static IPv4 settings entered on a simulated PC?', ['Physical → Modules', 'Desktop → IP Configuration', 'CLI → enable', 'Services → HTTP'], 1, 'Use the PC Desktop tab and IP Configuration app.'],
+    ['What does a successful ping from PC1 to PC0 establish?', ['The file has been saved', 'End-to-end IP reachability', 'The router is wireless', 'All ports are shut down'], 1, 'ICMP echo replies confirm that IP packets can travel between the hosts.']
+];
+let answers = {};
+function renderQuiz() {
+    answers = {};
+    $('#questions').innerHTML = questions.map((q, i) => `<div class="bg-mapua-panel border border-mapua-border rounded-xl p-5"><p class="font-bold text-sm mb-3">${i + 1}. ${q[0]}</p><div class="grid sm:grid-cols-2 gap-2">${q[1].map((option, j) => `<button class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright" data-q="${i}" data-a="${j}">${String.fromCharCode(65 + j)}. ${option}</button>`).join('')}</div><p class="text-xs mt-3 hidden" id="fb${i}" aria-live="polite"></p></div>`).join('');
+    $('#score').textContent = `Score: 0 / ${questions.length}`;
+    document.querySelectorAll('[data-q]').forEach(button => button.addEventListener('click', () => {
+        const i = Number(button.dataset.q), j = Number(button.dataset.a);
+        if (answers[i] !== undefined) return;
+        answers[i] = j;
+        document.querySelectorAll(`[data-q="${i}"]`).forEach(b => { b.disabled = true; b.classList.add(Number(b.dataset.a) === questions[i][2] ? 'border-emerald-500' : 'opacity-60') });
+        button.classList.add(j === questions[i][2] ? 'bg-emerald-900/40' : 'bg-rose-900/40');
+        const feedback = $('#fb' + i); feedback.classList.remove('hidden'); feedback.textContent = (j === questions[i][2] ? 'Correct. ' : 'Not quite. ') + questions[i][3]; feedback.classList.add(j === questions[i][2] ? 'text-emerald-300' : 'text-rose-300');
+        $('#score').textContent = `Score: ${Object.entries(answers).filter(([k, v]) => questions[Number(k)][2] === v).length} / ${questions.length}`;
+    }));
+}
+renderQuiz(); $('#reset').addEventListener('click', renderQuiz);
+const steps = [
+    ['Lab 2.1 · Place devices', 'Launch Packet Tracer. Add one 2911 router, two 2950-24 switches, and two PCs; arrange PC0 — Switch0 — Router0 — Switch1 — PC1.'],
+    ['Connect the topology', 'Use Connections → Automatically Choose Connection Type. Connect each neighboring device in order. Confirm that the links are attached.'],
+    ['Save the topology', 'Choose File → Save and name the project 02 First Network.pkt.'],
+    ['Lab 2.2 · Open Router0 CLI', 'Click Router0 → CLI. If asked about initial configuration, enter no; press Enter to obtain Router>.'],
+    ['Configure router interface Gi0/0', 'Enter enable, configure terminal, interface gigabitethernet 0/0, no shutdown, and ip address 192.168.1.1 255.255.255.0; then exit.'],
+    ['Configure router interface Gi0/1', 'Enter interface gigabitethernet 0/1, no shutdown, and ip address 10.10.10.1 255.255.255.0; then end.'],
+    ['Save the router configuration', 'Enter copy running-config startup-config and accept the default destination filename.'],
+    ['Configure PC0', 'Desktop → IP Configuration: 192.168.1.100, mask 255.255.255.0, gateway 192.168.1.1.'],
+    ['Configure PC1', 'Desktop → IP Configuration: 10.10.10.100, mask 255.255.255.0, gateway 10.10.10.1.'],
+    ['Test and save', 'On PC1 open Desktop → Command Prompt; ping 192.168.1.100. Retry if the first request times out during ARP resolution. Save the .pkt file.']
+];
+$('#steps').innerHTML = steps.map((step, i) => `<label class="step flex items-start gap-4" id="step${i}"><input type="checkbox" class="mt-1 accent-red-600 w-5 h-5" data-step="${i}"><span><strong class="text-white text-sm">Step ${i + 1}: ${step[0]}</strong><span class="block text-slate-300 text-xs leading-6 mt-1">${step[1]}</span></span></label>`).join('');
+document.querySelectorAll('[data-step]').forEach(input => input.addEventListener('change', () => {
+    $('#step' + input.dataset.step).classList.toggle('done', input.checked);
+    $('#labProgress').textContent = `${document.querySelectorAll('[data-step]:checked').length} / ${steps.length} complete`;
+}));
+$('#verify').addEventListener('click', () => {
+    const fields = [...document.querySelectorAll('[data-check]')]; const correct = fields.filter(field => field.value === field.dataset.check).length;
+    $('#verifyResult').textContent = `${correct} / ${fields.length} correct. ${correct === fields.length ? 'All lab checks passed.' : 'Review the addressing and commands, then try again.'}`;
+    $('#verifyResult').className = 'text-sm mt-3 ' + (correct === fields.length ? 'text-emerald-300' : 'text-mapua-redBright');
+});
+const deliverables = ['Saved .pkt project', 'Labeled topology screenshot', 'Router interface verification', 'Successful ping evidence', 'Default-gateway explanation'];
+$('#deliverables').innerHTML = deliverables.map((label, i) => `<label class="flex gap-3 items-center bg-mapua-panel p-3 rounded-lg"><input type="checkbox" class="accent-red-600" data-del="${i}">${label}</label>`).join('');
+document.querySelectorAll('[data-del]').forEach(input => input.addEventListener('change', () => {
+    const count = document.querySelectorAll('[data-del]:checked').length;
+    $('#ready').textContent = `${count} / ${deliverables.length} deliverables checked. ${count === deliverables.length ? 'Ready for instructor review.' : 'Complete all deliverables before submission.'}`;
+}));
+$('#pktDownload').addEventListener('click', event => {
+    if ($('#pktDownload').getAttribute('href') === 'PASTE_YOUR_PKT_DOWNLOAD_URL_HERE') {
+        event.preventDefault(); alert('Instructor download link has not yet been added.');
+    }
+});
+</script>
+ <script>
+(() => { const el = id => document.getElementById(id); const norm = v => v.trim().toLowerCase().replace(/\s+/g, ' '); const feedback = (id, ok, yes, no) => { const e = el(id); e.textContent = ok ? yes : no; e.style.color = ok ? '#6ee7b7' : '#fda4af' }; let devices = []; document.querySelectorAll('#c2topology button').forEach(b => b.addEventListener('click', () => { if (devices.includes(b.dataset.device)) return; devices.push(b.dataset.device); b.setAttribute('aria-pressed', 'true'); el('c2sequence').textContent = 'Topology: ' + devices.join(' → ') })); el('c2topcheck').addEventListener('click', () => feedback('c2topfeedback', devices.join(',') === 'PC0,Switch0,Router0,Switch1,PC1', 'Correct. This is the five-device topology in Lab 2.1.', 'Check the order: a PC at each end, a switch beside each PC, and the router in the center.')); el('c2topreset').addEventListener('click', () => { devices = []; document.querySelectorAll('#c2topology button').forEach(b => b.setAttribute('aria-pressed', 'false')); el('c2sequence').textContent = 'Topology: none'; el('c2topfeedback').textContent = '' }); el('c2codecheck').addEventListener('click', () => feedback('c2codefeedback', norm(el('c2a').value) === 'enable' && norm(el('c2b').value) === 'configure terminal' && norm(el('c2c').value) === 'no shutdown' && norm(el('c2d').value) === '192.168.1.1 255.255.255.0', 'Correct. The first router interface commands match Lab 2.2.', 'Review the IOS modes, interface activation, and first LAN addressing values.')); el('c2codereset').addEventListener('click', () => { ['c2a', 'c2b', 'c2c', 'c2d'].forEach(id => el(id).value = ''); el('c2codefeedback').textContent = '' }); el('c2ipcheck').addEventListener('click', () => feedback('c2ipfeedback', norm(el('c2ip').value) === '10.10.10.100' && norm(el('c2gw').value) === '10.10.10.1', 'Correct. PC1 belongs to the 10.10.10.0/24 network.', 'Check the PC1 address and its router gateway in Lab 2.2.')); el('c2ipreset').addEventListener('click', () => { ['c2ip', 'c2gw'].forEach(id => el(id).value = ''); el('c2ipfeedback').textContent = '' }) })();
+</script>
+</body>
+</html>
