@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECE144L | Chapter 1 Culminating Activity</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
+          colors: { mapua: { red: '#E31B23', redBright: '#FF2E36', navyDark: '#0A1428', card: '#0F1A2E', panel: '#162540', border: '#23385C', darkBg: '#080D1A' } }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Montserrat', sans-serif; background:#080D1A; color:#f1f5f9; isolation:isolate; }
+    #interactive-grid { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:.9; }
+    body > nav, body > header, body > main, body > footer { position:relative; z-index:1; }
+    body > header { background:linear-gradient(to bottom,rgba(10,20,40,.91),rgba(15,26,46,.88),rgba(8,13,26,.78)) !important; }
+    .glass-panel-navy { background:rgba(22,37,64,.95); border:1px solid rgba(35,56,92,.6); }
+    header h1 { font-size:clamp(1.875rem,4.2vw,3rem); line-height:1.25; }
+    .panel { background:rgba(15,26,46,.95); border:1px solid #2b405f; border-radius:18px; padding:clamp(18px,3vw,28px); }
+    .section-tag { display:inline-block; background:#E31B23; color:#fff; font-size:.69rem; font-weight:900; letter-spacing:.09em; padding:5px 10px; border-radius:5px; text-transform:uppercase; }
+    .muted { color:#b2c2d6; }
+    .task { background:#162540; border:1px solid #354968; border-radius:13px; padding:16px; }
+    .task label { display:flex; align-items:flex-start; gap:12px; cursor:pointer; }
+    input[type=checkbox], input[type=radio] { accent-color:#E31B23; width:17px; height:17px; flex-shrink:0; margin-top:3px; }
+    textarea, input[type=text] { background:#0b1729; color:#fff; border:1px solid #435773; border-radius:9px; padding:11px 12px; width:100%; }
+    textarea:focus, input:focus { outline:2px solid #E31B23; outline-offset:2px; }
+    .btn { background:#E31B23; color:#fff; font-weight:800; border-radius:10px; padding:11px 17px; cursor:pointer; }
+    .btn.secondary { background:#1e3452; border:1px solid #4a6080; }
+    .btn:hover { filter:brightness(1.12); }
+    .mono { font-family:'Fira Code',monospace; }
+    .quiz-question { min-width:0; padding:16px; }
+    .quiz-question legend { display:block; float:left; width:100%; padding:0; margin:0 0 12px; line-height:1.6; }
+    .quiz-question legend + .quiz-option { clear:both; }
+    .quiz-option { display:flex; align-items:flex-start; gap:10px; width:100%; min-width:0; padding:10px 12px; border:1px solid #374c6b; border-radius:9px; cursor:pointer; margin-top:8px; overflow-wrap:anywhere; }
+    .quiz-option:has(input:checked) { border-color:#E31B23; background:#321d2d; }
+    .progress-track { height:9px; background:#263954; border-radius:20px; overflow:hidden; }
+    .progress-fill { height:100%; width:0%; background:#E31B23; transition:width .2s; }
+    footer { background:#0F1A2E; border-top:1px solid #23385C; }
+    @media print { nav, #interactive-grid, .no-print, header aside { display:none!important; } body { background:white;color:black; } .panel,.task { background:white;color:black;border:1px solid #999; } .muted { color:#444; } textarea,input { color:black; } }
+    @media (prefers-reduced-motion:reduce) { #interactive-grid { opacity:.5; } }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+<canvas aria-hidden="true" id="interactive-grid"></canvas>
+<nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+<div class="flex items-center gap-3 min-w-0 shrink-0">
+<div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+<i class="fa-solid fa-network-wired text-xl"></i>
+</div>
+<div>
+<div class="font-black tracking-wider flex items-center gap-2 leading-tight">MAPÚA MCL
+            <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">MITL</span>
+</div>
+<div class="text-xs text-slate-300 font-semibold">ECE144L: Data Communications Laboratory</div>
+</div>
+</div>
+<a class="text-xs font-bold px-3 py-2 rounded-lg hover:bg-mapua-panel transition" href="index.html">Learning Portal</a>
+</div>
+</nav>
+<header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+<div class="lg:col-span-2 min-w-0">
+<div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">PART I · PACKET TRACER FUNDAMENTALS</div>
+<h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5" id="page-title">Chapter 1<br/><span class="text-slate-200">Culminating Activity</span></h1>
+<p class="text-slate-300 leading-relaxed max-w-2xl">Apply what you learned in Introducing Packet Tracer through a practical, evidence-based readiness mission.</p>
+</div>
+<aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+<h2 class="text-mapua-redBright uppercase font-black tracking-wider">Course Instructor</h2>
+<p class="text-white font-extrabold text-base">Engr. Jess David A. Doria</p>
+<hr class="border-mapua-border"/>
+<p><i class="fa-solid fa-calendar-days text-mapua-redBright mr-2"></i>Term 2, Academic Year 2026–2027</p>
+<p><i class="fa-solid fa-book text-mapua-redBright mr-2"></i>BS Electronics Engineering</p>
+<p><i class="fa-solid fa-building-columns text-mapua-redBright mr-2"></i>Mapúa Institute of Technology at Laguna</p>
+</aside>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-7">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <a href="index.html" class="text-sm font-bold text-slate-300 hover:text-white"><i class="fa-solid fa-arrow-left mr-2"></i>Back to laboratory portal</a>
+    <span class="text-xs text-slate-300 font-bold">PART I · PACKET TRACER FUNDAMENTALS · CHAPTER 1</span>
+  </div>
+  <section class="panel border-t-4 border-t-mapua-red">
+    <span class="section-tag">Chapter 1 · Culminating Activity</span>
+    <h2 class="text-2xl sm:text-3xl font-black mt-4 mb-3">Mission 01: The Network Simulation Readiness Audit</h2>
+    <p class="muted leading-relaxed">You are a newly assigned network laboratory assistant. Before the class begins building networks, the laboratory coordinator needs proof that Cisco Packet Tracer is installed, usable, and that you can locate and inspect the basic tools needed for future exercises. Your assignment is to perform a short readiness audit and submit evidence of your work.</p>
+    <div class="grid sm:grid-cols-3 gap-3 mt-6 text-sm">
+      <div class="task"><div class="text-xs muted uppercase font-bold">Estimated duration</div><strong>35–50 minutes</strong></div>
+      <div class="task"><div class="text-xs muted uppercase font-bold">Work mode</div><strong>Individual · Hands-on</strong></div>
+      <div class="task"><div class="text-xs muted uppercase font-bold">Deliverables</div><strong>.pkt file + evidence report</strong></div>
+    </div>
+  </section>
+  <section class="panel">
+    <span class="section-tag">01 · Mission Brief</span>
+    <h2 class="text-xl font-black mt-3 mb-3">What you will demonstrate</h2>
+    <div class="grid md:grid-cols-2 gap-4 text-sm leading-relaxed">
+      <div class="task"><strong>Learning targets</strong><p class="muted mt-2">Launch Packet Tracer, identify the Logical workspace and device palette, open device windows, explore PC configuration tools and switch CLI, and save a Packet Tracer project.</p></div>
+      <div class="task"><strong>Success criteria</strong><p class="muted mt-2">You can locate required controls without a full walkthrough, explain what you observed, and provide evidence that your saved project opens correctly.</p></div>
+    </div>
+    <h3 class="font-extrabold mt-6 mb-2">What you need</h3>
+    <ul class="list-disc pl-6 muted space-y-2 text-sm">
+      <li>Cisco Packet Tracer installed and signed in, where required.</li>
+      <li>A computer capable of running the application and a folder for your submission.</li>
+      <li>Optional: the built-in sample <span class="mono text-slate-100">dhcp_reservation</span> under File → Open Samples → 01 Networking → DHCP, if present in your version.</li>
+      <li>A screenshot tool to capture evidence. No downloadable starter topology is required.</li>
+    </ul>
+    <p class="muted text-xs mt-4">Chapter 1 covers installation and exploring Packet Tracer. This is an original instructor-designed assessment, not a reproduction of a publisher-provided lab. The small topology below is an interface-familiarization task; IP addressing and end-to-end connectivity are assessed in Chapter 2.</p>
+  </section>
+  <section class="panel">
+    <div class="flex flex-wrap justify-between items-center gap-3"><div><span class="section-tag">02 · Your Assignment</span><h2 class="text-xl font-black mt-3">Build an inspection workspace</h2></div><span id="progress-label" class="text-sm font-bold text-slate-200">0 of 7 tasks complete</span></div>
+    <div class="progress-track mt-4 mb-6"><div id="progress-fill" class="progress-fill"></div></div>
+    <div class="rounded-xl border border-mapua-border bg-[#0b1729] p-4 mb-6">
+      <div class="text-xs uppercase font-extrabold text-slate-300 mb-4">Target arrangement · Logical workspace</div>
+      <div class="flex items-center justify-center gap-3 sm:gap-8 text-center text-xs sm:text-sm">
+        <div><div class="text-3xl mb-2">💻</div><strong>PC-A</strong></div>
+        <div class="text-mapua-redBright font-black">────</div>
+        <div><div class="text-3xl mb-2">🔀</div><strong>SW-A</strong></div>
+      </div>
+      <p class="text-center text-xs muted mt-4">One PC, one switch, one copper straight-through connection. This diagram is a target reference, not a live Packet Tracer simulation.</p>
+    </div>
+    <div id="task-list" class="space-y-3">
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>1. Verify application access.</strong><span class="block muted text-sm mt-1">Open Packet Tracer and confirm the application reaches a blank Logical workspace. Record the version from Help → About if available. Evidence: screenshot E1 showing the main window.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>2. Identify the working areas.</strong><span class="block muted text-sm mt-1">Locate the Logical/Physical workspace controls, device-type selection, device list, connections tool, and Realtime/Simulation controls. Explain the purpose of any two of them in your notes.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>3. Place the devices.</strong><span class="block muted text-sm mt-1">In Logical view, select End Devices → PC and place one PC. Then select Network Devices → Switches and place one switch (for example, a 2960 model). Rename their visible labels PC-A and SW-A. Evidence: screenshot E2.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>4. Connect the devices.</strong><span class="block muted text-sm mt-1">Choose Connections → Copper Straight-Through. Connect PC-A FastEthernet0 to an available Ethernet port on SW-A (for example, FastEthernet0/1). Wait for link indicators to settle; if necessary, use Fast Forward Time. Evidence: screenshot E3 with the connection and port labels visible.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>5. Inspect the PC.</strong><span class="block muted text-sm mt-1">Open PC-A. Explore Physical, Config, and Desktop tabs; on Desktop, locate IP Configuration and Command Prompt. Do not assign an IP address yet. Evidence: screenshot E4 of the Desktop tools.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>6. Inspect the switch CLI.</strong><span class="block muted text-sm mt-1">Open SW-A → CLI, press Enter if prompted, type the commands below one at a time, and observe the prompt and output. Evidence: screenshot E5 of the CLI.</span></span></label><pre class="mono text-xs sm:text-sm whitespace-pre-wrap bg-[#091221] rounded-lg p-4 mt-3 overflow-x-auto">enable
+show running-config</pre><p class="muted text-xs mt-2">If output pauses at --More--, press Space to continue. No configuration changes are required.</p></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>7. Save and reopen.</strong><span class="block muted text-sm mt-1">Save the topology using File → Save As with the filename <span class="mono text-white">CH01_Readiness_YourSurname.pkt</span>. Close and reopen it to verify that both devices and the link remain visible. Evidence: screenshot E6 of the reopened project.</span></span></label></div>
+    </div>
+    <p class="muted text-xs mt-4">Tick each item only after completing it in the actual Packet Tracer application. The webpage cannot inspect your .pkt file or verify your screenshots automatically.</p>
+  </section>
+  <section class="panel">
+    <span class="section-tag">03 · Evidence Log</span><h2 class="text-xl font-black mt-3 mb-3">Document what you observed</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      <label class="text-sm font-bold">Student Number<input id="student" type="text" placeholder="e.g., Student 01" class="mt-2"></label>
+      <label class="text-sm font-bold">Packet Tracer version<input id="version" type="text" placeholder="e.g., 8.x" class="mt-2"></label>
+    </div>
+    <div class="mt-4 space-y-4">
+      <label class="block text-sm font-bold">Which two workspace controls did you locate, and what does each do?<textarea id="notes1" rows="3" class="mt-2" placeholder="Describe the controls in your own words..."></textarea></label>
+      <label class="block text-sm font-bold">What is the difference between the PC Desktop tab and the switch CLI tab?<textarea id="notes2" rows="3" class="mt-2" placeholder="Describe what you found..."></textarea></label>
+      <label class="block text-sm font-bold">Evidence checklist / filenames (E1–E6)<textarea id="evidence" rows="3" class="mt-2" placeholder="E1: main-window.png&#10;E2: placed-devices.png&#10;..."></textarea></label>
+    </div>
+  </section>
+  <section class="panel">
+    <span class="section-tag">04 · Knowledge Check</span><h2 class="text-xl font-black mt-3 mb-2">Confirm your understanding</h2><p class="muted text-sm mb-5">Select one answer for each question, then check your results. This is a formative self-check; your Packet Tracer work is graded separately.</p>
+    <div id="quiz" class="space-y-6"></div>
+    <button id="grade" class="btn mt-6" type="button">Check my answers</button>
+    <div id="quiz-result" class="mt-4 text-sm font-bold" role="status" aria-live="polite"></div>
+  </section>
+  <section class="panel">
+    <span class="section-tag">05 · Submission & Assessment</span><h2 class="text-xl font-black mt-3 mb-4">What will be evaluated</h2>
+    <div class="overflow-x-auto"><table class="w-full text-sm text-left border-collapse"><thead class="text-white bg-[#243956]"><tr><th class="p-3">Criterion</th><th class="p-3">Evidence</th><th class="p-3 text-right">Points</th></tr></thead><tbody class="divide-y divide-[#334762]"><tr><td class="p-3">Application readiness and interface navigation</td><td class="p-3 muted">E1, navigation notes</td><td class="p-3 text-right">20</td></tr><tr><td class="p-3">Correct device placement and cabling</td><td class="p-3 muted">E2–E3, .pkt file</td><td class="p-3 text-right">25</td></tr><tr><td class="p-3">PC and switch inspection</td><td class="p-3 muted">E4–E5, observations</td><td class="p-3 text-right">25</td></tr><tr><td class="p-3">Saved and reopened project</td><td class="p-3 muted">E6, .pkt file</td><td class="p-3 text-right">15</td></tr><tr><td class="p-3">Evidence completeness and reflection</td><td class="p-3 muted">Evidence log and written answers</td><td class="p-3 text-right">15</td></tr></tbody><tfoot class="font-black"><tr><td class="p-3" colspan="2">TOTAL</td><td class="p-3 text-right">100</td></tr></tfoot></table></div>
+    <div class="task mt-5 text-sm"><strong>Submit these two items to your instructor:</strong><p class="muted mt-2">(1) Your saved <span class="mono">CH01_Readiness_YourSurname.pkt</span> file; (2) your exported evidence report with E1–E6 screenshots attached or included in a separate evidence folder. This webpage does not upload submissions.</p></div>
+    <div class="flex flex-wrap gap-3 mt-5 no-print"><button id="export" class="btn" type="button"><i class="fa-solid fa-file-arrow-down mr-2"></i>Export evidence report (.txt)</button><button id="print" class="btn secondary" type="button"><i class="fa-solid fa-print mr-2"></i>Print / Save as PDF</button><button id="reset" class="btn secondary" type="button">Reset activity</button></div>
+    <p class="muted text-xs mt-4">Progress and written responses are stored locally in this browser. Screenshots and Packet Tracer files must be saved separately.</p>
+  </section>
+</main>
+<footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+<p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+<p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+<p class="text-mapua-redBright font-extrabold mt-2">
+    © Copyright Reserved 2026
+   </p>
+<p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+</footer>
+<script>
+  'use strict';
+  const questions = [
+    { q:'Which workspace is best for arranging a basic network topology?', options:['Logical','Physical','Simulation Event List'], answer:0, why:'Logical workspace is where devices and their links are arranged.' },
+    { q:'Where can you find IP Configuration on a simulated PC?', options:['CLI → enable','Desktop → IP Configuration','Connections palette'], answer:1, why:'The PC Desktop tab contains the IP Configuration utility.' },
+    { q:'Which command moves a switch from user EXEC to privileged EXEC mode?', options:['show running-config','configure terminal','enable'], answer:2, why:'enable changes the prompt from > to #.' },
+    { q:'What is the main purpose of a .pkt file?', options:['Store the Packet Tracer topology and configuration','Install Packet Tracer','Export screenshots automatically'], answer:0, why:'A .pkt file stores the simulation project.' },
+    { q:'What does the Connections palette help you do?', options:['Change font settings','Choose cables and link devices','Create a course account'], answer:1, why:'The Connections tools let you select cable types and connect interfaces.' }
+  ];
+  const quiz = document.getElementById('quiz');
+  questions.forEach((item, index) => {
+    const block = document.createElement('fieldset');
+    block.className = 'task quiz-question';
+    const legend = document.createElement('legend');
+    legend.className = 'font-extrabold text-sm mb-2';
+    legend.textContent = `${index + 1}. ${item.q}`;
+    block.appendChild(legend);
+    item.options.forEach((option, choice) => {
+      const label = document.createElement('label');
+      label.className = 'quiz-option text-sm';
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = `question-${index}`;
+      input.value = choice;
+      label.append(input, document.createTextNode(option));
+      block.appendChild(label);
+    });
+    const feedback = document.createElement('p');
+    feedback.id = `feedback-${index}`;
+    feedback.className = 'text-xs muted mt-3';
+    block.appendChild(feedback);
+    quiz.appendChild(block);
+  });
+  const checks = [...document.querySelectorAll('.task-check')];
+  const fields = ['student','version','notes1','notes2','evidence'];
+  const key = 'ece144l-ch1-capstone-v1';
+  function save() {
+    const state = { checks: checks.map(c => c.checked), fields: Object.fromEntries(fields.map(id => [id,document.getElementById(id).value])), answers: questions.map((_,i) => document.querySelector(`input[name="question-${i}"]:checked`)?.value ?? '') };
+    try { localStorage.setItem(key,JSON.stringify(state)); } catch (_) {}
+    updateProgress();
+  }
+  function updateProgress() {
+    const completed = checks.filter(c => c.checked).length;
+    document.getElementById('progress-label').textContent = `${completed} of ${checks.length} tasks complete`;
+    document.getElementById('progress-fill').style.width = `${100 * completed / checks.length}%`;
+  }
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) || '{}');
+    checks.forEach((c,i) => c.checked = !!saved.checks?.[i]);
+    fields.forEach(id => document.getElementById(id).value = saved.fields?.[id] || '');
+    questions.forEach((_,i) => { const v=saved.answers?.[i]; if(v !== undefined && v !== '') { const el=document.querySelector(`input[name="question-${i}"][value="${v}"]`); if(el) el.checked=true; } });
+  } catch (_) {}
+  updateProgress();
+  document.querySelectorAll('input,textarea').forEach(el => el.addEventListener('input',save));
+  document.getElementById('grade').addEventListener('click', () => {
+    let score=0;
+    questions.forEach((item,i) => {
+      const selected=document.querySelector(`input[name="question-${i}"]:checked`);
+      const correct=selected && Number(selected.value) === item.answer;
+      if(correct) score++;
+      document.getElementById(`feedback-${i}`).textContent = `${correct ? 'Correct.' : 'Review:'} ${item.why}`;
+    });
+    document.getElementById('quiz-result').textContent = `Knowledge check: ${score} / ${questions.length} correct. Review the explanations and retry if needed.`;
+    save();
+  });
+  document.getElementById('export').addEventListener('click', () => {
+    const value=id => document.getElementById(id).value.trim() || '(not provided)';
+    const lines = ['ECE144L - CHAPTER 1 CULMINATING ACTIVITY','Network Simulation Readiness Audit','',`Student: ${value('student')}`,`Packet Tracer version: ${value('version')}`,'','TASK COMPLETION',...checks.map((c,i)=>`${i+1}. ${c.checked?'Completed':'Not completed'}`),'','WORKSPACE CONTROLS',value('notes1'),'','PC AND SWITCH INSPECTION',value('notes2'),'','SCREENSHOT EVIDENCE (E1-E6)',value('evidence'),'','KNOWLEDGE CHECK',...questions.map((q,i)=>`${i+1}. ${q.q}
+Answer: ${document.querySelector(`input[name="question-${i}"]:checked`)?.parentElement.textContent || '(not answered)'}`),'','Attach the .pkt file and screenshot evidence separately.'];
+    const blob = new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='CH01_Readiness_Evidence_Report.txt'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  document.getElementById('print').addEventListener('click',()=>window.print());
+  document.getElementById('reset').addEventListener('click',()=>{
+    if(!confirm('Clear your locally saved progress and answers?')) return;
+    localStorage.removeItem(key);
+    checks.forEach(c=>c.checked=false);
+    fields.forEach(id=>document.getElementById(id).value='');
+    document.querySelectorAll('input[type=radio]').forEach(el=>el.checked=false);
+    document.querySelectorAll('[id^=feedback-]').forEach(el=>el.textContent='');
+    document.getElementById('quiz-result').textContent='';
+    updateProgress();
+  });
+</script>
+<script>
+  (() => {
+    const canvas = document.getElementById('interactive-grid');
+    const ctx = canvas.getContext('2d', {alpha:true});
+    if (!ctx) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
+    const spacing = 29;
+    let width=0, height=0, ratio=1, points=[], raf=0, last=0;
+    let mouse={x:-1000,y:-1000,active:false};
+    const resize=()=>{
+      width=window.innerWidth; height=window.innerHeight;
+      ratio=Math.min(window.devicePixelRatio||1,2);
+      canvas.width=Math.round(width*ratio); canvas.height=Math.round(height*ratio);
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      points=[];
+      for(let y=spacing/2;y<height;y+=spacing) for(let x=spacing/2;x<width;x+=spacing)
+        points.push({x,y,energy:0,dx:0,dy:0});
+      draw(0);
+    };
+    const draw=(time)=>{
+      ctx.clearRect(0,0,width,height);
+      const dt=Math.min((time-last)||16,50); last=time;
+      for(const p of points){
+        const distance=Math.hypot(p.x-mouse.x,p.y-mouse.y);
+        if(mouse.active && distance<145){
+          p.energy=Math.max(p.energy,Math.pow(1-distance/145,1.6));
+          const angle=Math.atan2(p.y-mouse.y,p.x-mouse.x);
+          p.dx=Math.cos(angle)*p.energy*6; p.dy=Math.sin(angle)*p.energy*6;
+        }
+        p.energy*=Math.pow(.947,dt/16);
+        p.dx*=Math.pow(.89,dt/16); p.dy*=Math.pow(.89,dt/16);
+        const energy=p.energy;
+        ctx.beginPath();
+        ctx.arc(p.x+p.dx,p.y+p.dy,1.05+energy*2.15,0,Math.PI*2);
+        ctx.fillStyle=energy>.035?`rgba(227,27,35,${.17+energy*.68})`:'rgba(104,137,179,.19)';
+        ctx.fill();
+      }
+      if(!reduced && !document.hidden) raf=requestAnimationFrame(draw);
+    };
+    window.addEventListener('resize',resize,{passive:true});
+    if(finePointer && !reduced){
+      window.addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true;},{passive:true});
+      document.addEventListener('pointerout',e=>{if(!e.relatedTarget) mouse.active=false;});
+    }
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!reduced){cancelAnimationFrame(raf);last=0;raf=requestAnimationFrame(draw);}});
+    resize();
+    if(!reduced) raf=requestAnimationFrame(draw);
+  })();
+  </script>
+</body>
+</html>
