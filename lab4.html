@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chapter 4: Cisco IOS Basics | ECE144L | Map&uacute;a MCL
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>
+   tailwind.config = { theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] }, colors: { mapua: { red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C' } } } } }
+  </script>
+  <style>
+   html,body{font-family:"Montserrat",sans-serif!important}button,input,select,textarea{font-family:inherit}nav,header{font-family:"Montserrat",sans-serif!important}.glass-panel{background:rgba(15,26,46,.92);backdrop-filter:blur(14px);border:1px solid rgba(227,27,35,.25)}.glass-panel-navy{background:rgba(22,37,64,.95);border:1px solid rgba(35,56,92,.6)}.pill{border:1px solid #23385C;background:#162540;border-radius:.65rem;padding:.7rem 1rem;font-size:.78rem;font-weight:700}.pill:hover,.pill.active{background:#E31B23;color:white;border-color:#FF2E36}.tab-content{display:none}.tab-content.active{display:block}.step{border:1px solid #23385C;border-radius:.8rem;padding:1rem;background:#162540}.step.done{border-color:#10b981}code,pre{font-family:'Fira Code',monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere}section{scroll-margin-top:6rem}
+  </style>
+  <style>
+   .practice-field{background:#080D1A;border:1px solid #23385C;border-radius:8px;padding:10px;color:#fff;min-width:105px;max-width:100%;font-family:"Fira Code",monospace}.practice-field:focus{outline:2px solid #E31B23}.practice-feedback{min-height:22px;margin-top:12px;font-size:13px}.practice-chip{border:1px solid #23385C;background:#162540;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}.practice-chip[aria-pressed=true]{background:#E31B23;border-color:#FF2E36}.practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}.practice-code{background:#080D1A;border:1px solid #23385C;border-radius:12px;padding:20px;line-height:2.9;font-family:"Fira Code",monospace;font-size:12px;overflow-x:auto}.practice-code input{width:160px}.practice-action{background:#E31B23;border:1px solid #FF2E36;border-radius:9px;padding:10px 18px;color:white;font-size:12px;font-weight:800;cursor:pointer}.practice-action:hover{background:#FF2E36}.practice-note{color:#CBD5E1;font-size:12px;line-height:1.8}.practice-card{background:#162540;border:1px solid #23385C;border-radius:12px;padding:18px}
+  </style>
+  <style>
+   .practice-field { background: #080D1A; border: 1px solid #23385C; border-radius: 8px; padding: 10px; color: white; min-width: 105px; max-width: 100%; font-family: "Fira Code", monospace; }
+.practice-field:focus { outline: 2px solid #E31B23; }
+.practice-feedback { min-height: 22px; margin-top: 12px; font-size: 13px; color: #CBD5E1; }
+.practice-chip { border: 1px solid #23385C; background: #162540; border-radius: 9px; padding: 10px 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.practice-chip[aria-pressed="true"] { background: #E31B23; border-color: #FF2E36; }
+.practice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; }
+.practice-action { background: #E31B23; border: 1px solid #FF2E36; border-radius: 9px; padding: 10px 18px; color: white; font-size: 12px; font-weight: 800; cursor: pointer; }
+.practice-note { color: #CBD5E1; font-size: 12px; line-height: 1.8; }
+.practice-card { background: #162540; border: 1px solid #23385C; border-radius: 12px; padding: 18px; }
+  </style>
+ </head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAP&Uacute;A MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      CLI Explorer
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 04 &middot; PART II: NETWORK FUNDAMENTALS
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 4:
+      <br/>
+      <span class="text-slate-200">
+       Cisco IOS Basics
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Learn Cisco IOS command modes, context-sensitive help, configuration, verification, and saving device settings through interactive practice and guided Packet Tracer laboratories.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026&ndash;2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2">
+      </i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Map&uacute;a Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+   <section class="glass-panel rounded-2xl p-6" id="outcomes">
+    <h2 class="text-xl font-extrabold mb-4">
+     <i class="fa-solid fa-bullseye text-mapua-redBright mr-2">
+     </i>
+     Learning Outcomes
+    </h2>
+    <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+     <p>
+      01 &middot; Distinguish user, privileged EXEC, global, interface, and line configuration modes.
+     </p>
+     <p>
+      02 &middot; Use IOS help, command history, and editing shortcuts.
+     </p>
+     <p>
+      03 &middot; Configure hostnames, passwords, and interfaces using Cisco IOS.
+     </p>
+     <p>
+      04 &middot; Verify device status and save running configurations.
+     </p>
+    </div>
+   </section>
+   <section id="lecture">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3">
+     </i>
+     Lecture &amp; Discussion Notes
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Based on Chapter 4, pages 33&ndash;46 of the Cisco Press textbook.
+    </p>
+    <div class="flex flex-wrap gap-2 mb-5" id="tabs">
+     <button class="pill active" data-tab="modes">
+      IOS Modes
+     </button>
+     <button class="pill" data-tab="security">
+      Passwords &amp; Help
+     </button>
+     <button class="pill" data-tab="verify">
+      Verification
+     </button>
+     <button class="pill" data-tab="files">
+      Configuration Files
+     </button>
+    </div>
+    <div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+     <div class="tab-content active" id="modes">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Cisco IOS and Command Modes
+      </h3>
+      <p>
+       Cisco Internetwork Operating System (IOS) provides a command-line interface through console or SSH access. User EXEC permits basic inspection; privileged EXEC gives access to advanced verification and configuration modes.
+      </p>
+      <div class="overflow-x-auto mt-4">
+       <table class="w-full text-left text-xs">
+        <thead>
+         <tr class="text-mapua-redBright border-b border-mapua-border">
+          <th class="p-3">
+           Mode
+          </th>
+          <th class="p-3">
+           Prompt
+          </th>
+          <th class="p-3">
+           Entry
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="p-3">
+           User EXEC
+          </td>
+          <td class="p-3 font-mono">
+           Router&gt;
+          </td>
+          <td class="p-3">
+           Initial CLI
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Privileged EXEC
+          </td>
+          <td class="p-3 font-mono">
+           Router#
+          </td>
+          <td class="p-3">
+           <code>
+            enable
+           </code>
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Global configuration
+          </td>
+          <td class="p-3 font-mono">
+           Router(config)#
+          </td>
+          <td class="p-3">
+           <code>
+            configure terminal
+           </code>
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Interface configuration
+          </td>
+          <td class="p-3 font-mono">
+           Router(config-if)#
+          </td>
+          <td class="p-3">
+           <code>
+            interface gigabitethernet0/0
+           </code>
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Console line
+          </td>
+          <td class="p-3 font-mono">
+           Router(config-line)#
+          </td>
+          <td class="p-3">
+           <code>
+            line console 0
+           </code>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+     <div class="tab-content" id="security">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Passwords, Help, and History
+      </h3>
+      <p>
+       <code>
+        enable secret
+       </code>
+       protects privileged EXEC mode. Under
+       <code>
+        line console 0
+       </code>
+       , use
+       <code>
+        password
+       </code>
+       and
+       <code>
+        login
+       </code>
+       to require a console password. Use
+       <code>
+        ?
+       </code>
+       for help,
+       <code>
+        conf?
+       </code>
+       for matching command names, and Tab for completion.
+      </p>
+      <p class="mt-4">
+       Up arrow / Ctrl+P recalls earlier commands; Down arrow / Ctrl+N advances; Left arrow / Ctrl+B and Right arrow / Ctrl+F move the cursor.
+      </p>
+     </div>
+     <div class="tab-content" id="verify">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Verify Before and After Changes
+      </h3>
+      <p>
+       <code>
+        show ip interface brief
+       </code>
+       summarizes interface IP addresses and status.
+       <code>
+        show running-config
+       </code>
+       displays the active configuration.
+       <code>
+        debug
+       </code>
+       can display activity as it occurs; use
+       <code>
+        undebug all
+       </code>
+       to disable debugging. Debugging can affect device performance, so use it carefully.
+      </p>
+      <pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-400 text-xs">R1# show ip interface brief
+R1# show running-config
+R1# undebug all</pre>
+     </div>
+     <div class="tab-content" id="files">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Running and Startup Configurations
+      </h3>
+      <p>
+       <code>
+        running-config
+       </code>
+       is the active configuration in RAM.
+       <code>
+        startup-config
+       </code>
+       is stored in NVRAM and used at boot. Save with
+       <code>
+        copy running-config startup-config
+       </code>
+       ; inspect with
+       <code>
+        show startup-config
+       </code>
+       . The textbook also introduces
+       <code>
+        erase startup-config
+       </code>
+       ; do not execute it on a lab you need to retain.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="explorer">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-terminal text-mapua-redBright mr-3">
+     </i>
+     Interactive CLI Mode Explorer
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     Select a mode to inspect its prompt and what you can do there.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="flex flex-wrap gap-2" id="modeButtons">
+      <button class="pill active" data-mode="user">
+       User EXEC
+      </button>
+      <button class="pill" data-mode="priv">
+       Privileged EXEC
+      </button>
+      <button class="pill" data-mode="global">
+       Global Config
+      </button>
+      <button class="pill" data-mode="iface">
+       Interface Config
+      </button>
+      <button class="pill" data-mode="line">
+       Console Line
+      </button>
+     </div>
+     <div class="bg-mapua-darkBg rounded-xl p-5 mt-5 border border-mapua-border">
+      <p class="font-mono text-emerald-400 text-lg" id="modePrompt">
+       Router&gt;
+      </p>
+      <p class="text-slate-300 text-sm mt-3" id="modeInfo">
+       Initial user EXEC mode; limited inspection commands.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="quiz">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <div class="flex flex-wrap justify-between gap-3 mb-5">
+      <div>
+       <h2 class="text-2xl font-extrabold">
+        <i class="fa-solid fa-circle-question text-mapua-redBright mr-2">
+        </i>
+        Knowledge Check
+       </h2>
+       <p class="text-xs text-slate-400 mt-2">
+        Immediate feedback, with explanations.
+       </p>
+      </div>
+      <p class="text-mapua-redBright font-black text-sm" id="score">
+       Score: 0 / 8
+      </p>
+     </div>
+     <div class="space-y-4" id="questions">
+     </div>
+     <button class="pill mt-6" id="reset">
+      Reset Quiz
+     </button>
+    </div>
+   </section>
+   <section id="practice">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-keyboard text-mapua-redBright mr-3">
+     </i>
+     Interactive Preparation
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Complete these short exercises before launching Packet Tracer.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-7">
+     <div class="practice-card">
+      <h3 class="font-bold mb-2">
+       Activity A &middot; Complete the IOS Commands
+      </h3>
+      <p class="practice-note mb-4">
+       Type the missing command or keyword. Spaces matter, but capitalization does not.
+      </p>
+      <div class="space-y-3 font-mono text-xs">
+       <label class="block">
+        Router&gt;
+        <input aria-label="Enter privileged EXEC command" class="practice-field" id="fill1" placeholder="command"/>
+       </label>
+       <label class="block">
+        Router#
+        <input aria-label="Enter global configuration command" class="practice-field" id="fill2" placeholder="command"/>
+       </label>
+       <label class="block">
+        Router(config)#
+        <input aria-label="Enter hostname command" class="practice-field" id="fill3" placeholder="hostname R1"/>
+       </label>
+       <label class="block">
+        R1#
+        <input aria-label="Enter save configuration command" class="practice-field" id="fill4" placeholder="save command" style="width:330px"/>
+       </label>
+      </div>
+      <button class="practice-action mt-4" id="checkFill">
+       Check Commands
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="fillFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold mb-2">
+       Activity B &middot; Order the Configuration Steps
+      </h3>
+      <p class="practice-note mb-3">
+       Click the commands in the correct order to enter interface configuration mode and enable an interface.
+      </p>
+      <div class="flex flex-wrap gap-2" id="sequenceOptions">
+      </div>
+      <div class="bg-mapua-darkBg border border-mapua-border rounded-lg p-4 mt-4 font-mono text-xs text-emerald-400 min-h-16" id="sequenceResult">
+       Selected sequence appears here.
+      </div>
+      <div class="flex flex-wrap gap-2 mt-4">
+       <button class="practice-action" id="checkSequence">
+        Check Sequence
+       </button>
+       <button class="pill" id="clearSequence">
+        Reset
+       </button>
+      </div>
+      <p aria-live="polite" class="practice-feedback" id="sequenceFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold mb-3">
+       Activity C &middot; Choose the Correct Verification Command
+      </h3>
+      <label class="block text-sm text-slate-300">
+       You want a brief table of IP addresses and interface status.
+       <select class="w-full mt-2 bg-mapua-darkBg border border-mapua-border rounded-lg p-3 text-sm" id="verifySelect">
+        <option value="">
+         Select a command
+        </option>
+        <option>
+         show running-config
+        </option>
+        <option>
+         show ip interface brief
+        </option>
+        <option>
+         erase startup-config
+        </option>
+        <option>
+         debug ip packet
+        </option>
+       </select>
+      </label>
+      <button class="practice-action mt-4" id="checkVerify">
+       Check Answer
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="verifyFeedback">
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="lab">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-flask text-mapua-redBright mr-3">
+     </i>
+     Guided Packet Tracer Laboratories
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     All steps remain visible. Mark each task as completed in your own Packet Tracer installation.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-8">
+     <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+      <h3 class="font-extrabold text-white">
+       Official Packet Tracer Lab Files
+      </h3>
+      <p class="text-xs text-slate-300 mt-2">
+       The textbook provides companion Packet Tracer practice assignments for Labs 4.1, 4.2, and 4.3. Insert your download links below. The PDF does not provide their complete graded task instructions, so follow the instructions embedded in each supplied .pka file.
+      </p>
+      <div class="flex flex-wrap gap-2 mt-4">
+       <a class="practice-action inline-block" href="PASTE_LAB_4_1_DOWNLOAD_URL_HERE" rel="noopener noreferrer" target="_blank">
+        Download Lab 4.1
+       </a>
+       <a class="practice-action inline-block" href="PASTE_LAB_4_2_DOWNLOAD_URL_HERE" rel="noopener noreferrer" target="_blank">
+        Download Lab 4.2
+       </a>
+       <a class="practice-action inline-block" href="PASTE_LAB_4_3_DOWNLOAD_URL_HERE" rel="noopener noreferrer" target="_blank">
+        Download Lab 4.3
+       </a>
+      </div>
+     </div>
+     <div class="space-y-8" id="labLists">
+     </div>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4">
+      <p class="text-sm font-bold">
+       Guided progress:
+       <span class="text-mapua-redBright" id="labProgress">
+        0 / 0
+       </span>
+      </p>
+      <div class="h-2 bg-mapua-panel rounded-full mt-3 overflow-hidden">
+       <div class="h-full bg-mapua-red" id="progressBar" style="width:0%">
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="challenge">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <h2 class="text-2xl font-extrabold mb-3">
+      Chapter Review &middot; Lab 4.3
+     </h2>
+     <p class="text-sm text-slate-300 leading-7">
+      Open the official Chapter 4 review activity and complete its IOS configuration and verification requirements. The book describes this as an evaluated Packet Tracer assignment; the exact grading tasks are provided with the companion activity rather than in the printed chapter.
+     </p>
+     <div class="bg-mapua-panel rounded-xl p-5 mt-5">
+      <h3 class="font-bold mb-3">
+       Submission Readiness
+      </h3>
+      <div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables">
+      </div>
+      <p aria-live="polite" class="text-mapua-redBright text-xs mt-4" id="ready">
+      </p>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    &copy; Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+  <script>
+   const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+$('#menuBtn').addEventListener('click', () => {
+    const links = $('#links');
+    ['hidden', 'flex', 'flex-col', 'absolute', 'top-20', 'right-3', 'bg-mapua-card', 'p-5'].forEach(name => links.classList.toggle(name));
+});
+$$('[data-tab]').forEach(button => button.addEventListener('click', () => {
+    $$('[data-tab]').forEach(item => item.classList.remove('active'));
+    $$('.tab-content').forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+    document.getElementById(button.dataset.tab).classList.add('active');
+}));
+const modes = {
+    user: ['Router>', 'Initial user EXEC mode; limited inspection commands.'],
+    priv: ['Router#', 'Enter with enable. Use show commands and access configuration modes.'],
+    global: ['Router(config)#', 'Enter with configure terminal. Set hostname, passwords, and global options.'],
+    iface: ['Router(config-if)#', 'Enter with interface gigabitethernet0/0. Set IP address, description, and no shutdown.'],
+    line: ['Router(config-line)#', 'Enter with line console 0. Configure password and login.']
+};
+$$('[data-mode]').forEach(button => button.addEventListener('click', () => {
+    $$('[data-mode]').forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+    const mode = modes[button.dataset.mode];
+    $('#modePrompt').textContent = mode[0];
+    $('#modeInfo').textContent = mode[1];
+}));
+const questions = [
+    ['Which symbol marks privileged EXEC mode?', ['>', '#', ':', '@'], 1, 'The # prompt indicates privileged EXEC mode.'],
+    ['Which command enters global configuration mode?', ['enable', 'login', 'configure terminal', 'exit'], 2, 'configure terminal enters global configuration mode.'],
+    ['Which command protects privileged EXEC mode?', ['enable secret', 'password console', 'debug', 'show version'], 0, 'enable secret configures the privileged EXEC password.'],
+    ['Which character displays context-sensitive IOS help?', ['#', '?', '!', '*'], 1, 'The question mark invokes context-sensitive help.'],
+    ['Which shortcut recalls the previous command?', ['Ctrl+N', 'Ctrl+P', 'Ctrl+F', 'Ctrl+B'], 1, 'Up arrow or Ctrl+P recalls a previous command.'],
+    ['Which command summarizes IP addresses and interface states?', ['show startup-config', 'show ip interface brief', 'hostname R1', 'debug ip packet'], 1, 'show ip interface brief provides an interface summary.'],
+    ['Which command turns off all debugging?', ['debug off', 'stop all', 'undebug all', 'exit'], 2, 'undebug all disables enabled debugging.'],
+    ['Which command saves the running configuration?', ['erase startup-config', 'copy running-config startup-config', 'show running-config', 'reload'], 1, 'copy running-config startup-config saves the active configuration.']
+];
+let answers = {};
+function renderQuiz() {
+    answers = {};
+    $('#questions').innerHTML = questions.map((q, i) => `
+        <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+            <p class="font-bold text-sm mb-3">${i + 1}. ${q[0]}</p>
+            <div class="grid sm:grid-cols-2 gap-2">
+                ${q[1].map((option, j) => `<button data-question="${i}" data-answer="${j}" class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright">${String.fromCharCode(65 + j)}. ${option}</button>`).join('')}
+            </div>
+            <p id="feedback${i}" class="hidden text-xs mt-3" aria-live="polite"></p>
+        </div>
+    `).join('');
+    $('#score').textContent = `Score: 0 / ${questions.length}`;
+    $$('[data-question]').forEach(button => button.addEventListener('click', () => {
+        const i = Number(button.dataset.question);
+        const j = Number(button.dataset.answer);
+        if (answers[i] !== undefined) return;
+        answers[i] = j;
+        $$(`[data-question="${i}"]`).forEach(item => {
+            item.disabled = true;
+            item.classList.add(Number(item.dataset.answer) === questions[i][2] ? 'border-emerald-500' : 'opacity-60');
+        });
+        const correct = j === questions[i][2];
+        button.classList.add(correct ? 'bg-emerald-900/40' : 'bg-rose-900/40');
+        const feedback = document.getElementById(`feedback${i}`);
+        feedback.classList.remove('hidden');
+        feedback.classList.add(correct ? 'text-emerald-300' : 'text-rose-300');
+        feedback.textContent = `${correct ? 'Correct.' : 'Not quite.'} ${questions[i][3]}`;
+        const score = Object.entries(answers).filter(([key, value]) => questions[Number(key)][2] === value).length;
+        $('#score').textContent = `Score: ${score} / ${questions.length}`;
+    }));
+}
+renderQuiz();
+$('#reset').addEventListener('click', renderQuiz);
+const expected = ['enable', 'configure terminal', 'hostname r1', 'copy running-config startup-config'];
+$('#checkFill').addEventListener('click', () => {
+    const results = expected.map((answer, i) => document.getElementById(`fill${i + 1}`).value.trim().replace(/\s+/g, ' ').toLowerCase() === answer);
+    const correct = results.filter(Boolean).length;
+    $('#fillFeedback').textContent = `${correct} / 4 correct. ${correct === 4 ? 'All commands are correct.' : 'Review the command mode examples and retry.'}`;
+    $('#fillFeedback').style.color = correct === 4 ? '#6ee7b7' : '#fda4af';
+});
+const sequence = ['enable', 'configure terminal', 'interface gigabitethernet0/0', 'no shutdown'];
+let selected = [];
+function drawSequence() {
+    $('#sequenceResult').textContent = selected.length ? selected.map((cmd, i) => `${i + 1}. ${cmd}`).join('\n') : 'Selected sequence appears here.';
+    $('#sequenceResult').style.whiteSpace = 'pre-line';
+    $$('#sequenceOptions button').forEach(button => { button.disabled = selected.includes(button.dataset.command); });
+}
+$('#sequenceOptions').innerHTML = [sequence[2], sequence[3], sequence[0], sequence[1]].map(command => `<button class="practice-chip" data-command="${command}">${command}</button>`).join('');
+$$('#sequenceOptions button').forEach(button => button.addEventListener('click', () => {
+    selected.push(button.dataset.command);
+    drawSequence();
+}));
+$('#checkSequence').addEventListener('click', () => {
+    $('#sequenceFeedback').textContent = JSON.stringify(selected) === JSON.stringify(sequence) ? 'Correct order. You are ready to try it in Packet Tracer.' : 'Not yet correct. Start in user EXEC mode, then move into configuration mode.';
+});
+$('#clearSequence').addEventListener('click', () => {
+    selected = [];
+    $('#sequenceFeedback').textContent = '';
+    drawSequence();
+});
+$('#checkVerify').addEventListener('click', () => {
+    $('#verifyFeedback').textContent = $('#verifySelect').value === 'show ip interface brief' ? 'Correct: this is the concise interface status summary.' : 'Try again: look for the show command that includes interface brief.';
+});
+const labs = [
+    { title: 'Lab 4.1 · The Cisco IOS CLI', note: 'Use the assigned Lab 4.1 Packet Tracer activity. The textbook introduces CLI modes, help, and console security.', steps: [
+        ['Open the assigned activity', 'Download and open the official Lab 4.1 Packet Tracer activity. Read the instructions embedded in the activity before making changes.'],
+        ['Identify device prompts', 'Select a router or switch, open CLI, and press Enter. Record the initial prompt and its mode.'],
+        ['Explore privileged EXEC mode', 'Type enable and observe the change from > to #. Use exit to return to user EXEC, then enable again.'],
+        ['Use IOS help', 'Type ? to display available commands. Experiment with conf? and Tab completion where appropriate.'],
+        ['Explore command history', 'Run a few non-destructive show commands, then use Up arrow or Ctrl+P to recall them.'],
+        ['Inspect console security', 'Where the official lab requests it, use configure terminal, enable secret, line console 0, password, and login. Use the passwords required by the assigned file.'],
+        ['Verify Lab 4.1', 'Check the activity assessment or completion instructions. Save your work according to the lab requirements.']
+    ]},
+    { title: 'Lab 4.2 · Configuring Cisco IOS', note: 'Use the official Lab 4.2 activity and its specified interface names and addresses. The commands below are practice references, not substitute grading requirements.', steps: [
+        ['Open Lab 4.2', 'Download the assigned Lab 4.2 activity, inspect its topology, and note the requested configurations.'],
+        ['Enter configuration mode', 'From the device CLI, use enable and configure terminal. Observe the Router(config)# prompt.'],
+        ['Configure requested settings', 'Set the required hostname, passwords, and interface descriptions from the activity instructions.'],
+        ['Configure interfaces', 'Select the correct interface (for example, interface gigabitethernet0/0), enter the assigned ip address and subnet mask, and issue no shutdown where requested.'],
+        ['Verify interface status', 'Use end, then show ip interface brief. Compare interface status and IP addresses against the activity requirements.'],
+        ['Inspect active configuration', 'Use show running-config and check the requested hostname, interface descriptions, and settings.'],
+        ['Save the configuration', 'Use copy running-config startup-config and accept the default filename when prompted.'],
+        ['Complete Lab 4.2 assessment', 'Check the official activity results, correct any unmet requirements, and save your Packet Tracer file.']
+    ]},
+    { title: 'Lab 4.3 · Chapter Review', note: 'This is the textbook’s assessed chapter review activity. Complete the tasks provided inside the official Packet Tracer file.', steps: [
+        ['Open the Chapter Review file', 'Download Lab 4.3 and read its topology notes and assessment instructions.'],
+        ['Plan the command modes', 'For each requested change, identify whether it belongs to global, interface, or console line configuration mode.'],
+        ['Perform the assigned IOS tasks', 'Apply the configuration requirements in the official activity, using context-sensitive help if needed.'],
+        ['Verify and save', 'Use appropriate show commands, save the running configuration, and inspect the Packet Tracer assessment results.'],
+        ['Submit the activity', 'Save and submit the completed Packet Tracer file using your instructor’s required filename and submission method.']
+    ]}
+];
+const labContainer = $('#labLists');
+let total = 0;
+labs.forEach((lab, labIndex) => {
+    const section = document.createElement('div');
+    section.className = 'space-y-4';
+    section.innerHTML = `<div><h3 class="text-xl font-extrabold text-white">${lab.title}</h3><p class="text-xs text-slate-400 mt-2">${lab.note}</p></div>`;
+    lab.steps.forEach((step, stepIndex) => {
+        total += 1;
+        const label = document.createElement('label');
+        label.className = 'step flex items-start gap-4 cursor-pointer';
+        label.innerHTML = `<input type="checkbox" class="mt-1 accent-red-600 w-5 h-5 shrink-0" data-labstep="${labIndex}-${stepIndex}"><span><strong class="text-white text-sm">Step ${stepIndex + 1}: ${step[0]}</strong><span class="block text-slate-300 text-xs leading-6 mt-2">${step[1]}</span></span>`;
+        section.appendChild(label);
+    });
+    labContainer.appendChild(section);
+});
+function updateProgress() {
+    const completed = $$('[data-labstep]:checked').length;
+    $('#labProgress').textContent = `${completed} / ${total}`;
+    $('#progressBar').style.width = `${100 * completed / total}%`;
+}
+$$('[data-labstep]').forEach(input => input.addEventListener('change', () => {
+    input.closest('.step').classList.toggle('done', input.checked);
+    updateProgress();
+}));
+updateProgress();
+const deliverables = ['Lab 4.1 completed', 'Lab 4.2 completed', 'Lab 4.3 completed', 'Saved Packet Tracer activity files', 'Verification evidence reviewed'];
+$('#deliverables').innerHTML = deliverables.map((item, i) => `<label class="flex gap-3 items-center bg-mapua-card p-3 rounded-lg"><input type="checkbox" class="accent-red-600" data-deliverable="${i}">${item}</label>`).join('');
+$$('[data-deliverable]').forEach(input => input.addEventListener('change', () => {
+    const count = $$('[data-deliverable]:checked').length;
+    $('#ready').textContent = `${count} / ${deliverables.length} items complete. ${count === deliverables.length ? 'Ready for instructor review.' : 'Complete the remaining items.'}`;
+}));
+  </script>
+ </body>
+</html>
