@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chapter 3: Customizing Packet Tracer | ECE144L | Map&uacute;a MCL
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>
+   tailwind.config = { theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] }, colors: { mapua: { red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C' } } } } }
+  </script>
+  <style>
+   html,body{font-family:"Montserrat",sans-serif!important}button,input,select,textarea{font-family:inherit}nav,header{font-family:"Montserrat",sans-serif!important}.glass-panel{background:rgba(15,26,46,.92);backdrop-filter:blur(14px);border:1px solid rgba(227,27,35,.25)}.glass-panel-navy{background:rgba(22,37,64,.95);border:1px solid rgba(35,56,92,.6)}.pill{border:1px solid #23385C;background:#162540;border-radius:.65rem;padding:.7rem 1rem;font-size:.78rem;font-weight:700}.pill:hover,.pill.active{background:#E31B23;color:white;border-color:#FF2E36}.tab-content{display:none}.tab-content.active{display:block}.step{border:1px solid #23385C;border-radius:.8rem;padding:1rem;background:#162540}.step.done{border-color:#10b981}code,pre{font-family:'Fira Code',monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere}section{scroll-margin-top:6rem}
+  </style>
+  <style>
+   .practice-field{background:#080D1A;border:1px solid #23385C;border-radius:8px;padding:10px;color:#fff;min-width:105px;max-width:100%;font-family:"Fira Code",monospace}.practice-field:focus{outline:2px solid #E31B23}.practice-feedback{min-height:22px;margin-top:12px;font-size:13px}.practice-chip{border:1px solid #23385C;background:#162540;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}.practice-chip[aria-pressed=true]{background:#E31B23;border-color:#FF2E36}.practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}.practice-code{background:#080D1A;border:1px solid #23385C;border-radius:12px;padding:20px;line-height:2.9;font-family:"Fira Code",monospace;font-size:12px;overflow-x:auto}.practice-code input{width:160px}.practice-action{background:#E31B23;border:1px solid #FF2E36;border-radius:9px;padding:10px 18px;color:white;font-size:12px;font-weight:800;cursor:pointer}.practice-action:hover{background:#FF2E36}.practice-note{color:#CBD5E1;font-size:12px;line-height:1.8}.practice-card{background:#162540;border:1px solid #23385C;border-radius:12px;padding:18px}
+  </style>
+  <style>
+   .practice-field { background: #080D1A; border: 1px solid #23385C; border-radius: 8px; padding: 10px; color: white; min-width: 105px; max-width: 100%; font-family: "Fira Code", monospace; }
+.practice-field:focus { outline: 2px solid #E31B23; }
+.practice-feedback { min-height: 22px; margin-top: 12px; font-size: 13px; color: #CBD5E1; }
+.practice-chip { border: 1px solid #23385C; background: #162540; border-radius: 9px; padding: 10px 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.practice-chip[aria-pressed="true"] { background: #E31B23; border-color: #FF2E36; }
+.practice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; }
+.practice-action { background: #E31B23; border: 1px solid #FF2E36; border-radius: 9px; padding: 10px 18px; color: white; font-size: 12px; font-weight: 800; cursor: pointer; }
+.practice-note { color: #CBD5E1; font-size: 12px; line-height: 1.8; }
+.practice-card { background: #162540; border: 1px solid #23385C; border-radius: 12px; padding: 18px; }
+  </style>
+ </head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAP&Uacute;A MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      Interface Explorer
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 03 &middot; PART I: PACKET TRACER FUNDAMENTALS
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 3:
+      <br/>
+      <span class="text-slate-200">
+       Customizing Packet Tracer
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Customize Packet Tracer preferences, inspect physical equipment, and extend your Chapter 2 simulation with server and wireless devices.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026&ndash;2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2">
+      </i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Map&uacute;a Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+   <section class="glass-panel rounded-2xl p-6" id="outcomes">
+    <h2 class="text-xl font-extrabold mb-4">
+     <i class="fa-solid fa-bullseye text-mapua-redBright mr-2">
+     </i>
+     Learning Outcomes
+    </h2>
+    <div class="grid md:grid-cols-1 gap-3 text-sm text-slate-300">
+     <p>
+      01 &middot; Navigate Logical and Physical workspaces and inspect device hardware.
+     </p>
+     <p>
+      02 &middot; Customize interface, CLI display, and automatic backup preferences.
+     </p>
+     <p>
+      03 &middot; Extend the Chapter 2 topology with a server, wireless router, and laptop.
+     </p>
+     <p>
+      04 &middot; Explore server services, wireless GUI, and hardware module replacement.
+     </p>
+    </div>
+   </section>
+   <section id="lecture">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3">
+     </i>
+     Lecture &amp; Discussion Notes
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Learn the controls introduced in Chapter 3 before applying them in Packet Tracer.
+    </p>
+    <div class="flex flex-wrap gap-2 mb-5" id="tabs">
+     <button class="pill active" data-tab="views">
+      Workspaces
+     </button>
+     <button class="pill" data-tab="prefs">
+      Preferences
+     </button>
+     <button class="pill" data-tab="services">
+      Server &amp; Wireless
+     </button>
+     <button class="pill" data-tab="modules">
+      Hardware Modules
+     </button>
+    </div>
+    <div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+     <div class="tab-content active" id="views">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Logical and Physical views
+      </h3>
+      <p>
+       Logical view displays network devices and connections. Physical view organizes equipment by location. In Lab 3.1, navigate Home City &rarr; Corporate Office &rarr; Main Wiring Closet to examine equipment, then use Inspect Front to examine the router. Return to Logical view to observe device status.
+      </p>
+      <p class="mt-3">
+       Power Cycle Devices restarts the simulated equipment; Fast Forward Time advances the simulation clock, helping you observe link status changes.
+      </p>
+     </div>
+     <div class="tab-content" id="prefs">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Preferences for efficient work
+      </h3>
+      <p>
+       Open Options &rarr; Preferences on Windows, or Cisco Packet Tracer &rarr; Preferences on macOS. Under Interface, enable Always Show Port Labels in Logical Workspace and clear Show Link Lights. Under Font, set the CLI font size to 20 points, Router IOS Text to White, and Router IOS Background to Black. Under Miscellaneous, set automatic backup to 10 minutes.
+      </p>
+     </div>
+     <div class="tab-content" id="services">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Server services and wireless devices
+      </h3>
+      <p>
+       Lab 3.2 adds Server0 above Switch0 and connects Server0 FastEthernet0 to Switch0 FastEthernet0/3 using Copper Straight-Through. The server's Services tab exposes options including DHCP. The lab also adds a WRT300N wireless router and examines its GUI settings.
+      </p>
+      <p class="mt-3">
+       This chapter explores configuration options; it does not require complete IP reachability for newly added devices.
+      </p>
+     </div>
+     <div class="tab-content" id="modules">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Replacing a laptop network module
+      </h3>
+      <p>
+       On Laptop0, open the Physical tab, power the device off, remove the PT-LAPTOP-NM-1CFE Ethernet module, insert the WPC300N wireless interface, and power the laptop back on. Powering off first is essential when replacing a module.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="explorer">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-computer-mouse text-mapua-redBright mr-3">
+     </i>
+     Interactive Interface Explorer
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Select a feature to see what it does and where it appears.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3" id="inspectButtons">
+      <button class="pill" data-inspect="physical">
+       Physical View
+      </button>
+      <button class="pill" data-inspect="interface">
+       Interface Preferences
+      </button>
+      <button class="pill" data-inspect="font">
+       CLI Font Settings
+      </button>
+      <button class="pill" data-inspect="server">
+       Server Services
+      </button>
+     </div>
+     <div aria-live="polite" class="bg-mapua-panel rounded-xl border border-mapua-border p-5 mt-5">
+      <p class="font-extrabold text-mapua-redBright" id="inspectTitle">
+       Choose a control above
+      </p>
+      <p class="text-sm text-slate-300 mt-2" id="inspectText">
+       Explore the Chapter 3 controls before opening the real application.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="quiz">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <div class="flex flex-wrap justify-between gap-3 mb-6">
+      <div>
+       <h2 class="text-2xl font-extrabold">
+        <i class="fa-solid fa-circle-question text-mapua-redBright mr-2">
+        </i>
+        Interactive Knowledge Check
+       </h2>
+       <p class="text-slate-400 text-xs mt-2">
+        Choose one answer per question. Feedback appears immediately.
+       </p>
+      </div>
+      <div class="text-mapua-redBright font-black text-sm" id="score">
+       Score: 0 / 8
+      </div>
+     </div>
+     <div class="space-y-5" id="questions">
+     </div>
+     <button class="pill mt-6" id="reset">
+      Reset Quiz
+     </button>
+    </div>
+   </section>
+   <section id="practice">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-keyboard text-mapua-redBright mr-3">
+     </i>
+     Interactive Preparation
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Complete these practice tasks before following the textbook labs.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+     <div class="practice-card">
+      <h3 class="font-extrabold mb-2">
+       Practice 1 &middot; Order the physical navigation path
+      </h3>
+      <p class="practice-note mb-3">
+       Click the locations in the order you would visit them in Lab 3.1.
+      </p>
+      <div class="practice-grid" id="locations">
+       <button class="practice-chip" data-location="Main Wiring Closet">
+        Main Wiring Closet
+       </button>
+       <button class="practice-chip" data-location="Home City">
+        Home City
+       </button>
+       <button class="practice-chip" data-location="Corporate Office">
+        Corporate Office
+       </button>
+      </div>
+      <p class="practice-note mt-3" id="locationOrder">
+       Selected: none
+      </p>
+      <button class="practice-action mt-3" id="checkLocations">
+       Check order
+      </button>
+      <button class="practice-chip ml-2" id="resetLocations">
+       Reset
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="locationFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-extrabold mb-2">
+       Practice 2 &middot; Complete the preferences
+      </h3>
+      <p class="practice-note mb-3">
+       Fill in the exact settings used in Lab 3.1.
+      </p>
+      <div class="grid sm:grid-cols-2 gap-4 text-xs">
+       <label>
+        CLI font size (points)
+        <input class="practice-field mt-2 w-full" id="fontSize" placeholder="Enter number"/>
+       </label>
+       <label>
+        Automatic backup interval (minutes)
+        <input class="practice-field mt-2 w-full" id="backup" placeholder="Enter number"/>
+       </label>
+       <label>
+        Router IOS Text color
+        <input class="practice-field mt-2 w-full" id="textColor" placeholder="Color"/>
+       </label>
+       <label>
+        Router IOS Background color
+        <input class="practice-field mt-2 w-full" id="bgColor" placeholder="Color"/>
+       </label>
+      </div>
+      <button class="practice-action mt-4" id="checkPrefs">
+       Check settings
+      </button>
+      <button class="practice-chip ml-2" id="resetPrefs">
+       Try again
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="prefsFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-extrabold mb-2">
+       Practice 3 &middot; Match the hardware connections
+      </h3>
+      <p class="practice-note mb-3">
+       Choose the exact port and module names from Lab 3.2.
+      </p>
+      <div class="grid sm:grid-cols-2 gap-4 text-xs">
+       <label>
+        Server0 connection on Switch0
+        <select class="practice-field mt-2 w-full" id="switchPort">
+         <option value="">
+          Choose a port
+         </option>
+         <option>
+          FastEthernet0/1
+         </option>
+         <option>
+          FastEthernet0/3
+         </option>
+         <option>
+          GigabitEthernet0/0
+         </option>
+        </select>
+       </label>
+       <label>
+        Laptop wireless replacement module
+        <select class="practice-field mt-2 w-full" id="wirelessModule">
+         <option value="">
+          Choose a module
+         </option>
+         <option>
+          PT-LAPTOP-NM-1CFE
+         </option>
+         <option>
+          WPC300N
+         </option>
+         <option>
+          WRT300N
+         </option>
+        </select>
+       </label>
+      </div>
+      <button class="practice-action mt-4" id="checkHardware">
+       Check hardware
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="hardwareFeedback">
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="lab">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-flask text-mapua-redBright mr-2">
+     </i>
+     Guided Packet Tracer Laboratories
+    </h2>
+    <p class="text-slate-400 text-sm mb-6">
+     Follow the textbook's Lab 3.1 and Lab 3.2 using your saved Chapter 2 topology. Read each step directly, then mark it complete.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-6">
+     <div class="flex flex-wrap justify-between gap-3">
+      <h3 class="text-lg font-extrabold">
+       Lab 3.1 &middot; Customizing Packet Tracer
+      </h3>
+      <p class="font-mono text-mapua-redBright text-sm" id="labProgress">
+       0 / 21 complete
+      </p>
+     </div>
+     <div class="space-y-3" id="steps31">
+     </div>
+     <h3 class="text-lg font-extrabold pt-4 border-t border-mapua-border">
+      Lab 3.2 &middot; Customizing Your First Simulation
+     </h3>
+     <div class="space-y-3" id="steps32">
+     </div>
+     <p class="text-xs text-slate-400">
+      Checking a step tracks your progress in this webpage; it does not verify the configuration inside Packet Tracer.
+     </p>
+    </div>
+   </section>
+   <section id="challenge">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8 border-mapua-red/40">
+     <div class="text-xs font-black text-mapua-redBright mb-3">
+      CHAPTER REVIEW &middot; ORIGINAL TEXTBOOK LABS
+     </div>
+     <h2 class="text-2xl font-extrabold mb-4">
+      Lab Verification &amp; Completion
+     </h2>
+     <p class="text-sm text-slate-300 mb-5">
+      Use the following checks to confirm that you completed the two Chapter 3 exercises. No new network scenario is required.
+     </p>
+     <div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables">
+     </div>
+     <p aria-live="polite" class="text-xs text-mapua-redBright mt-4" id="ready">
+     </p>
+    </div>
+   </section>
+   <section id="download">
+    <div class="glass-panel rounded-2xl p-6">
+     <h2 class="text-xl font-extrabold mb-3">
+      <i class="fa-solid fa-download text-mapua-redBright mr-2">
+      </i>
+      Packet Tracer Lab File
+     </h2>
+     <p class="text-sm text-slate-300 mb-4">
+      Continue using your saved
+      <strong>
+       02 First Network
+      </strong>
+      topology from Chapter 2. If a starter file is provided by the instructor, use the download button below.
+     </p>
+     <a class="inline-flex items-center gap-2 bg-mapua-red hover:bg-mapua-redBright text-white font-extrabold rounded-lg px-5 py-3 text-sm" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQDecgY1Kun6Q42XDJJUECNAAYObQKCBIixkcd1-wVMyjQQ?e=XRh6E5" id="pktDownload" rel="noopener noreferrer" target="_blank">
+      <i class="fa-solid fa-download">
+      </i>
+      Download Packet Tracer File: 03 First Network
+     </a>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    &copy; Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+  <script>
+   const $ = selector => document.querySelector(selector);
+
+$('#menuBtn').addEventListener('click', () => {
+  const links = $('#links');
+  ['hidden','flex','flex-col','absolute','top-20','right-3','bg-mapua-card','p-5'].forEach(c => links.classList.toggle(c));
+});
+
+document.querySelectorAll('[data-tab]').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(panel => panel.classList.remove('active'));
+    button.classList.add('active');
+    document.getElementById(button.dataset.tab).classList.add('active');
+  });
+});
+
+const inspector = {
+  physical: ['Physical View', 'Click Physical, then open Home City → Corporate Office → Main Wiring Closet. Inspect the router front panel.'],
+  interface: ['Interface Preferences', 'Enable Always Show Port Labels in Logical Workspace and clear Show Link Lights.'],
+  font: ['CLI Font Settings', 'Set the CLI font to 20 points, IOS Text to White, and IOS Background to Black.'],
+  server: ['Server Services', 'Open Server0 → Services → DHCP to inspect available server settings without requiring full IP configuration.']
+};
+document.querySelectorAll('[data-inspect]').forEach(button => {
+  button.addEventListener('click', () => {
+    const [title, description] = inspector[button.dataset.inspect];
+    $('#inspectTitle').textContent = title;
+    $('#inspectText').textContent = description;
+  });
+});
+
+const questions = [
+  ['Which workspace lets you inspect devices by physical location?', ['Logical','Physical','Desktop','CLI'], 1, 'Physical view provides location-based inspection.'],
+  ['Which location is opened first in the textbook navigation path?', ['Main Wiring Closet','Corporate Office','Home City','Server Room'], 2, 'Start at Home City.'],
+  ['Which control restarts the simulated devices?', ['Fast Forward Time','Power Cycle Devices','Zoom In','Inspect Front'], 1, 'Power Cycle Devices restarts devices.'],
+  ['What is the specified CLI font size?', ['10 points','12 points','20 points','24 points'], 2, 'The lab specifies 20 points.'],
+  ['How often should automatic backup occur?', ['Every minute','Every 5 minutes','Every 10 minutes','Never'], 2, 'The lab sets the interval to 10 minutes.'],
+  ['Which server tab contains DHCP settings?', ['Physical','Services','Programming','Attributes'], 1, 'DHCP is found under Services.'],
+  ['Which switch port is used to connect Server0?', ['FastEthernet0/3','FastEthernet0/1','GigabitEthernet0/0','Console'], 0, 'The lab specifies Switch0 FastEthernet0/3.'],
+  ['What must you do before replacing the laptop network module?', ['Run ping','Power off the laptop','Change its IP address','Restart the switch'], 1, 'Power off the laptop before swapping modules.']
+];
+let responses = {};
+function renderQuiz() {
+  responses = {};
+  $('#questions').innerHTML = questions.map((q,i) => `
+    <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+      <p class="font-bold text-sm mb-3">${i+1}. ${q[0]}</p>
+      <div class="grid sm:grid-cols-2 gap-2">${q[1].map((choice,j) => `
+        <button type="button" class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright" data-q="${i}" data-answer="${j}">${String.fromCharCode(65+j)}. ${choice}</button>
+      `).join('')}</div>
+      <p class="text-xs mt-3 hidden" id="feedback${i}" aria-live="polite"></p>
+    </div>`).join('');
+  $('#score').textContent = `Score: 0 / ${questions.length}`;
+  document.querySelectorAll('[data-q]').forEach(button => button.addEventListener('click', () => {
+    const i = Number(button.dataset.q), j = Number(button.dataset.answer);
+    if (responses[i] !== undefined) return;
+    responses[i] = j;
+    document.querySelectorAll(`[data-q="${i}"]`).forEach(option => {
+      option.disabled = true;
+      option.classList.add(Number(option.dataset.answer) === questions[i][2] ? 'border-emerald-500' : 'opacity-60');
+    });
+    button.classList.add(j === questions[i][2] ? 'bg-emerald-900/40' : 'bg-rose-900/40');
+    const feedback = document.getElementById(`feedback${i}`);
+    feedback.classList.remove('hidden');
+    feedback.classList.add(j === questions[i][2] ? 'text-emerald-300' : 'text-rose-300');
+    feedback.textContent = (j === questions[i][2] ? 'Correct. ' : 'Not quite. ') + questions[i][3];
+    const score = Object.entries(responses).filter(([key,value]) => questions[Number(key)][2] === value).length;
+    $('#score').textContent = `Score: ${score} / ${questions.length}`;
+  }));
+}
+renderQuiz();
+$('#reset').addEventListener('click', renderQuiz);
+
+let locationSequence = [];
+const locationAnswer = ['Home City','Corporate Office','Main Wiring Closet'];
+function updateLocations() { $('#locationOrder').textContent = 'Selected: ' + (locationSequence.join(' → ') || 'none'); }
+document.querySelectorAll('[data-location]').forEach(button => button.addEventListener('click', () => {
+  if (locationSequence.includes(button.dataset.location)) return;
+  locationSequence.push(button.dataset.location);
+  button.setAttribute('aria-pressed', 'true');
+  updateLocations();
+}));
+$('#checkLocations').addEventListener('click', () => {
+  $('#locationFeedback').textContent = JSON.stringify(locationSequence) === JSON.stringify(locationAnswer) ? 'Correct navigation sequence.' : 'Check the order: begin at the broadest location.';
+});
+$('#resetLocations').addEventListener('click', () => {
+  locationSequence = [];
+  document.querySelectorAll('[data-location]').forEach(button => button.setAttribute('aria-pressed','false'));
+  updateLocations();
+  $('#locationFeedback').textContent = '';
+});
+$('#checkPrefs').addEventListener('click', () => {
+  const fields = [['fontSize','20'],['backup','10'],['textColor','white'],['bgColor','black']];
+  const count = fields.filter(([id,answer]) => document.getElementById(id).value.trim().toLowerCase() === answer).length;
+  $('#prefsFeedback').textContent = `${count} / 4 correct. ${count === 4 ? 'All preferences match Lab 3.1.' : 'Review the Preferences discussion and try again.'}`;
+});
+$('#resetPrefs').addEventListener('click', () => {
+  ['fontSize','backup','textColor','bgColor'].forEach(id => document.getElementById(id).value = '');
+  $('#prefsFeedback').textContent = '';
+});
+$('#checkHardware').addEventListener('click', () => {
+  const correct = Number($('#switchPort').value === 'FastEthernet0/3') + Number($('#wirelessModule').value === 'WPC300N');
+  $('#hardwareFeedback').textContent = `${correct} / 2 correct. ${correct === 2 ? 'Hardware selections match Lab 3.2.' : 'Check the server connection and wireless module.'}`;
+});
+
+const lab31 = [
+  ['Launch Packet Tracer', 'Start Cisco Packet Tracer.'],
+  ['Open your saved network', 'Use File → Open and load 02 First Network from Chapter 2. Zoom in if needed.'],
+  ['Switch to Physical view', 'Click Physical on the blue bar beneath the toolbar.'],
+  ['Navigate to the equipment', 'Open Home City → Corporate Office → Main Wiring Closet.'],
+  ['Inspect the router front', 'Right-click the router → Inspect Front; zoom in, then close the inspection window.'],
+  ['Return to Logical view and power cycle', 'Click Logical → Power Cycle Devices and confirm Yes.'],
+  ['Observe convergence', 'Watch the switch link indicators and use Fast Forward Time to advance convergence.'],
+  ['Open Preferences', 'Windows: Options → Preferences. macOS: Cisco Packet Tracer → Preferences.'],
+  ['Adjust Interface settings', 'Enable Always Show Port Labels in Logical Workspace and clear Show Link Lights.'],
+  ['Adjust CLI font and colors', 'Under Font, set CLI to 20 points; Router IOS Text = White; Router IOS Background = Black. Click Apply.'],
+  ['Enable automatic backup', 'Under Miscellaneous, set backup interval to 10 minutes.'],
+  ['Close Preferences', 'Close the Preferences window.']
+];
+const lab32 = [
+  ['Add Server0', 'From End Devices, place Server0 above Switch0.'],
+  ['Cable the server', 'Select Copper Straight-Through; connect Server0 FastEthernet0 to Switch0 FastEthernet0/3.'],
+  ['Explore DHCP service', 'Open Server0 → Services → DHCP, inspect available options, then close the window.'],
+  ['Add wireless router', 'Under Network Devices → Wireless Devices, place WRT300N above Router0.'],
+  ['Connect wireless router', 'Use Automatically Choose Connection Type to connect Wireless Router0 and Router0.'],
+  ['Add Laptop0', 'Under End Devices, place Laptop0 above Switch1 and open its Physical tab.'],
+  ['Replace laptop module', 'Power off Laptop0, remove PT-LAPTOP-NM-1CFE, insert WPC300N, then power back on.'],
+  ['Explore wireless GUI', 'Open Wireless Router0 → GUI and examine the configuration options.'],
+  ['Save your network', 'Save the extended topology and close Packet Tracer.']
+];
+let completed = new Set();
+function renderSteps(id, data, offset) {
+  document.getElementById(id).innerHTML = data.map(([title, detail],i) => `
+    <div class="step" id="labStep${offset+i}">
+      <div class="flex items-start gap-3">
+        <input type="checkbox" class="mt-1 w-5 h-5 accent-red-600" data-step="${offset+i}" aria-label="Mark step ${i+1} complete">
+        <div class="flex-1"><h4 class="text-sm font-bold text-white">Step ${i+1}: ${title}</h4><p class="text-xs text-slate-300 leading-6 mt-2">${detail}</p></div>
+      </div>
+    </div>`).join('');
+}
+renderSteps('steps31',lab31,0);
+renderSteps('steps32',lab32,lab31.length);
+document.querySelectorAll('[data-step]').forEach(input => input.addEventListener('change', () => {
+  const id = Number(input.dataset.step);
+  if (input.checked) completed.add(id); else completed.delete(id);
+  document.getElementById(`labStep${id}`).classList.toggle('done',input.checked);
+  $('#labProgress').textContent = `${completed.size} / ${lab31.length + lab32.length} complete`;
+}));
+const evidence = ['Chapter 2 topology opened and inspected','Physical navigation and router inspection completed','Interface, font, and backup preferences configured','Server0 connected and DHCP options inspected','WRT300N and Laptop0 added; WPC300N installed','Extended Packet Tracer topology saved'];
+$('#deliverables').innerHTML = evidence.map((label,i) => `<label class="flex gap-3 items-center bg-mapua-panel p-3 rounded-lg"><input type="checkbox" class="accent-red-600" data-evidence="${i}">${label}</label>`).join('');
+document.querySelectorAll('[data-evidence]').forEach(input => input.addEventListener('change', () => {
+  const checked = document.querySelectorAll('[data-evidence]:checked').length;
+  $('#ready').textContent = `${checked} / ${evidence.length} checks complete. ${checked === evidence.length ? 'Ready for instructor review.' : 'Finish the remaining lab checks.'}`;
+}));
+$('#pktDownload').addEventListener('click', event => {
+  if ($('#pktDownload').getAttribute('href') === 'PASTE_YOUR_PKT_DOWNLOAD_URL_HERE') {
+    event.preventDefault();
+    alert('The instructor has not added the Packet Tracer download link yet.');
+  }
+});
+  </script>
+ </body>
+</html>
