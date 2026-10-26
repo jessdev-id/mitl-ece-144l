@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chapter 5: Physical Interfaces and Cabling Types | ECE144L | Map&uacute;a MCL
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>
+   tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace']
+            }, colors: {
+                mapua: {
+                    red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C'
+                }
+            }
+        }
+    }
+}
+  </script>
+  <style>
+   html,body{
+    font-family:"Montserrat",sans-serif!important
+}
+button,input,select,textarea{
+    font-family:inherit
+}
+nav,header{
+    font-family:"Montserrat",sans-serif!important
+}
+.glass-panel{
+    background:rgba(15,26,46,.92);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(227,27,35,.25)
+}
+.glass-panel-navy{
+    background:rgba(22,37,64,.95);
+    border:1px solid rgba(35,56,92,.6)
+}
+.pill{
+    border:1px solid #23385C;
+    background:#162540;
+    border-radius:.65rem;
+    padding:.7rem 1rem;
+    font-size:.78rem;
+    font-weight:700
+}
+.pill:hover,.pill.active{
+    background:#E31B23;
+    color:white;
+    border-color:#FF2E36
+}
+.tab-content{
+    display:none
+}
+.tab-content.active{
+    display:block
+}
+.step{
+    border:1px solid #23385C;
+    border-radius:.8rem;
+    padding:1rem;
+    background:#162540
+}
+.step.done{
+    border-color:#10b981
+}
+code,pre{
+    font-family:'Fira Code',monospace
+}
+pre{
+    white-space:pre-wrap;
+    overflow-wrap:anywhere
+}
+section{
+    scroll-margin-top:6rem
+}
+  </style>
+  <style>
+   .practice-field{
+    background:#080D1A;
+    border:1px solid #23385C;
+    border-radius:8px;
+    padding:10px;
+    color:#fff;
+    min-width:105px;
+    max-width:100%;
+    font-family:"Fira Code",monospace
+}
+.practice-field:focus{
+    outline:2px solid #E31B23
+}
+.practice-feedback{
+    min-height:22px;
+    margin-top:12px;
+    font-size:13px
+}
+.practice-chip{
+    border:1px solid #23385C;
+    background:#162540;
+    border-radius:9px;
+    padding:10px 14px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer
+}
+.practice-chip[aria-pressed=true]{
+    background:#E31B23;
+    border-color:#FF2E36
+}
+.practice-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
+    gap:10px
+}
+.practice-code{
+    background:#080D1A;
+    border:1px solid #23385C;
+    border-radius:12px;
+    padding:20px;
+    line-height:2.9;
+    font-family:"Fira Code",monospace;
+    font-size:12px;
+    overflow-x:auto
+}
+.practice-code input{
+    width:160px
+}
+.practice-action{
+    background:#E31B23;
+    border:1px solid #FF2E36;
+    border-radius:9px;
+    padding:10px 18px;
+    color:white;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer
+}
+.practice-action:hover{
+    background:#FF2E36
+}
+.practice-note{
+    color:#CBD5E1;
+    font-size:12px;
+    line-height:1.8
+}
+.practice-card{
+    background:#162540;
+    border:1px solid #23385C;
+    border-radius:12px;
+    padding:18px
+}
+  </style>
+  <style>
+   .practice-field {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 8px;
+    padding: 10px;
+    color: white;
+    min-width: 105px;
+    max-width: 100%;
+    font-family: "Fira Code", monospace;
+}
+.practice-field:focus {
+    outline: 2px solid #E31B23;
+}
+.practice-feedback {
+    min-height: 22px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #CBD5E1;
+}
+.practice-chip {
+    border: 1px solid #23385C;
+    background: #162540;
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.practice-chip[aria-pressed="true"] {
+    background: #E31B23;
+    border-color: #FF2E36;
+}
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 10px;
+}
+.practice-action {
+    background: #E31B23;
+    border: 1px solid #FF2E36;
+    border-radius: 9px;
+    padding: 10px 18px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.practice-note {
+    color: #CBD5E1;
+    font-size: 12px;
+    line-height: 1.8;
+}
+.practice-card {
+    background: #162540;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 18px;
+}
+  </style>
+ </head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAP&Uacute;A MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      Media Explorer
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2.5 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 05 &middot; PART II: NETWORK FUNDAMENTALS
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 5:
+      <br/>
+      <span class="text-slate-200">
+       Physical Interfaces and Cabling Types
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Explore copper and fiber media, Ethernet speeds, PoE, interface errors, and cabling troubleshooting through interactive practice and guided Packet Tracer laboratories.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026&ndash;2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2">
+      </i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Map&uacute;a Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+   <section class="glass-panel rounded-2xl p-6" id="outcomes">
+    <h2 class="text-xl font-extrabold mb-4">
+     <i class="fa-solid fa-bullseye text-mapua-redBright mr-2">
+     </i>
+     Learning Outcomes
+    </h2>
+    <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+     <p>
+      01 &middot; Compare copper, multimode fiber, and single-mode fiber.
+     </p>
+     <p>
+      02 &middot; Identify Ethernet standards, speeds, and cable types.
+     </p>
+     <p>
+      03 &middot; Explain duplex, PoE, auto MDI-X, and serial DCE/DTE.
+     </p>
+     <p>
+      04 &middot; Interpret interface counters and troubleshoot connectivity problems.
+     </p>
+    </div>
+   </section>
+   <section id="lecture">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3">
+     </i>
+     Lecture &amp; Discussion Notes
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Explore each concept before attempting the interactive exercises.
+    </p>
+    <div class="flex flex-wrap gap-2 mb-5" id="tabs">
+     <button class="pill active" data-tab="media">
+      Copper &amp; Fiber
+     </button>
+     <button class="pill" data-tab="ethernet">
+      Ethernet Standards
+     </button>
+     <button class="pill" data-tab="operation">
+      Duplex, PoE &amp; Serial
+     </button>
+     <button class="pill" data-tab="faults">
+      Interface Troubleshooting
+     </button>
+    </div>
+    <div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+     <div class="tab-content active" id="media">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Physical Media
+      </h3>
+      <div class="grid md:grid-cols-3 gap-4">
+       <div class="bg-mapua-panel rounded-xl p-4">
+        <h4 class="font-bold text-white">
+         Copper UTP
+        </h4>
+        <p>
+         Electrical signaling over twisted pairs. The book highlights Cat 5e for 1 Gbps and Cat 6 for 10 Gbps.
+        </p>
+       </div>
+       <div class="bg-mapua-panel rounded-xl p-4">
+        <h4 class="font-bold text-white">
+         Multimode Fiber
+        </h4>
+        <p>
+         Optical signaling with multiple propagation modes through a fiber core.
+        </p>
+       </div>
+       <div class="bg-mapua-panel rounded-xl p-4">
+        <h4 class="font-bold text-white">
+         Single-mode Fiber
+        </h4>
+        <p>
+         A smaller fiber core and laser transmission along a single mode, suitable for long-distance links.
+        </p>
+       </div>
+      </div>
+      <p class="mt-4">
+       Fiber installations must respect the cable's bend radius. The medium and optics must match the intended link.
+      </p>
+     </div>
+     <div class="tab-content" id="ethernet">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Examples of Ethernet Technologies (Table 5.1)
+      </h3>
+      <div class="overflow-x-auto">
+       <table class="w-full text-left text-xs">
+        <thead class="text-mapua-redBright border-b border-mapua-border">
+         <tr>
+          <th class="p-3">
+           Standard name
+          </th>
+          <th class="p-3">
+           Speed
+          </th>
+          <th class="p-3">
+           Medium
+          </th>
+          <th class="p-3">
+           Maximum length (book)
+          </th>
+         </tr>
+        </thead>
+        <tbody class="divide-y divide-mapua-border">
+         <tr>
+          <td class="p-3">
+           10BASE-T
+          </td>
+          <td>
+           10 Mbps
+          </td>
+          <td>
+           Copper
+          </td>
+          <td>
+           100 m
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           100BASE-T
+          </td>
+          <td>
+           100 Mbps
+          </td>
+          <td>
+           Copper
+          </td>
+          <td>
+           100 m
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           1000BASE-LX
+          </td>
+          <td>
+           1000 Mbps
+          </td>
+          <td>
+           Fiber
+          </td>
+          <td>
+           5,000 m
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           1000BASE-T
+          </td>
+          <td>
+           1000 Mbps
+          </td>
+          <td>
+           Copper
+          </td>
+          <td>
+           100 m
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           10GBASE-T
+          </td>
+          <td>
+           10 Gbps
+          </td>
+          <td>
+           Copper
+          </td>
+          <td>
+           100 m
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           40GBASE-LR4
+          </td>
+          <td>
+           40 Gbps
+          </td>
+          <td>
+           Fiber
+          </td>
+          <td>
+           10,000 m
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <p class="mt-4">
+       Traditional cabling uses straight-through connections for unlike devices and crossover for like devices. Auto MDI-X makes the distinction less important on supported ports.
+      </p>
+     </div>
+     <div class="tab-content" id="operation">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       How Links Operate
+      </h3>
+      <div class="grid md:grid-cols-2 gap-4">
+       <div class="bg-mapua-panel p-4 rounded-xl">
+        <h4 class="font-bold text-white">
+         Full- vs. Half-Duplex
+        </h4>
+        <p>
+         Switched point-to-point links can send and receive simultaneously in full-duplex mode. Legacy shared media and hubs use half-duplex with CSMA/CD.
+        </p>
+       </div>
+       <div class="bg-mapua-panel p-4 rounded-xl">
+        <h4 class="font-bold text-white">
+         Power over Ethernet
+        </h4>
+        <p>
+         PoE supplies power over network cabling for phones, wireless access points, and IP cameras. The book describes 802.3af, 802.3at, and 802.3bt.
+        </p>
+       </div>
+       <div class="bg-mapua-panel p-4 rounded-xl md:col-span-2">
+        <h4 class="font-bold text-white">
+         Serial Connections
+        </h4>
+        <p>
+         Legacy serial links may involve DTE and DCE ends. The command
+         <code>
+          show controllers
+         </code>
+         helps identify cable information such as DCE and clock rate.
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="tab-content" id="faults">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Troubleshooting with show interface
+      </h3>
+      <p>
+       Use
+       <code>
+        show interface gi0/1
+       </code>
+       to examine interface state, negotiated speed and duplex, traffic, and error counters.
+      </p>
+      <div class="grid md:grid-cols-2 gap-3 mt-4">
+       <div class="bg-mapua-panel p-4 rounded-xl">
+        <b>
+         CRC / input errors
+        </b>
+        <p>
+         May point to damaged cabling, interference, or framing problems.
+        </p>
+       </div>
+       <div class="bg-mapua-panel p-4 rounded-xl">
+        <b>
+         Collisions / late collisions
+        </b>
+        <p>
+         Unexpected on healthy full-duplex links; investigate duplex mismatch.
+        </p>
+       </div>
+       <div class="bg-mapua-panel p-4 rounded-xl">
+        <b>
+         Runts
+        </b>
+        <p>
+         Frames shorter than 64 bytes.
+        </p>
+       </div>
+       <div class="bg-mapua-panel p-4 rounded-xl">
+        <b>
+         Giants / jumbo frames
+        </b>
+        <p>
+         Frames larger than standard Ethernet framing limits; inspect size and configuration.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="explorer">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-network-wired text-mapua-redBright mr-3">
+     </i>
+     Interactive Media &amp; Fault Explorer
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     Choose a technology or symptom to see its engineering implications.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3" id="explorerButtons">
+      <button class="pill" data-inspect="utp">
+       Copper UTP
+      </button>
+      <button class="pill" data-inspect="mm">
+       Multimode fiber
+      </button>
+      <button class="pill" data-inspect="sm">
+       Single-mode fiber
+      </button>
+      <button class="pill" data-inspect="crc">
+       CRC errors
+      </button>
+      <button class="pill" data-inspect="duplex">
+       Duplex mismatch
+      </button>
+      <button class="pill" data-inspect="poe">
+       PoE
+      </button>
+      <button class="pill" data-inspect="dce">
+       Serial DCE
+      </button>
+      <button class="pill" data-inspect="mdi">
+       Auto MDI-X
+      </button>
+     </div>
+     <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5 mt-5">
+      <h3 class="font-bold text-mapua-redBright" id="inspectTitle">
+       Select a topic
+      </h3>
+      <p class="text-sm text-slate-300 mt-2" id="inspectText">
+       The explanation appears here.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="quiz">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <div class="flex justify-between gap-3 flex-wrap mb-6">
+      <div>
+       <h2 class="text-2xl font-extrabold">
+        <i class="fa-solid fa-circle-question text-mapua-redBright mr-2">
+        </i>
+        Interactive Knowledge Check
+       </h2>
+       <p class="text-xs text-slate-400 mt-2">
+        Select one answer per question for immediate feedback.
+       </p>
+      </div>
+      <p class="text-mapua-redBright font-black text-sm" id="score">
+       Score: 0 / 8
+      </p>
+     </div>
+     <div class="space-y-5" id="questions">
+     </div>
+     <button class="pill mt-6" id="reset">
+      Reset Quiz
+     </button>
+    </div>
+   </section>
+   <section id="practice">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-keyboard text-mapua-redBright mr-3">
+     </i>
+     Interactive Laboratory Preparation
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Practice before opening the official Packet Tracer lab files.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-7">
+     <div class="practice-card">
+      <h3 class="font-bold text-white mb-3">
+       Activity A &middot; Complete the Commands
+      </h3>
+      <p class="practice-note mb-4">
+       Type the missing IOS command or keyword.
+      </p>
+      <div class="space-y-4 text-xs font-mono">
+       <label class="block">
+        Inspect Gi0/1 counters:
+        <input class="practice-field" id="fill1" placeholder="show ..."/>
+       </label>
+       <label class="block">
+        Identify serial cable details:
+        <input class="practice-field" id="fill2" placeholder="show ..."/>
+       </label>
+       <label class="block">
+        Enable an administratively down interface:
+        <input class="practice-field" id="fill3" placeholder="... shutdown"/>
+       </label>
+      </div>
+      <button class="practice-action mt-4" id="checkCommands">
+       Check Commands
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="commandFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold text-white mb-3">
+       Activity B &middot; Match a Symptom to Its Meaning
+      </h3>
+      <p class="practice-note mb-3">
+       Choose the most likely interpretation for each observation.
+      </p>
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+       <label>
+        Repeated CRC errors
+        <select class="practice-field block w-full mt-2" data-match="physical">
+         <option value="">
+          Choose
+         </option>
+         <option value="physical">
+          Physical link / frame integrity issue
+         </option>
+         <option value="normal">
+          Normal full-duplex operation
+         </option>
+         <option value="serial">
+          Serial DCE clocking
+         </option>
+        </select>
+       </label>
+       <label>
+        Late collisions on Ethernet
+        <select class="practice-field block w-full mt-2" data-match="duplex">
+         <option value="">
+          Choose
+         </option>
+         <option value="duplex">
+          Possible duplex mismatch
+         </option>
+         <option value="normal">
+          Normal full-duplex operation
+         </option>
+         <option value="poe">
+          PoE negotiation
+         </option>
+        </select>
+       </label>
+       <label>
+        Runts counter increasing
+        <select class="practice-field block w-full mt-2" data-match="runt">
+         <option value="">
+          Choose
+         </option>
+         <option value="runt">
+          Frames shorter than 64 bytes
+         </option>
+         <option value="jumbo">
+          Frames around 9000 bytes
+         </option>
+         <option value="normal">
+          No problem possible
+         </option>
+        </select>
+       </label>
+       <label>
+        Output drops increasing
+        <select class="practice-field block w-full mt-2" data-match="drops">
+         <option value="">
+          Choose
+         </option>
+         <option value="drops">
+          Possible congestion / output queue issue
+         </option>
+         <option value="poe">
+          PoE power supply
+         </option>
+         <option value="serial">
+          Serial connector gender
+         </option>
+        </select>
+       </label>
+      </div>
+      <button class="practice-action mt-4" id="checkMatches">
+       Check Interpretations
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="matchFeedback">
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="lab">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-flask text-mapua-redBright mr-3">
+     </i>
+     Guided Packet Tracer Laboratories
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     All steps are visible. These guides support the official activities; the graded requirements remain in the supplied Packet Tracer files.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-8">
+     <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+      <h3 class="font-extrabold text-white">
+       Official Packet Tracer Lab Files
+      </h3>
+      <p class="text-xs text-slate-300 mt-2">
+       To complete the laboratory activities, download the assigned Packet Tracer files and perform the lab using your locally installed version of Cisco Packet Tracer.
+      </p>
+      <div class="flex flex-wrap gap-2 mt-4">
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQCzQh_ZyWHLRqH8JKb48wEXAa0L4TBZ58nGi1rTlNmJVbo?e=jiVcvb" rel="noopener noreferrer" target="_blank">
+        Download Lab 5.1
+       </a>
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQAwFJWaxUikRoBnvWrhll60AfZa9Hxv2lz_jenpg9sSm44?e=bkWaoK" rel="noopener noreferrer" target="_blank">
+        Download Lab 5.2
+       </a>
+      </div>
+     </div>
+     <div class="space-y-8" id="labLists">
+     </div>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4">
+      <p class="text-sm font-bold">
+       Guided progress:
+       <span class="text-mapua-redBright" id="labProgress">
+        0 / 0
+       </span>
+      </p>
+      <div class="h-2 bg-mapua-panel rounded-full mt-3 overflow-hidden">
+       <div class="h-full bg-mapua-red" id="progressBar" style="width:0%">
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="challenge">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <h2 class="text-2xl font-extrabold mb-3">
+      Chapter Review &middot; Lab 5.2
+     </h2>
+     <p class="text-sm text-slate-300 leading-7">
+      Use the official Lab 5.2 Packet Tracer assessment to troubleshoot interface and cable types on Cisco routers. The textbook provides the overview and topology figure; the exact graded tasks are supplied with the companion activity.
+     </p>
+     <div class="bg-mapua-panel rounded-xl p-5 mt-5">
+      <h3 class="font-bold mb-3">
+       Submission Readiness
+      </h3>
+      <div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables">
+      </div>
+      <p aria-live="polite" class="text-mapua-redBright text-xs mt-4" id="ready">
+      </p>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    &copy; Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+  <script>
+   const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+$('#menuBtn').addEventListener('click', () => {
+    const links = $('#links');     ['hidden', 'flex', 'flex-col', 'absolute', 'top-20', 'right-3', 'bg-mapua-card', 'p-5'].forEach(name => links.classList.toggle(name));
+});
+$$('[data-tab]').forEach(button => button.addEventListener('click', () => {
+    $$('[data-tab]').forEach(item => item.classList.remove('active'));     $$('.tab-content').forEach(item => item.classList.remove('active'));     button.classList.add('active');     document.getElementById(button.dataset.tab).classList.add('active');
+}));
+const inspector = {
+    utp: ['Copper UTP', 'Twisted copper pairs carry electrical Ethernet signals. Cat 5e supports 1 Gbps; Cat 6 supports 10 Gbps in the textbook discussion.'],     mm: ['Multimode fiber', 'Carries multiple optical modes in a fiber core. Observe supported transceivers and distances.'],     sm: ['Single-mode fiber', 'Uses a smaller core and laser-based signaling along one mode; often used for longer links.'],     crc: ['CRC errors', 'Failed frame checks can indicate interference, bad cabling, or a network interface issue. Inspect show interface counters.'],     duplex: ['Duplex mismatch', 'A full-/half-duplex mismatch can cause intermittent traffic loss, late collisions, and poor performance.'],     poe: ['Power over Ethernet', 'PoE carries electrical power with data to compatible phones, access points, and cameras.'],     dce: ['Serial DCE', 'show controllers can identify DCE cable attachment and clock rate on supported serial interfaces.'],     mdi: ['Auto MDI-X', 'Automatically adapts transmit/receive pairs, reducing crossover versus straight-through cable concerns.']
+};
+$$('[data-inspect]').forEach(button => button.addEventListener('click', () => {
+    const [title, explanation] = inspector[button.dataset.inspect];     $('#inspectTitle').textContent = title;     $('#inspectText').textContent = explanation;
+}));
+const questions = [
+    ['Which medium is used by 40GBASE-LR4?', ['Copper', 'Fiber', 'Radio waves', 'Coaxial'], 1, 'The textbook lists 40GBASE-LR4 as a fiber standard.'],
+    ['What speed does 1000BASE-T provide?', ['10 Mbps', '100 Mbps', '1000 Mbps', '10 Gbps'], 2, '1000BASE-T provides 1 Gbps over copper.'],
+    ['Which feature reduces the need to choose crossover versus straight-through cables?', ['PoE', 'Auto MDI-X', 'CSMA/CD', 'FCS'], 1, 'Auto MDI-X adapts the port to the cable pinout.'],
+    ['Which mode allows simultaneous transmission and reception?', ['Half-duplex', 'Full-duplex', 'Listen-only', 'Shared-media'], 1, 'Full-duplex permits sending and receiving at the same time.'],
+    ['Which command displays interface errors for Gi0/1?', ['show interface gi0/1', 'show flash', 'show version', 'ping gi0/1'], 0, 'show interface displays errors, speed, duplex, and status.'],
+    ['What is a runt Ethernet frame?', ['A frame under 64 bytes', 'A 9000-byte frame', 'A VLAN', 'A fiber cable'], 0, 'The chapter defines runts as frames smaller than 64 bytes.'],
+    ['Which command helps identify a serial DCE cable?', ['show startup-config', 'show controllers', 'show clock', 'show vlan'], 1, 'show controllers can show the serial cable type.'],
+    ['What is a common sign of duplex mismatch?', ['Late collisions and poor performance', 'Automatic DNS resolution', 'Successful PoE power-up', 'Higher fiber wavelength'], 0, 'Duplex mismatch can cause late collisions and intermittent errors.'] ];
+let answers = {
+};
+function renderQuiz() {
+    answers = {
+    };
+    $('#questions').innerHTML = questions.map((q, i) => `
+        <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+            <p class="font-bold text-sm mb-3">${i + 1}. ${q[0]}</p>
+            <div class="grid sm:grid-cols-2 gap-2">
+                ${q[1].map((option, j) => `<button type="button" class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright" data-question="${i}" data-answer="${j}">${
+        String.fromCharCode(65 + j)
+    }. ${
+        option
+    }
+    </button>`).join('')}
+            </div>
+            <p class="text-xs mt-3 hidden" id="feedback${i}" aria-live="polite"></p>
+        </div>`).join('');
+    $('#score').textContent = `Score: 0 / ${questions.length}`;
+    $$('[data-question]').forEach(button => button.addEventListener('click', () => {
+        const i = Number(button.dataset.question);         const j = Number(button.dataset.answer);         if (answers[i] !== undefined) return;         answers[i] = j;         $$(`[data-question="${i}"]`).forEach(item => {
+            item.disabled = true;             item.classList.add(Number(item.dataset.answer) === questions[i][2] ? 'border-emerald-500' : 'opacity-60');
+        });         const correct = j === questions[i][2];         button.classList.add(correct ? 'bg-emerald-900/40' : 'bg-rose-900/40');         const feedback = document.getElementById(`feedback${i}`);         feedback.classList.remove('hidden');         feedback.classList.add(correct ? 'text-emerald-300' : 'text-rose-300');         feedback.textContent = `${correct ? 'Correct.' : 'Not quite.'} ${questions[i][3]}`;         const score = Object.entries(answers).filter(([index, answer]) => questions[Number(index)][2] === answer).length;         $('#score').textContent = `Score: ${score} / ${questions.length}`;
+    }));
+}
+renderQuiz();
+$('#reset').addEventListener('click', renderQuiz);
+$('#checkCommands').addEventListener('click', () => {
+    const normalize = value => value.trim().toLowerCase().replace(/\s+/g, ' ');     const expected = ['show interface gi0/1', 'show controllers', 'no shutdown'];     const count = expected.filter((answer, i) => normalize(document.getElementById(`fill${i + 1}`).value) === answer).length;     $('#commandFeedback').textContent = `${count} / 3 correct. ${count === 3 ? 'Ready to apply these commands.' : 'Review show interface, show controllers, and no shutdown.'}`;
+});
+$('#checkMatches').addEventListener('click', () => {
+    const inputs = $$('[data-match]');     const count = inputs.filter(input => input.value === input.dataset.match).length;     $('#matchFeedback').textContent = `${count} / ${inputs.length} correct. ${count === inputs.length ? 'All interpretations correct.' : 'Review the interface troubleshooting notes and retry.'}`;
+});
+const labs = [     {
+    title: 'Lab 5.1: Working with Interfaces and Cable Types',         note: 'Official companion activity on router interfaces and cable connections (textbook page 56, Figure 5.1).',         steps: [             ['Open the supplied activity', 'Download and open the official Lab 5.1 .pka file in Packet Tracer. Read its embedded instructions and inspect the provided router topology.'],             ['Identify physical connections', 'Inspect the interfaces and cable types used between the routers. Match each connection to the requested cable type and port.'],             ['Inspect interface status', 'Use the device CLI and show interface commands on the ports specified in the assessment. Note whether the interface and line protocol are up or down.'],             ['Check serial details where applicable', 'Use show controllers on serial interfaces provided in the activity to identify DCE/DTE cable details and clocking.'],             ['Apply the required changes', 'Follow the exact port, cable, and configuration requirements shown in the official Packet Tracer assessment; avoid changing unrelated interfaces.'],             ['Verify and save', 'Confirm the expected link state and assessment results, then save the completed Packet Tracer file.']         ]
+},     {
+    title: 'Lab 5.2: Chapter Review',         note: 'Official troubleshooting assessment for interface and cable types (textbook page 57, Figure 5.2).',         steps: [             ['Open the chapter review file', 'Download and open the official Lab 5.2 .pka activity. Read the specific faults and goals in the embedded instructions.'],             ['Establish the symptoms', 'Inspect the provided router connections. Identify affected interfaces and record status, speed, and duplex where available.'],             ['Examine counters', 'Run show interface on the relevant ports and inspect CRC, collisions, late collisions, runts, giants, and output drops as supported by Packet Tracer.'],             ['Investigate the root cause', 'Compare the observed cabling and interface settings with the requirements in the official assessment. Consider physical connections and speed/duplex mismatches.'],             ['Correct only identified issues', 'Perform the changes required by the assessment, then repeat verification commands to confirm the expected behavior.'],             ['Check completion', 'Review the activity assessment, document the troubleshooting evidence, and save your final file.']         ]
+} ];
+const total = labs.reduce((sum, lab) => sum + lab.steps.length, 0);
+labs.forEach((lab, labIndex) => {
+    const section = document.createElement('div');     section.className = 'space-y-3';     section.innerHTML = `<div><h3 class="text-xl font-extrabold text-white">${lab.title}</h3><p class="text-xs text-slate-400 mt-2">${lab.note}</p></div>`;     lab.steps.forEach((step, stepIndex) => {
+        const label = document.createElement('label');         label.className = 'step flex items-start gap-4 cursor-pointer';         label.innerHTML = `<input type="checkbox" class="mt-1 accent-red-600 w-5 h-5 shrink-0" data-labstep="${labIndex}-${stepIndex}"><span><strong class="text-white text-sm">Step ${stepIndex + 1}: ${step[0]}</strong><span class="block text-slate-300 text-xs leading-6 mt-2">${step[1]}</span></span>`;         section.appendChild(label);
+    });     $('#labLists').appendChild(section);
+});
+$$('[data-labstep]').forEach(input => input.addEventListener('change', () => {
+    input.closest('.step').classList.toggle('done', input.checked);     const completed = $$('[data-labstep]:checked').length;     $('#labProgress').textContent = `${completed} / ${total}`;     $('#progressBar').style.width = `${100 * completed / total}%`;
+}));
+$('#labProgress').textContent = `0 / ${total}`;
+const deliverables = ['Lab 5.1 assessment completed', 'Lab 5.2 assessment completed', 'Interface/cable observations recorded', 'Final Packet Tracer files saved'];
+$('#deliverables').innerHTML = deliverables.map((item, i) => `<label class="flex gap-3 items-center bg-mapua-card p-3 rounded-lg"><input type="checkbox" class="accent-red-600" data-deliverable="${i}">${item}</label>`).join('');
+$$('[data-deliverable]').forEach(input => input.addEventListener('change', () => {
+    const completed = $$('[data-deliverable]:checked').length;     $('#ready').textContent = `${completed} / ${deliverables.length} deliverables checked. ${completed === deliverables.length ? 'Ready for instructor review.' : 'Complete the remaining deliverables.'}`;
+}));
+  </script>
+ </body>
+</html>
