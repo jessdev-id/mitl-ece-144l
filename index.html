@@ -1,75 +1,644 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1">
-  <title>ECE144L | Mapúa MCL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080D1A">
+  <title>ECE144L | Laboratory Learning Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] }, colors: { mapua: { red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C' } } } } }</script>
   <style>
+
+    :root {
+      color-scheme: dark;
+      --bg: #080e19;
+      --panel: #111d30;
+      --panel-2: #17263c;
+      --line: #2c3d56;
+      --text: #f6f8fd;
+      --muted: #aab9cd;
+      --red: #e31b23;
+      --green: #75d8ad;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: Arial, sans-serif;
-      background: #080D1A;
-      color: white;
       margin: 0;
-      padding: 40px 20px;
-      text-align: center;
+      background:
+        radial-gradient(ellipse 70% 440px at 12% -4%, rgba(227,27,35,.15), transparent 75%),
+        radial-gradient(ellipse 65% 520px at 94% 14%, rgba(56,109,166,.17), transparent 75%),
+        var(--bg);
+      color: var(--text);
+      font: 15px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    h1 { color: #FF2E36; }
-    .container {
-      max-width: 850px;
-      margin: auto;
+
+    .container { width: min(1140px, calc(100% - 40px)); margin-inline: auto; }
+    .topbar {
+      background: rgba(9,16,28,.88);
+      border-bottom: 1px solid #28364c;
+      backdrop-filter: blur(12px);
     }
-    .card {
-      display: block;
-      background: #162540;
-      color: white;
-      padding: 24px;
-      margin: 16px 0;
-      border: 1px solid #23385C;
+    .topbar-inner {
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand { font-size: .95rem; font-weight: 850; letter-spacing: .07em; }
+    .brand span:first-child { color: #fff; }
+    .brand span { color: var(--red); }
+    .topbar small { color: var(--muted); font-size: .75rem; }
+
+    .hero { padding: 37px 0 30px; }
+    .hero-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, .85fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+    /* Course title is unboxed, matching the laboratory page's open header. */
+    .hero-copy {
+      min-width: 0;
+      padding: 18px 0;
+      background: none;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .eyebrow {
+      color: #c3d4e8;
+      font-size: .71rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(1.85rem, 3.5vw, 3.05rem);
+      line-height: 1.13;
+      letter-spacing: -.045em;
+      margin: 12px 0 14px;
+      max-width: 620px;
+    }
+    h1 span { color: #fff; }
+    .hero-description { color: #b8c8da; font-size: .93rem; max-width: 580px; margin: 0; }
+    .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+    .pill {
+      padding: 5px 11px;
+      font-size: .73rem;
+      font-weight: 650;
+      border: 1px solid #40506a;
+      border-radius: 999px;
+      color: #d9e6f7;
+      background: rgba(15,28,47,.7);
+    }
+
+    .instructor {
+      border-radius: 19px;
+      border: 1px solid #32475f;
+      padding: 27px 28px;
+      background: linear-gradient(150deg, #1c304a, #111d30);
+      position: relative;
+      overflow: hidden;
+    }
+    .instructor::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 95px;
+      height: 3px;
+      background: var(--red);
+    }
+    .instructor-label {
+      color: #b7cbe4;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+    .instructor h2 { font-size: 1.22rem; margin: 12px 0 17px; line-height: 1.35; }
+    .instructor-divider { height: 1px; background: #3a4d66; margin-bottom: 15px; }
+    .instructor p { margin: 7px 0; color: #c0cee0; font-size: .83rem; }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 6px 0 18px;
+    }
+    .section-heading h2 { margin: 0; font-size: 1.48rem; letter-spacing: -.025em; }
+    .section-heading p { color: var(--muted); margin: 4px 0 0; font-size: .87rem; }
+    .search {
+      width: min(300px, 100%);
+      border: 1px solid #40536f;
+      border-radius: 11px;
+      background: #16243a;
+      color: #fff;
+      padding: 11px 14px;
+      font: inherit;
+    }
+    .search::placeholder { color: #a1b1c6; }
+    .search:focus-visible, .lab-card:focus-visible {
+      outline: 2px solid #f04c52;
+      outline-offset: 3px;
+    }
+
+    .part {
+      margin: 0 0 16px;
+      border: 1px solid #293b53;
+      border-radius: 17px;
+      background: linear-gradient(135deg, #122036, #101a2c);
+      padding: 20px 22px 22px;
+    }
+    .part-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding-bottom: 14px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #2d4058;
+      background: none;
+      box-shadow: none;
+    }
+    /* Only the learning-section label receives the Mapúa Red highlight. */
+    .part-label {
+      display: inline-block;
+      width: fit-content;
+      padding: 4px 9px;
+      border-radius: 5px;
+      background: #E31B23;
+      color: #FFFFFF;
+      font-size: .69rem;
+      font-weight: 850;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .part-heading h3 {
+      color: #F6F8FD;
+      margin: 8px 0 2px;
+      font-size: 1.15rem;
+      letter-spacing: -.015em;
+    }
+    .part-heading p { color: var(--muted); margin: 0; font-size: .78rem; }
+    .part-count {
+      color: #c4d2e5;
+      background: #1e3149;
+      border: 1px solid #354b65;
+      border-radius: 999px;
+      padding: 5px 11px;
+      white-space: nowrap;
+      font-size: .73rem;
+    }
+    .lab-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 11px;
+    }
+    .lab-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 155px;
+      padding: 15px 16px;
+      border: 1px solid #354960;
       border-radius: 12px;
+      background: linear-gradient(155deg, #1b2e48, #16243a);
+      color: var(--text);
       text-decoration: none;
-      text-align: left;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
     }
-    .card:hover {
-      border-color: #E31B23;
-      background: #1B3461;
+    a.lab-card { border-top: 2px solid var(--red); }
+    a.lab-card:hover {
+      transform: translateY(-3px);
+      border-color: #db565b;
+      box-shadow: 0 12px 28px rgba(0,0,0,.24);
     }
-    .card h2 { margin-top: 0; }
-    .card p { color: #CBD5E1; }
+    .lab-card.locked {
+      background: #142136;
+      border-color: #2a3c52;
+    }
+    .lab-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 11px; }
+    .lab-number {
+      color: #b8d0ed;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .035em;
+      text-transform: uppercase;
+    }
+    .status {
+      font-size: .67rem;
+      color: #a8b7c9;
+      background: #223047;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .status.ready { color: #9be9c7; background: #173b36; }
+    .lab-card h4 { font-size: .95rem; line-height: 1.35; margin: 0 0 6px; }
+    .lab-card p { font-size: .76rem; line-height: 1.45; color: #adbed2; margin: 0; }
+    .lab-action {
+      margin-top: auto;
+      padding-top: 15px;
+      color: #d6e8fb;
+      font-size: .75rem;
+      font-weight: 750;
+    }
+    a.lab-card .lab-action { color: #ff7a7e; }
+    .locked .lab-action { color: #8295ac; }
+
+    #no-results { padding: 22px; color: var(--muted); }
+    [hidden] { display: none !important; }
     footer {
-      margin-top: 50px;
-      color: #94A3B8;
-      font-size: 13px;
+      border-top: 1px solid #2a3b51;
+      margin-top: 42px;
+      padding: 25px 0 32px;
+      background: #0a1220;
+      color: #9aaac0;
+      font-size: .76rem;
     }
+    .footer-content { text-align: center; max-width: 900px; }
+    .footer-content p { margin: 4px 0; }
+
+    @media (max-width: 950px) {
+      .lab-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 750px) {
+      .hero-main { grid-template-columns: 1fr; }
+      .hero { padding-top: 20px; }
+      .hero-copy { padding: 12px 0; }
+      .instructor { padding: 23px; }
+      .section-heading { flex-direction: column; align-items: stretch; }
+      .search { width: 100%; }
+      .topbar small { display: none; }
+    }
+    @media (max-width: 520px) {
+      .container { width: min(100% - 26px, 1140px); }
+      .lab-grid { grid-template-columns: 1fr; }
+      .part { padding: 16px; }
+      .part-heading { align-items: flex-start; }
+      .part-count { display: none; }
+      .lab-card { min-height: 133px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+
+
+    /* Match lab1.html typography, instructor panel and hero exactly. */
+    html, body { font-family: "Montserrat", sans-serif !important; }
+    button, input, select, textarea { font-family: inherit; }
+    nav, header { font-family: "Montserrat", sans-serif !important; }
+    .glass-panel-navy { background: rgba(22,37,64,.95); border: 1px solid rgba(35,56,92,.6); }
+    header h1 { font-size: clamp(1.875rem, 4.2vw, 3rem); line-height: 1.25; letter-spacing: normal; margin: 0 0 1.25rem; max-width: none; }
+    header h1 span { color: #e2e8f0; }
+    header h2 { margin: 0; font-size: .75rem; }
+    header p { margin: 0; }
+    header aside p { margin: 0; }
+    header aside hr { margin: 0; }
+    footer { margin-top: 42px; font-size: .75rem; background: #0F1A2E; border-top: 1px solid #23385C; padding: 2rem 1rem; color: #94a3b8; }
+    footer p { margin: 0; }
+    footer p.mt-2 { margin-top: .5rem; }
+    footer p.text-mapua-redBright { color: #FF2E36; }
+    .part-label { display: inline-block; background: #E31B23; color: #fff; padding: 4px 9px; border-radius: 5px; letter-spacing: .08em; }
   </style>
 </head>
-<body>
-  <main class="container">
-    <h1>MAPÚA MCL</h1>
-    <h2>ECE144L: Data Communications Laboratory</h2>
-    <p>Interactive Laboratory Learning Portal</p>
-    <p>Term 2 | Academic Year 2026–2027</p>
+<body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+      <div class="flex items-center gap-3 min-w-0 shrink-0">
+        <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+          <i class="fa-solid fa-network-wired text-xl"></i>
+        </div>
+        <div>
+          <div class="font-black tracking-wider flex items-center gap-2 leading-tight">MAPÚA MCL
+            <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">MITL</span>
+          </div>
+          <div class="text-xs text-slate-300 font-semibold">ECE144L: Data Communications Laboratory</div>
+        </div>
+      </div>
+      <a class="text-xs font-bold px-3 py-2 rounded-lg hover:bg-mapua-panel transition" href="#catalog-title">Laboratory Activities</a>
+    </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+      <div class="lg:col-span-2 min-w-0">
+        <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">INTERACTIVE LABORATORY LEARNING PORTAL</div>
+        <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5" id="page-title">Data Communications<br/><span class="text-slate-200">Laboratory</span></h1>
+        <p class="text-slate-300 leading-relaxed max-w-2xl">Build networking knowledge through guided lessons, interactive checks, and hands-on Cisco Packet Tracer laboratories.</p>
+      </div>
+      <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+        <h2 class="text-mapua-redBright uppercase font-black tracking-wider">Course Instructor</h2>
+        <p class="text-white font-extrabold text-base">Engr. Jess David A. Doria</p>
+        <hr class="border-mapua-border"/>
+        <p><i class="fa-solid fa-calendar-days text-mapua-redBright mr-2"></i>Term 2, Academic Year 2026–2027</p>
+        <p><i class="fa-solid fa-book text-mapua-redBright mr-2"></i>BS Electronics Engineering</p>
+        <p><i class="fa-solid fa-building-columns text-mapua-redBright mr-2"></i>Mapúa Institute of Technology at Laguna</p>
+      </aside>
+    </div>
+  </header>
+    <section aria-labelledby="catalog-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="catalog-title">Laboratory activities</h2>
+          <p>Browse by book part or search for a chapter or topic.</p>
+        </div>
+        <input class="search" id="search" type="search"
+               placeholder="Search activities..." aria-label="Search activities">
+      </div>
 
-    <a class="card" href="lab0.html">
-      <h2>Laboratory Activity 0</h2>
-      <p>Getting Started with Cisco Packet Tracer</p>
-    </a>
-
-    <a class="card" href="lab1.html">
-      <h2>Laboratory Activity 1</h2>
-      <p>Introduction to TCP/IP Networking</p>
-    </a>
-
-    <a class="card" href="lab2.html">
-      <h2>Laboratory Activity 2</h2>
-      <p>Fundamentals of Ethernet LANs</p>
-    </a>
-
-    <footer>
-      Engr. Jess David A. Doria<br>
-      Mapúa Institute of Technology at Laguna
-    </footer>
+      <div id="catalog"></div>
+      <p id="no-results" hidden>No matching chapters or activities found.</p>
+    </section>
   </main>
+
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    © Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+
+  <script>
+    "use strict";
+
+    // Chapter titles and book parts follow the uploaded Cisco Press textbook.
+    // Empty href values indicate pages not yet published.
+    const courseParts = [
+  {
+    "name": "Part I · Packet Tracer Fundamentals",
+    "subtitle": "Chapters 1–3 · Installation, simulation, and customization",
+    "chapters": [
+      {
+        "number": "1",
+        "title": "Introducing Packet Tracer",
+        "description": "Chapter 1 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": "lab1.html"
+      },
+      {
+        "number": "2",
+        "title": "Building Your First Simulation",
+        "description": "Chapter 2 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": "lab2.html"
+      },
+      {
+        "number": "3",
+        "title": "Customizing Packet Tracer",
+        "description": "Chapter 3 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      }
+    ]
+  },
+  {
+    "name": "Part II · Network Fundamentals",
+    "subtitle": "Chapters 4–9 · IOS, cabling, addressing, wireless, and switching",
+    "chapters": [
+      {
+        "number": "4",
+        "title": "Cisco IOS Basics",
+        "description": "Chapter 4 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "5",
+        "title": "Physical Interfaces and Cabling Types",
+        "description": "Chapter 5 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "6",
+        "title": "Configure and Verify IPv4 Addressing and Subnetting",
+        "description": "Chapter 6 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "7",
+        "title": "Configure IPv6",
+        "description": "Chapter 7 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "8",
+        "title": "Describe Wireless Principles",
+        "description": "Chapter 8 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "9",
+        "title": "Configure Switching Basics",
+        "description": "Chapter 9 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      }
+    ]
+  },
+  {
+    "name": "Part III · Network Access",
+    "subtitle": "Chapters 10–13 · VLANs, discovery, spanning tree, and wireless",
+    "chapters": [
+      {
+        "number": "10",
+        "title": "Configure and Verify VLANs and Interswitch Connectivity",
+        "description": "Chapter 10 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "11",
+        "title": "Configure and Verify Layer 2 Discovery Protocols",
+        "description": "Chapter 11 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "12",
+        "title": "Configure Rapid PVST+ Spanning Tree Protocol",
+        "description": "Chapter 12 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "13",
+        "title": "Compare Cisco Wireless Architectures and AP Modes",
+        "description": "Chapter 13 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      }
+    ]
+  },
+  {
+    "name": "Part IV · IP Connectivity",
+    "subtitle": "Chapters 14–16 · Routing tables, static routing, and OSPF",
+    "chapters": [
+      {
+        "number": "14",
+        "title": "Interpret the Components of a Routing Table",
+        "description": "Chapter 14 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "15",
+        "title": "Configure and Verify IPv4 and IPv6 Static Routing",
+        "description": "Chapter 15 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "16",
+        "title": "Configure and Verify Single Area OSPFv2",
+        "description": "Chapter 16 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      }
+    ]
+  },
+  {
+    "name": "Part V · IP Services",
+    "subtitle": "Chapters 17–20 · NAT, NTP, DNS, DHCP, and services",
+    "chapters": [
+      {
+        "number": "17",
+        "title": "Configure and Verify Inside Source NAT",
+        "description": "Chapter 17 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "18",
+        "title": "Configure and Verify NTP",
+        "description": "Chapter 18 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "19",
+        "title": "Configure DNS and DHCP",
+        "description": "Chapter 19 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "20",
+        "title": "Configure Other Networking Services",
+        "description": "Chapter 20 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      }
+    ]
+  },
+  {
+    "name": "Part VI · Security Fundamentals",
+    "subtitle": "Chapters 21–24 · Access control and network security",
+    "chapters": [
+      {
+        "number": "21",
+        "title": "Configure Device Access Control",
+        "description": "Chapter 21 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "22",
+        "title": "Configure and Verify Access Control Lists",
+        "description": "Chapter 22 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "23",
+        "title": "Configure Layer 2 Security Features",
+        "description": "Chapter 23 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      },
+      {
+        "number": "24",
+        "title": "Configure Wireless Security Protocols",
+        "description": "Chapter 24 · Interactive lesson and guided Packet Tracer laboratory",
+        "href": ""
+      }
+    ]
+  }
+];
+
+    const catalog = document.getElementById("catalog");
+    const search = document.getElementById("search");
+    const noResults = document.getElementById("no-results");
+
+    function createElement(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined) element.textContent = text;
+      return element;
+    }
+
+    function renderCatalog(query = "") {
+      catalog.replaceChildren();
+      const needle = query.trim().toLowerCase();
+      let visibleCount = 0;
+
+      courseParts.forEach((part, index) => {
+        const partMatches = `${part.name} ${part.subtitle}`.toLowerCase().includes(needle);
+        const chapters = part.chapters.filter(chapter =>
+          partMatches ||
+          `${chapter.number} ${chapter.title} ${chapter.description}`
+            .toLowerCase()
+            .includes(needle)
+        );
+
+        if (chapters.length === 0) return;
+        visibleCount += chapters.length;
+
+        const section = createElement("section", "part");
+        const heading = createElement("div", "part-heading");
+        const headingText = createElement("div");
+        headingText.append(
+          createElement("div", "part-label", `Learning Section ${index + 1}`),
+          createElement("h3", "", part.name),
+          createElement("p", "", part.subtitle)
+        );
+        heading.append(
+          headingText,
+          createElement("span", "part-count", `${chapters.length} ${chapters.length === 1 ? "activity" : "activities"}`)
+        );
+
+        const grid = createElement("div", "lab-grid");
+
+        chapters.forEach(chapter => {
+          const available = Boolean(chapter.href);
+          const card = createElement(available ? "a" : "article",
+            `lab-card${available ? "" : " locked"}`);
+
+          if (available) card.href = chapter.href;
+
+          const top = createElement("div", "lab-top");
+          top.append(
+            createElement("span", "lab-number", /^[AB]$/.test(chapter.number) ? `Appendix ${chapter.number}` : `Laboratory Activity ${chapter.number}`),
+            createElement("span", `status${available ? " ready" : ""}`,
+              available ? "Available" : "Coming soon")
+          );
+
+          card.append(
+            top,
+            createElement("h4", "", chapter.title),
+            createElement("p", "", chapter.description),
+            createElement("div", "lab-action",
+              available ? "Open laboratory →" : "Content in preparation")
+          );
+
+          grid.append(card);
+        });
+
+        section.append(heading, grid);
+        catalog.append(section);
+      });
+
+      noResults.hidden = visibleCount !== 0;
+    }
+
+    search.addEventListener("input", () => renderCatalog(search.value));
+    renderCatalog();
+  </script>
 </body>
 </html>
