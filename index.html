@@ -225,6 +225,33 @@
       background: #142136;
       border-color: #2a3c52;
     }
+
+    /* Assessment assessments are visually distinct from chapter labs. */
+    .lab-card.capstone {
+      border: 1px solid rgba(227, 27, 35, .65);
+      background: linear-gradient(145deg, #342037, #1b2943 80%);
+    }
+
+    .lab-card.capstone.available {
+      border-top: 3px solid #E31B23;
+    }
+
+    .lab-card.capstone h4 {
+      color: #fff;
+    }
+
+    .lab-card.capstone .lab-number {
+      color: #ffb9bc;
+    }
+
+    .lab-card.capstone .lab-action {
+      color: #fff;
+    }
+
+    a.lab-card.capstone:hover {
+      border-color: #ff636a;
+      background: linear-gradient(145deg, #45233a, #223856);
+    }
     .lab-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 11px; }
     .lab-number {
       color: #b8d0ed;
@@ -600,7 +627,8 @@
             .includes(needle)
         );
 
-        if (chapters.length === 0) return;
+        const capstoneSearch = "culminating capstone integrated assessment".includes(needle);
+        if (chapters.length === 0 && !capstoneSearch) return;
         visibleCount += chapters.length;
 
         const section = createElement("section", "part");
@@ -642,6 +670,65 @@
 
           grid.append(card);
         });
+
+        // One culminating activity per textbook part, after its chapter labs.
+        // Part I uses the instructor's supplied part1.html.
+        // Set the other href values when those assessments are published.
+        const culminatingLinks = [
+          "part1.html",
+          "part2.html",
+          "part3.html",
+          "part4.html",
+          "part5.html",
+          "part6.html"
+        ];
+
+        const capstoneTitle = "Learning Task";
+        const capstoneDescription =
+          `Integrated Packet Tracer assessment covering all ${part.chapters.length} chapters in this part.`;
+        const capstoneHref = culminatingLinks[index] || "";
+        const capstoneAvailable = Boolean(capstoneHref);
+        const capstoneMatches =
+          partMatches ||
+          capstoneSearch ||
+          `${capstoneTitle} ${capstoneDescription} ${part.name} capstone assessment`
+            .toLowerCase()
+            .includes(needle);
+
+        if (capstoneMatches) {
+          const capstone = createElement(
+            capstoneAvailable ? "a" : "article",
+            `lab-card capstone${capstoneAvailable ? " available" : " locked"}`
+          );
+
+          if (capstoneAvailable) {
+            capstone.href = capstoneHref;
+          }
+
+          const capstoneTop = createElement("div", "lab-top");
+          capstoneTop.append(
+            createElement("span", "lab-number", `Part ${index + 1} · Assessment`),
+            createElement(
+              "span",
+              `status${capstoneAvailable ? " ready" : ""}`,
+              capstoneAvailable ? "Available" : "Coming soon"
+            )
+          );
+
+          capstone.append(
+            capstoneTop,
+            createElement("h4", "", capstoneTitle),
+            createElement("p", "", capstoneDescription),
+            createElement(
+              "div",
+              "lab-action",
+              capstoneAvailable ? "Open Assessment activity →" : "Assessment in preparation"
+            )
+          );
+
+          grid.append(capstone);
+          visibleCount++;
+        }
 
         section.append(heading, grid);
         catalog.append(section);
