@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECE144L | Part II Culminating Activity</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
+          colors: { mapua: { red: '#E31B23', redBright: '#FF2E36', navyDark: '#0A1428', card: '#0F1A2E', panel: '#162540', border: '#23385C', darkBg: '#080D1A' } }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Montserrat', sans-serif; background:#080D1A; color:#f1f5f9; isolation:isolate; }
+    #interactive-grid { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:.9; }
+    body > nav, body > header, body > main, body > footer { position:relative; z-index:1; }
+    body > header { background:linear-gradient(to bottom,rgba(10,20,40,.91),rgba(15,26,46,.88),rgba(8,13,26,.78)) !important; }
+    .glass-panel-navy { background:rgba(22,37,64,.95); border:1px solid rgba(35,56,92,.6); }
+    header h1 { font-size:clamp(1.875rem,4.2vw,3rem); line-height:1.25; }
+    .panel { background:rgba(15,26,46,.95); border:1px solid #2b405f; border-radius:18px; padding:clamp(18px,3vw,28px); }
+    .section-tag { display:inline-block; background:#E31B23; color:#fff; font-size:.69rem; font-weight:900; letter-spacing:.09em; padding:5px 10px; border-radius:5px; text-transform:uppercase; }
+    .muted { color:#b2c2d6; }
+    .task { background:#162540; border:1px solid #354968; border-radius:13px; padding:16px; }
+    .task label { display:flex; align-items:flex-start; gap:12px; cursor:pointer; }
+    input[type=checkbox], input[type=radio] { accent-color:#E31B23; width:17px; height:17px; flex-shrink:0; margin-top:3px; }
+    textarea, input[type=text] { background:#0b1729; color:#fff; border:1px solid #435773; border-radius:9px; padding:11px 12px; width:100%; }
+    textarea:focus, input:focus { outline:2px solid #E31B23; outline-offset:2px; }
+    .btn { background:#E31B23; color:#fff; font-weight:800; border-radius:10px; padding:11px 17px; cursor:pointer; }
+    .btn.secondary { background:#1e3452; border:1px solid #4a6080; }
+    .btn:hover { filter:brightness(1.12); }
+    .mono { font-family:'Fira Code',monospace; }
+    .quiz-question { min-width:0; padding:16px; }
+    .quiz-question legend { display:block; float:left; width:100%; padding:0; margin:0 0 12px; line-height:1.6; }
+    .quiz-question legend + .quiz-option { clear:both; }
+    .quiz-option { display:flex; align-items:flex-start; gap:10px; width:100%; min-width:0; padding:10px 12px; border:1px solid #374c6b; border-radius:9px; cursor:pointer; margin-top:8px; overflow-wrap:anywhere; }
+    .quiz-option:has(input:checked) { border-color:#E31B23; background:#321d2d; }
+    .progress-track { height:9px; background:#263954; border-radius:20px; overflow:hidden; }
+    .progress-fill { height:100%; width:0%; background:#E31B23; transition:width .2s; }
+    footer { background:#0F1A2E; border-top:1px solid #23385C; }
+    @media print { nav, #interactive-grid, .no-print, header aside { display:none!important; } body { background:white;color:black; } .panel,.task { background:white;color:black;border:1px solid #999; } .muted { color:#444; } textarea,input { color:black; } }
+    @media (prefers-reduced-motion:reduce) { #interactive-grid { opacity:.5; } }
+
+    .quiz-question { min-width:0; }
+    .quiz-question legend { float:left; width:100%; padding:0 0 12px; margin:0; line-height:1.6; }
+    .quiz-question .quiz-option:first-of-type { clear:both; }
+    .quiz-option span { min-width:0; overflow-wrap:anywhere; }
+    .network-diagram { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; }
+    .network-node { border:1px solid #4b6484; border-radius:12px; padding:14px; min-width:110px; text-align:center; background:#162540; }
+    .network-link { color:#ff7177; font-weight:900; }
+    pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+<canvas aria-hidden="true" id="interactive-grid"></canvas>
+<nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+<div class="flex items-center gap-3 min-w-0 shrink-0">
+<div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+<i class="fa-solid fa-network-wired text-xl"></i>
+</div>
+<div>
+<div class="font-black tracking-wider flex items-center gap-2 leading-tight">MAPÚA MCL
+            <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">MITL</span>
+</div>
+<div class="text-xs text-slate-300 font-semibold">ECE144L: Data Communications Laboratory</div>
+</div>
+</div>
+<a class="text-xs font-bold px-3 py-2 rounded-lg hover:bg-mapua-panel transition" href="index.html">Learning Portal</a>
+</div>
+</nav>
+<header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+<div class="lg:col-span-2 min-w-0">
+<div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">PART II · NETWORK FUNDAMENTALS</div>
+<h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5" id="page-title">Part II<br/><span class="text-slate-200">Culminating Activity</span></h1>
+<p class="text-slate-300 leading-relaxed max-w-2xl">Integrate Chapters 4–9 in a realistic campus network deployment and verification challenge.</p>
+</div>
+<aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+<h2 class="text-mapua-redBright uppercase font-black tracking-wider">Course Instructor</h2>
+<p class="text-white font-extrabold text-base">Engr. Jess David A. Doria</p>
+<hr class="border-mapua-border"/>
+<p><i class="fa-solid fa-calendar-days text-mapua-redBright mr-2"></i>Term 2, Academic Year 2026–2027</p>
+<p><i class="fa-solid fa-book text-mapua-redBright mr-2"></i>BS Electronics Engineering</p>
+<p><i class="fa-solid fa-building-columns text-mapua-redBright mr-2"></i>Mapúa Institute of Technology at Laguna</p>
+</aside>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-7">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <a href="index.html" class="text-sm font-bold text-slate-300 hover:text-white"><i class="fa-solid fa-arrow-left mr-2"></i>Back to laboratory portal</a>
+    <span class="text-xs text-slate-300 font-bold">PART II · CHAPTERS 4–9</span>
+  </div>
+  <section class="panel border-t-4 border-t-mapua-red">
+    <span class="section-tag">Part II · Culminating Activity</span>
+    <h2 class="text-2xl sm:text-3xl font-black mt-4 mb-3">Mission 02: Campus Network Commissioning Challenge</h2>
+    <p class="muted leading-relaxed">Mapúa MCL is preparing a small instructional laboratory and an adjacent faculty office. As the junior network technician, you have been assigned to design, build, configure, and verify a two-LAN wired network in Cisco Packet Tracer, then demonstrate a basic wireless extension. Your supervisor expects clear addressing, functioning connectivity, documented evidence, and a troubleshooting record—not just a screenshot of connected devices.</p>
+    <div class="grid sm:grid-cols-3 gap-3 mt-6 text-sm">
+      <div class="task"><div class="text-xs muted uppercase font-bold">Estimated duration</div><strong>120–180 minutes</strong></div>
+      <div class="task"><div class="text-xs muted uppercase font-bold">Work mode</div><strong>Individual · Practical assessment</strong></div>
+      <div class="task"><div class="text-xs muted uppercase font-bold">Deliverables</div><strong>.pkt + evidence report + screenshots</strong></div>
+    </div>
+  </section>
+  <section class="panel">
+    <span class="section-tag">01 · Mission Brief</span>
+    <h2 class="text-xl font-black mt-3 mb-3">Scope and learning outcomes</h2>
+    <p class="muted text-sm mb-4">This original capstone integrates the skills and concepts introduced in Part II of the supplied Cisco Press book. The wireless task is a guided observation of wireless principles; VLANs, OSPF, NAT, ACLs, and enterprise wireless controllers are intentionally outside this assessment.</p>
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <div class="task"><strong>Chapter 4 · Cisco IOS Basics</strong><p class="muted mt-2">Navigate IOS modes, configure hostnames and interface addresses, use show commands, and save configurations.</p></div>
+      <div class="task"><strong>Chapter 5 · Physical Interfaces and Cabling Types</strong><p class="muted mt-2">Select appropriate Ethernet cables, identify interface status, and diagnose physical connectivity.</p></div>
+      <div class="task"><strong>Chapter 6 · IPv4 Addressing and Subnetting</strong><p class="muted mt-2">Apply /24 IPv4 addressing, subnet masks, default gateways, and verify end-to-end reachability.</p></div>
+      <div class="task"><strong>Chapter 7 · IPv6</strong><p class="muted mt-2">Configure IPv6 global unicast addresses, enable IPv6 routing, and verify IPv6 connectivity.</p></div>
+      <div class="task"><strong>Chapter 8 · Wireless Principles</strong><p class="muted mt-2">Identify SSID, wireless association, and coverage/security considerations using a simple wireless device.</p></div>
+      <div class="task"><strong>Chapter 9 · Switching Basics</strong><p class="muted mt-2">Observe MAC address learning and verify the switch forwarding table.</p></div>
+    </div>
+    <h3 class="font-extrabold mt-6 mb-2">Required resources</h3>
+    <ul class="list-disc pl-6 muted space-y-2 text-sm"><li>Cisco Packet Tracer 8.2.1 or later (or a version supporting the devices and commands used).</li><li>One Cisco 2911 router, two Cisco 2960 switches, two PCs, one server, one wireless access point, and one wireless laptop.</li><li>Ethernet copper straight-through cables; compatible wireless adapter on the laptop if required.</li><li>A folder to save the Packet Tracer project and screenshots. Device port names can vary by model.</li></ul>
+  </section>
+  <section class="panel">
+    <span class="section-tag">02 · Network Blueprint</span>
+    <h2 class="text-xl font-black mt-3 mb-4">Build the specified topology</h2>
+    <div class="task">
+      <div class="network-diagram text-sm" aria-label="Topology: PC-LAB and SRV-LAB connected to SW-LAB, connected to R1, connected to SW-FAC, connected to PC-FAC and AP-FAC; laptop associates wirelessly with AP-FAC">
+        <div class="network-node">💻<br><strong>PC-LAB</strong><br><span class="muted text-xs">+ SRV-LAB</span></div><span class="network-link">──</span><div class="network-node">🔀<br><strong>SW-LAB</strong></div><span class="network-link">──</span><div class="network-node">📡<br><strong>R1</strong></div><span class="network-link">──</span><div class="network-node">🔀<br><strong>SW-FAC</strong></div><span class="network-link">──</span><div class="network-node">💻<br><strong>PC-FAC</strong><br><span class="muted text-xs">+ AP-FAC ⇢ Laptop</span></div>
+      </div>
+      <p class="muted text-xs mt-4 text-center">The server connects to SW-LAB; the AP connects to SW-FAC. Laptop-FAC associates over Wi-Fi with AP-FAC. The diagram is a reference, not a live simulation.</p>
+    </div>
+    <h3 class="font-extrabold mt-6 mb-3">Addressing plan — use these exact values</h3>
+    <div class="overflow-x-auto"><table class="w-full text-sm text-left border-collapse"><thead class="bg-[#243956]"><tr><th class="p-3">Device / interface</th><th class="p-3">IPv4 / mask</th><th class="p-3">IPv6 / prefix</th><th class="p-3">IPv4 gateway</th></tr></thead><tbody class="divide-y divide-[#334762]">
+    <tr><td class="p-3">R1 G0/0 (Lab)</td><td class="p-3 mono">192.168.10.1 /24</td><td class="p-3 mono">2001:DB8:10::1/64</td><td class="p-3">—</td></tr>
+    <tr><td class="p-3">R1 G0/1 (Faculty)</td><td class="p-3 mono">192.168.20.1 /24</td><td class="p-3 mono">2001:DB8:20::1/64</td><td class="p-3">—</td></tr>
+    <tr><td class="p-3">PC-LAB</td><td class="p-3 mono">192.168.10.10 /24</td><td class="p-3 mono">2001:DB8:10::10/64</td><td class="p-3 mono">192.168.10.1</td></tr>
+    <tr><td class="p-3">SRV-LAB</td><td class="p-3 mono">192.168.10.20 /24</td><td class="p-3 mono">2001:DB8:10::20/64</td><td class="p-3 mono">192.168.10.1</td></tr>
+    <tr><td class="p-3">PC-FAC</td><td class="p-3 mono">192.168.20.10 /24</td><td class="p-3 mono">2001:DB8:20::10/64</td><td class="p-3 mono">192.168.20.1</td></tr>
+    <tr><td class="p-3">AP-FAC (management)</td><td class="p-3 mono">192.168.20.2 /24</td><td class="p-3">Not required</td><td class="p-3 mono">192.168.20.1</td></tr>
+    <tr><td class="p-3">Laptop-FAC (wireless)</td><td class="p-3 mono">192.168.20.30 /24</td><td class="p-3">Not required</td><td class="p-3 mono">192.168.20.1</td></tr>
+    </tbody></table></div>
+    <p class="muted text-xs mt-3">For IPv6 end devices, set the IPv6 default gateway to the router's link-local address on the corresponding LAN (discover it with <span class="mono">show ipv6 interface</span>), or use <span class="mono">FE80::1</span> on both R1 LAN interfaces as shown in the optional router example below. IPv6 addresses in 2001:DB8::/32 are documentation-only and appropriate for this simulation.</p>
+    <h3 class="font-extrabold mt-6 mb-3">Cabling reference</h3>
+    <div class="grid md:grid-cols-2 gap-3 text-sm"><div class="task"><strong>SW-LAB</strong><p class="muted mt-2">PC-LAB Fa0 → SW-LAB Fa0/1<br>SRV-LAB Fa0 → SW-LAB Fa0/2<br>SW-LAB Gi0/1 → R1 Gi0/0</p></div><div class="task"><strong>SW-FAC</strong><p class="muted mt-2">PC-FAC Fa0 → SW-FAC Fa0/1<br>AP-FAC Ethernet → SW-FAC Fa0/2<br>SW-FAC Gi0/1 → R1 Gi0/1</p></div></div>
+  </section>
+  <section class="panel">
+    <div class="flex flex-wrap justify-between items-center gap-3"><div><span class="section-tag">03 · Practical Mission</span><h2 class="text-xl font-black mt-3">Complete and document each checkpoint</h2></div><span id="progress-label" class="text-sm font-bold">0 of 10 tasks complete</span></div>
+    <div class="progress-track mt-4 mb-6"><div id="progress-fill" class="progress-fill"></div></div>
+    <div id="task-list" class="space-y-3">
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>1. Build and label the topology.</strong><span class="block muted text-sm mt-1">Place all seven devices, rename them as shown, connect the wired devices, and position the laptop near the AP. Screenshot E1: entire labeled topology.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>2. Verify physical cabling and interfaces.</strong><span class="block muted text-sm mt-1">Use copper straight-through cables for unlike Ethernet devices. Wait for links to settle. If a link remains down, inspect port selection and router shutdown state. Screenshot E2: visible active links.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>3. Configure the router using IOS.</strong><span class="block muted text-sm mt-1">Set the hostname R1, enable IPv6 unicast routing, assign both IPv4/IPv6 interfaces, bring interfaces up, and save the configuration. The reference below is a support aid, not a substitute for understanding each command.</span></span></label>
+<pre class="mono text-xs sm:text-sm bg-[#091221] rounded-lg p-4 mt-3">enable
+configure terminal
+hostname R1
+ipv6 unicast-routing
+interface gigabitethernet0/0
+ description TO-LAB-SWITCH
+ ip address 192.168.10.1 255.255.255.0
+ ipv6 address 2001:DB8:10::1/64
+ ipv6 address FE80::1 link-local
+ no shutdown
+exit
+interface gigabitethernet0/1
+ description TO-FACULTY-SWITCH
+ ip address 192.168.20.1 255.255.255.0
+ ipv6 address 2001:DB8:20::1/64
+ ipv6 address FE80::1 link-local
+ no shutdown
+end
+copy running-config startup-config</pre><p class="muted text-xs mt-2">If the router uses different interface identifiers, substitute the actual identifiers displayed in Packet Tracer. Screenshot E3: router interface summary.</p></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>4. Configure IPv4 on the end devices.</strong><span class="block muted text-sm mt-1">Open each wired PC/server → Desktop → IP Configuration. Enter its assigned IPv4 address, 255.255.255.0 mask, and default gateway. Record the settings. Screenshot E4: one correctly configured PC.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>5. Configure IPv6 on wired hosts.</strong><span class="block muted text-sm mt-1">Use Desktop → IP Configuration → IPv6 Static on PC-LAB, SRV-LAB, and PC-FAC. Enter the assigned global address, /64 prefix, and FE80::1 gateway. Screenshot E5: IPv6 host configuration.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>6. Verify IPv4 and IPv6 reachability.</strong><span class="block muted text-sm mt-1">From PC-LAB, ping 192.168.20.10, 192.168.10.20, and 2001:DB8:20::10. Repeat after initial ARP/neighbor discovery if needed. Screenshot E6: successful IPv4 and IPv6 pings.</span></span></label><pre class="mono text-xs sm:text-sm bg-[#091221] rounded-lg p-4 mt-3">ping 192.168.20.10
+ping 192.168.10.20
+ping 2001:DB8:20::10</pre></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>7. Inspect switching behavior.</strong><span class="block muted text-sm mt-1">Open SW-LAB CLI, use <span class="mono">enable</span> and <span class="mono">show mac address-table</span> after traffic has crossed the switch. Identify at least two learned dynamic MAC entries and their ports. Screenshot E7: MAC table.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>8. Configure and observe wireless connectivity.</strong><span class="block muted text-sm mt-1">Set AP-FAC's SSID to <span class="mono">MCL-FACULTY</span>. If supported by your AP model, configure WPA2-PSK with a lab-only passphrase. Connect Laptop-FAC to that SSID using its wireless interface; set its assigned IPv4 address and gateway. Verify ping to 192.168.20.1 and 192.168.10.20. Screenshot E8: association and successful ping. Use a Packet Tracer AP model that supports your chosen security setting; note model limitations if unavailable.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>9. Perform a fault-isolation test.</strong><span class="block muted text-sm mt-1">Temporarily change PC-FAC's IPv4 gateway to 192.168.20.254, attempt a cross-LAN ping, observe the failure, restore 192.168.20.1, and retest. Record the symptom, root cause, and correction. Screenshot E9: failed and restored connectivity.</span></span></label></div>
+      <div class="task"><label><input type="checkbox" class="task-check"><span><strong>10. Save, reopen, and verify.</strong><span class="block muted text-sm mt-1">Save as <span class="mono">PART2_CampusNetwork_YourSurname.pkt</span>, close and reopen the file, confirm all devices/configurations persist, and capture E10: reopened topology.</span></span></label></div>
+    </div>
+    <p class="muted text-xs mt-4">Checking a box records your declaration of completion only. This page cannot read or grade your Packet Tracer file automatically.</p>
+  </section>
+  <section class="panel">
+    <span class="section-tag">04 · Verification Toolkit</span><h2 class="text-xl font-black mt-3 mb-3">Commands and expected results</h2>
+    <div class="grid md:grid-cols-2 gap-3 text-sm">
+      <div class="task"><strong>Router interface health</strong><pre class="mono text-xs mt-3">show ip interface brief
+show ipv6 interface brief</pre><p class="muted mt-2">R1 G0/0 and G0/1 should be up/up with their assigned addresses.</p></div>
+      <div class="task"><strong>Configuration persistence</strong><pre class="mono text-xs mt-3">show running-config
+show startup-config</pre><p class="muted mt-2">Confirm hostname, interfaces, and saved startup configuration.</p></div>
+      <div class="task"><strong>Switch learning</strong><pre class="mono text-xs mt-3">show mac address-table</pre><p class="muted mt-2">After generating traffic, learned dynamic MAC addresses should appear on relevant ports.</p></div>
+      <div class="task"><strong>End-device testing</strong><pre class="mono text-xs mt-3">ipconfig
+ping 192.168.20.10
+ping 2001:DB8:20::10</pre><p class="muted mt-2">Confirm IP parameters and connectivity; initial packets may time out during address resolution.</p></div>
+    </div>
+    <p class="muted text-xs mt-4">Troubleshooting order: physical link → interface up/down → address/mask → gateway → IPv6 routing → wireless association. Do not introduce static routes: both LANs are directly connected to R1.</p>
+  </section>
+  <section class="panel">
+    <span class="section-tag">05 · Evidence Log</span><h2 class="text-xl font-black mt-3 mb-3">Document your implementation</h2>
+    <div class="grid md:grid-cols-2 gap-4"><label class="text-sm font-bold">Student number<input id="student" type="text" class="mt-2" placeholder="Enter student number"></label><label class="text-sm font-bold">Packet Tracer version<input id="version" type="text" class="mt-2" placeholder="e.g., 8.2.2"></label></div>
+    <div class="mt-4 space-y-4"><label class="block text-sm font-bold">Interface and cabling observations<textarea id="notes1" rows="3" class="mt-2" placeholder="List selected ports, cable types, and interface states..."></textarea></label><label class="block text-sm font-bold">IPv4 / IPv6 test results<textarea id="notes2" rows="3" class="mt-2" placeholder="Source → destination; protocol; result..."></textarea></label><label class="block text-sm font-bold">Switch MAC address learning<textarea id="notes3" rows="3" class="mt-2" placeholder="Two learned MAC addresses, their ports, and your explanation..."></textarea></label><label class="block text-sm font-bold">Wireless observation<textarea id="notes4" rows="3" class="mt-2" placeholder="SSID, security mode, association, and wireless ping result..."></textarea></label><label class="block text-sm font-bold">Fault isolation: symptom → cause → fix<textarea id="notes5" rows="3" class="mt-2" placeholder="Describe the incorrect gateway test and recovery..."></textarea></label><label class="block text-sm font-bold">Screenshot filenames E1–E10<textarea id="evidence" rows="4" class="mt-2" placeholder="E1: topology.png&#10;E2: links.png&#10;..."></textarea></label></div>
+  </section>
+  <section class="panel">
+    <span class="section-tag">06 · Knowledge Check</span><h2 class="text-xl font-black mt-3 mb-2">Confirm your understanding</h2><p class="muted text-sm mb-5">Answer each question. Feedback appears after you click Check my answers. This self-check supports learning; the instructor evaluates the actual Packet Tracer submission separately.</p>
+    <div id="quiz" class="space-y-6"></div><button id="grade" class="btn mt-6" type="button">Check my answers</button><div id="quiz-result" class="mt-4 text-sm font-bold" role="status" aria-live="polite"></div>
+  </section>
+  <section class="panel">
+    <span class="section-tag">07 · Submission & Assessment</span><h2 class="text-xl font-black mt-3 mb-4">100-point grading rubric</h2>
+    <div class="overflow-x-auto"><table class="w-full text-sm text-left border-collapse"><thead class="bg-[#243956]"><tr><th class="p-3">Criterion</th><th class="p-3">Evidence</th><th class="p-3 text-right">Points</th></tr></thead><tbody class="divide-y divide-[#334762]">
+    <tr><td class="p-3">Topology, cabling, and interface status</td><td class="p-3 muted">E1–E2, .pkt</td><td class="p-3 text-right">15</td></tr><tr><td class="p-3">IOS router configuration and saved settings</td><td class="p-3 muted">E3, .pkt</td><td class="p-3 text-right">20</td></tr><tr><td class="p-3">IPv4 and IPv6 host configuration and reachability</td><td class="p-3 muted">E4–E6</td><td class="p-3 text-right">25</td></tr><tr><td class="p-3">Switch MAC address table interpretation</td><td class="p-3 muted">E7, notes</td><td class="p-3 text-right">10</td></tr><tr><td class="p-3">Wireless extension and observation</td><td class="p-3 muted">E8, notes</td><td class="p-3 text-right">10</td></tr><tr><td class="p-3">Troubleshooting and recovery</td><td class="p-3 muted">E9, notes</td><td class="p-3 text-right">10</td></tr><tr><td class="p-3">Saved project and complete evidence</td><td class="p-3 muted">E10, .pkt, report</td><td class="p-3 text-right">10</td></tr></tbody><tfoot class="font-black"><tr><td colspan="2" class="p-3">TOTAL</td><td class="p-3 text-right">100</td></tr></tfoot></table></div>
+    <div class="task mt-5 text-sm"><strong>Submit:</strong><p class="muted mt-2">(1) <span class="mono">PART2_CampusNetwork_YourSurname.pkt</span>; (2) exported evidence report; and (3) screenshots E1–E10 in a separate folder or combined evidence PDF. This webpage does not upload files or validate the .pkt project.</p></div>
+    <div class="flex flex-wrap gap-3 mt-5 no-print"><button id="export" class="btn" type="button"><i class="fa-solid fa-file-arrow-down mr-2"></i>Export evidence report (.txt)</button><button id="print" class="btn secondary" type="button"><i class="fa-solid fa-print mr-2"></i>Print / Save as PDF</button><button id="reset" class="btn secondary" type="button">Reset activity</button></div>
+    <p class="muted text-xs mt-4">Responses and checkmarks are saved in this browser only. Save Packet Tracer files and screenshots separately.</p>
+  </section>
+</main>
+<footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+<p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+<p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+<p class="text-mapua-redBright font-extrabold mt-2">
+    © Copyright Reserved 2026
+   </p>
+<p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+</footer>
+<script>
+'use strict';
+const questions = [
+ {q:'Which IOS command enters privileged EXEC mode?',options:['enable','configure terminal','show version'],answer:0,why:'enable changes the user EXEC prompt (>) to privileged EXEC (#).'},
+ {q:'What does an administratively down router interface usually require?',options:['A different subnet mask','The no shutdown command','A new Ethernet switch'],answer:1,why:'no shutdown enables an interface that has been administratively disabled.'},
+ {q:'Which IPv4 address is the default gateway for PC-LAB?',options:['192.168.20.1','192.168.10.20','192.168.10.1'],answer:2,why:'PC-LAB uses the router interface on its own 192.168.10.0/24 subnet.'},
+ {q:'What is the prefix length of the IPv6 LANs in this mission?',options:['/64','/24','/128'],answer:0,why:'Both assigned IPv6 LAN prefixes are /64.'},
+ {q:'Why is ipv6 unicast-routing enabled on R1?',options:['To create VLANs','To allow IPv6 forwarding between connected networks','To enable wireless encryption'],answer:1,why:'IPv6 unicast routing allows the router to forward IPv6 traffic between LANs.'},
+ {q:'What does a switch learn from the source MAC address of a received frame?',options:['A DNS server address','The IPv6 default route','The port associated with that source MAC'],answer:2,why:'A switch records the source MAC and ingress port in its MAC address table.'},
+ {q:'What is the SSID in a wireless network?',options:['The network name advertised or configured for association','The IPv4 subnet mask','A router interface speed'],answer:0,why:'SSID identifies the wireless LAN that a client selects.'},
+ {q:'If PC-FAC has the wrong IPv4 default gateway, which test is most likely to fail?',options:['Pinging its own address','Pinging a host on the other LAN','Viewing its IP configuration'],answer:1,why:'A wrong gateway prevents normal forwarding to off-subnet destinations.'},
+ {q:'Which command gives a concise summary of IPv4 router interfaces?',options:['show mac address-table','show running-config','show ip interface brief'],answer:2,why:'show ip interface brief summarizes IPv4 addresses and interface/protocol states.'},
+ {q:'Why can the first ping fail even after correct configuration?',options:['ARP or IPv6 neighbor discovery may still be resolving addresses','The switch always blocks all first packets','The router requires a static route between its connected LANs'],answer:0,why:'Address resolution may delay initial echo packets; retry to verify stable connectivity.'}
+];
+const quiz=document.getElementById('quiz');
+questions.forEach((item,i)=>{
+ const fieldset=document.createElement('fieldset');
+ fieldset.className='task quiz-question';
+ const legend=document.createElement('legend');
+ legend.className='font-extrabold text-sm';
+ legend.textContent=`${i+1}. ${item.q}`;
+ fieldset.append(legend);
+ item.options.forEach((option,j)=>{
+  const label=document.createElement('label'); label.className='quiz-option text-sm';
+  const input=document.createElement('input'); input.type='radio'; input.name=`question-${i}`; input.value=String(j);
+  const caption=document.createElement('span'); caption.textContent=option;
+  label.append(input,caption); fieldset.append(label);
+ });
+ const feedback=document.createElement('p'); feedback.id=`feedback-${i}`; feedback.className='text-xs muted mt-3'; fieldset.append(feedback); quiz.append(fieldset);
+});
+const checks=[...document.querySelectorAll('.task-check')];
+const fields=['student','version','notes1','notes2','notes3','notes4','notes5','evidence'];
+const storageKey='ece144l-part2-capstone-v1';
+function updateProgress(){const done=checks.filter(c=>c.checked).length;document.getElementById('progress-label').textContent=`${done} of ${checks.length} tasks complete`;document.getElementById('progress-fill').style.width=`${done/checks.length*100}%`;}
+function save(){const data={checks:checks.map(c=>c.checked),fields:Object.fromEntries(fields.map(id=>[id,document.getElementById(id).value])),answers:questions.map((_,i)=>document.querySelector(`input[name="question-${i}"]:checked`)?.value??'')};try{localStorage.setItem(storageKey,JSON.stringify(data));}catch(e){}updateProgress();}
+try{const data=JSON.parse(localStorage.getItem(storageKey)||'{}');checks.forEach((c,i)=>c.checked=!!data.checks?.[i]);fields.forEach(id=>document.getElementById(id).value=data.fields?.[id]||'');questions.forEach((_,i)=>{const value=data.answers?.[i];if(value!==undefined&&value!==''){const el=document.querySelector(`input[name="question-${i}"][value="${value}"]`);if(el)el.checked=true;}});}catch(e){}updateProgress();
+document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',save));
+document.getElementById('grade').addEventListener('click',()=>{let score=0;questions.forEach((q,i)=>{const answer=document.querySelector(`input[name="question-${i}"]:checked`);const correct=answer&&Number(answer.value)===q.answer;if(correct)score++;document.getElementById(`feedback-${i}`).textContent=`${correct?'Correct.':'Review:'} ${q.why}`;});document.getElementById('quiz-result').textContent=`Knowledge check: ${score} / ${questions.length} correct. You can review and retry.`;save();});
+document.getElementById('export').addEventListener('click',()=>{const value=id=>document.getElementById(id).value.trim()||'(not provided)';const lines=['ECE144L — PART II CULMINATING ACTIVITY','Campus Network Commissioning Challenge','',`Student: ${value('student')}`,`Packet Tracer version: ${value('version')}`,'','TASKS',...checks.map((c,i)=>`${i+1}. ${c.checked?'Completed':'Not completed'}`),'','CABLING AND INTERFACES',value('notes1'),'','IPv4 AND IPv6 TESTS',value('notes2'),'','SWITCH MAC LEARNING',value('notes3'),'','WIRELESS OBSERVATIONS',value('notes4'),'','FAULT ISOLATION',value('notes5'),'','EVIDENCE FILES E1–E10',value('evidence'),'','KNOWLEDGE CHECK',...questions.map((q,i)=>`${i+1}. ${q.q}
+Answer: ${document.querySelector(`input[name="question-${i}"]:checked`)?.parentElement.textContent||'(not answered)'}`),'','Attach Packet Tracer file and screenshots separately.'];const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='PART2_CampusNetwork_Evidence_Report.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+document.getElementById('print').addEventListener('click',()=>window.print());
+document.getElementById('reset').addEventListener('click',()=>{if(!confirm('Clear saved progress and answers?'))return;localStorage.removeItem(storageKey);checks.forEach(c=>c.checked=false);fields.forEach(id=>document.getElementById(id).value='');document.querySelectorAll('input[type=radio]').forEach(el=>el.checked=false);document.querySelectorAll('[id^=feedback-]').forEach(el=>el.textContent='');document.getElementById('quiz-result').textContent='';updateProgress();});
+</script>
+
+<script>
+  (() => {
+    const canvas = document.getElementById('interactive-grid');
+    const ctx = canvas.getContext('2d', {alpha:true});
+    if (!ctx) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
+    const spacing = 29;
+    let width=0, height=0, ratio=1, points=[], raf=0, last=0;
+    let mouse={x:-1000,y:-1000,active:false};
+    const resize=()=>{
+      width=window.innerWidth; height=window.innerHeight;
+      ratio=Math.min(window.devicePixelRatio||1,2);
+      canvas.width=Math.round(width*ratio); canvas.height=Math.round(height*ratio);
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      points=[];
+      for(let y=spacing/2;y<height;y+=spacing) for(let x=spacing/2;x<width;x+=spacing)
+        points.push({x,y,energy:0,dx:0,dy:0});
+      draw(0);
+    };
+    const draw=(time)=>{
+      ctx.clearRect(0,0,width,height);
+      const dt=Math.min((time-last)||16,50); last=time;
+      for(const p of points){
+        const distance=Math.hypot(p.x-mouse.x,p.y-mouse.y);
+        if(mouse.active && distance<145){
+          p.energy=Math.max(p.energy,Math.pow(1-distance/145,1.6));
+          const angle=Math.atan2(p.y-mouse.y,p.x-mouse.x);
+          p.dx=Math.cos(angle)*p.energy*6; p.dy=Math.sin(angle)*p.energy*6;
+        }
+        p.energy*=Math.pow(.947,dt/16);
+        p.dx*=Math.pow(.89,dt/16); p.dy*=Math.pow(.89,dt/16);
+        const energy=p.energy;
+        ctx.beginPath();
+        ctx.arc(p.x+p.dx,p.y+p.dy,1.05+energy*2.15,0,Math.PI*2);
+        ctx.fillStyle=energy>.035?`rgba(227,27,35,${.17+energy*.68})`:'rgba(104,137,179,.19)';
+        ctx.fill();
+      }
+      if(!reduced && !document.hidden) raf=requestAnimationFrame(draw);
+    };
+    window.addEventListener('resize',resize,{passive:true});
+    if(finePointer && !reduced){
+      window.addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true;},{passive:true});
+      document.addEventListener('pointerout',e=>{if(!e.relatedTarget) mouse.active=false;});
+    }
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!reduced){cancelAnimationFrame(raf);last=0;raf=requestAnimationFrame(draw);}});
+    resize();
+    if(!reduced) raf=requestAnimationFrame(draw);
+  })();
+  </script>
+</body>
+</html>
