@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080D1A">
+  <title>Course Syllabus | ECE144L | Mapúa MCL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] }, colors: { mapua: { red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C' } } } } }</script>
+  <style>
+
+    :root {
+      color-scheme: dark;
+      --bg: #080e19;
+      --panel: #111d30;
+      --panel-2: #17263c;
+      --line: #2c3d56;
+      --text: #f6f8fd;
+      --muted: #aab9cd;
+      --red: #e31b23;
+      --green: #75d8ad;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse 70% 440px at 12% -4%, rgba(227,27,35,.15), transparent 75%),
+        radial-gradient(ellipse 65% 520px at 94% 14%, rgba(56,109,166,.17), transparent 75%),
+        var(--bg);
+      color: var(--text);
+      font: 15px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .container { width: min(1140px, calc(100% - 40px)); margin-inline: auto; }
+    .topbar {
+      background: rgba(9,16,28,.88);
+      border-bottom: 1px solid #28364c;
+      backdrop-filter: blur(12px);
+    }
+    .topbar-inner {
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand { font-size: .95rem; font-weight: 850; letter-spacing: .07em; }
+    .brand span:first-child { color: #fff; }
+    .brand span { color: var(--red); }
+    .topbar small { color: var(--muted); font-size: .75rem; }
+
+    .hero { padding: 37px 0 30px; }
+    .hero-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, .85fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+    /* Course title is unboxed, matching the laboratory page's open header. */
+    .hero-copy {
+      min-width: 0;
+      padding: 18px 0;
+      background: none;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .eyebrow {
+      color: #c3d4e8;
+      font-size: .71rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(1.85rem, 3.5vw, 3.05rem);
+      line-height: 1.13;
+      letter-spacing: -.045em;
+      margin: 12px 0 14px;
+      max-width: 620px;
+    }
+    h1 span { color: #fff; }
+    .hero-description { color: #b8c8da; font-size: .93rem; max-width: 580px; margin: 0; }
+    .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+    .pill {
+      padding: 5px 11px;
+      font-size: .73rem;
+      font-weight: 650;
+      border: 1px solid #40506a;
+      border-radius: 999px;
+      color: #d9e6f7;
+      background: rgba(15,28,47,.7);
+    }
+
+    .instructor {
+      border-radius: 19px;
+      border: 1px solid #32475f;
+      padding: 27px 28px;
+      background: linear-gradient(150deg, #1c304a, #111d30);
+      position: relative;
+      overflow: hidden;
+    }
+    .instructor::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 95px;
+      height: 3px;
+      background: var(--red);
+    }
+    .instructor-label {
+      color: #b7cbe4;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+    .instructor h2 { font-size: 1.22rem; margin: 12px 0 17px; line-height: 1.35; }
+    .instructor-divider { height: 1px; background: #3a4d66; margin-bottom: 15px; }
+    .instructor p { margin: 7px 0; color: #c0cee0; font-size: .83rem; }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 6px 0 18px;
+    }
+    .section-heading h2 { margin: 0; font-size: 1.48rem; letter-spacing: -.025em; }
+    .section-heading p { color: var(--muted); margin: 4px 0 0; font-size: .87rem; }
+    .search {
+      width: min(300px, 100%);
+      border: 1px solid #40536f;
+      border-radius: 11px;
+      background: #16243a;
+      color: #fff;
+      padding: 11px 14px;
+      font: inherit;
+    }
+    .search::placeholder { color: #a1b1c6; }
+    .search:focus-visible, .lab-card:focus-visible {
+      outline: 2px solid #f04c52;
+      outline-offset: 3px;
+    }
+
+    .part {
+      margin: 0 0 16px;
+      border: 1px solid #293b53;
+      border-radius: 17px;
+      background: linear-gradient(135deg, #122036, #101a2c);
+      padding: 20px 22px 22px;
+    }
+    .part-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding-bottom: 14px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #2d4058;
+      background: none;
+      box-shadow: none;
+    }
+    /* Only the learning-section label receives the Mapúa Red highlight. */
+    .part-label {
+      display: inline-block;
+      width: fit-content;
+      padding: 4px 9px;
+      border-radius: 5px;
+      background: #E31B23;
+      color: #FFFFFF;
+      font-size: .69rem;
+      font-weight: 850;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .part-heading h3 {
+      color: #F6F8FD;
+      margin: 8px 0 2px;
+      font-size: 1.15rem;
+      letter-spacing: -.015em;
+    }
+    .part-heading p { color: var(--muted); margin: 0; font-size: .78rem; }
+    .part-count {
+      color: #c4d2e5;
+      background: #1e3149;
+      border: 1px solid #354b65;
+      border-radius: 999px;
+      padding: 5px 11px;
+      white-space: nowrap;
+      font-size: .73rem;
+    }
+    .lab-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 11px;
+    }
+    .lab-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 155px;
+      padding: 15px 16px;
+      border: 1px solid #354960;
+      border-radius: 12px;
+      background: linear-gradient(155deg, #1b2e48, #16243a);
+      color: var(--text);
+      text-decoration: none;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    a.lab-card { border-top: 2px solid var(--red); }
+    a.lab-card:hover {
+      transform: translateY(-3px);
+      border-color: #db565b;
+      box-shadow: 0 12px 28px rgba(0,0,0,.24);
+    }
+    .lab-card.locked {
+      background: #142136;
+      border-color: #2a3c52;
+    }
+
+    /* Assessment assessments are visually distinct from chapter labs. */
+    .lab-card.capstone {
+      border: 1px solid rgba(227, 27, 35, .65);
+      background: linear-gradient(145deg, #342037, #1b2943 80%);
+    }
+
+    .lab-card.capstone.available {
+      border-top: 3px solid #E31B23;
+    }
+
+    .lab-card.capstone h4 {
+      color: #fff;
+    }
+
+    .lab-card.capstone .lab-number {
+      color: #ffb9bc;
+    }
+
+    .lab-card.capstone .lab-action {
+      color: #fff;
+    }
+
+    a.lab-card.capstone:hover {
+      border-color: #ff636a;
+      background: linear-gradient(145deg, #45233a, #223856);
+    }
+    .lab-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 11px; }
+    .lab-number {
+      color: #b8d0ed;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .035em;
+      text-transform: uppercase;
+    }
+    .status {
+      font-size: .67rem;
+      color: #a8b7c9;
+      background: #223047;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .status.ready { color: #9be9c7; background: #173b36; }
+    .lab-card h4 { font-size: .95rem; line-height: 1.35; margin: 0 0 6px; }
+    .lab-card p { font-size: .76rem; line-height: 1.45; color: #adbed2; margin: 0; }
+    .lab-action {
+      margin-top: auto;
+      padding-top: 15px;
+      color: #d6e8fb;
+      font-size: .75rem;
+      font-weight: 750;
+    }
+    a.lab-card .lab-action { color: #ff7a7e; }
+    .locked .lab-action { color: #8295ac; }
+
+    #no-results { padding: 22px; color: var(--muted); }
+    [hidden] { display: none !important; }
+    footer {
+      border-top: 1px solid #2a3b51;
+      margin-top: 42px;
+      padding: 25px 0 32px;
+      background: #0a1220;
+      color: #9aaac0;
+      font-size: .76rem;
+    }
+    .footer-content { text-align: center; max-width: 900px; }
+    .footer-content p { margin: 4px 0; }
+
+    @media (max-width: 950px) {
+      .lab-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 750px) {
+      .hero-main { grid-template-columns: 1fr; }
+      .hero { padding-top: 20px; }
+      .hero-copy { padding: 12px 0; }
+      .instructor { padding: 23px; }
+      .section-heading { flex-direction: column; align-items: stretch; }
+      .search { width: 100%; }
+      .topbar small { display: none; }
+    }
+    @media (max-width: 520px) {
+      .container { width: min(100% - 26px, 1140px); }
+      .lab-grid { grid-template-columns: 1fr; }
+      .part { padding: 16px; }
+      .part-heading { align-items: flex-start; }
+      .part-count { display: none; }
+      .lab-card { min-height: 133px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+
+
+    /* Match lab1.html typography, instructor panel and hero exactly. */
+    html, body { font-family: "Montserrat", sans-serif !important; }
+    button, input, select, textarea { font-family: inherit; }
+    nav, header { font-family: "Montserrat", sans-serif !important; }
+    .glass-panel-navy { background: rgba(22,37,64,.95); border: 1px solid rgba(35,56,92,.6); }
+    header h1 { font-size: clamp(1.875rem, 4.2vw, 3rem); line-height: 1.25; letter-spacing: normal; margin: 0 0 1.25rem; max-width: none; }
+    header h1 span { color: #e2e8f0; }
+    header h2 { margin: 0; font-size: .75rem; }
+    header p { margin: 0; }
+    header aside p { margin: 0; }
+    header aside hr { margin: 0; }
+    footer { margin-top: 42px; font-size: .75rem; background: #0F1A2E; border-top: 1px solid #23385C; padding: 2rem 1rem; color: #94a3b8; }
+    footer p { margin: 0; }
+    footer p.mt-2 { margin-top: .5rem; }
+    footer p.text-mapua-redBright { color: #FF2E36; }
+    .part-label { display: inline-block; background: #E31B23; color: #fff; padding: 4px 9px; border-radius: 5px; letter-spacing: .08em; }
+  
+    /* Interactive bullet grid, behind all page content */
+    #interactive-grid { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:.9; }
+    body { isolation:isolate; background:#080D1A; }
+    body > nav, body > header, body > main, body > footer { position:relative; z-index:1; }
+    body > header { background:linear-gradient(to bottom,rgba(10,20,40,.91),rgba(15,26,46,.88),rgba(8,13,26,.78)) !important; }
+    body > main { background:transparent; }
+    .part { background:linear-gradient(135deg,rgba(18,32,54,.93),rgba(16,26,44,.93)); }
+    @media (prefers-reduced-motion:reduce) { #interactive-grid { opacity:.5; } }
+
+  </style>
+
+<style>
+  .syllabus-main { max-width:1140px; margin:auto; padding:36px 20px 56px; }
+  .syllabus-panel { background:rgba(15,26,46,.95); border:1px solid #2c405e; border-radius:17px; padding:clamp(19px,3vw,27px); margin-bottom:20px; }
+  .syllabus-panel h2 { font-size:1.25rem; font-weight:800; color:white; margin:0 0 14px; }
+  .syllabus-panel p { color:#cbd5e1; line-height:1.85; font-size:.9rem; }
+  .syllabus-kicker { display:inline-block; color:white; background:#E31B23; padding:5px 10px; border-radius:5px; font-size:.68rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; margin-bottom:13px; }
+  .module-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; margin-bottom:20px; }
+  .module-tile { background:linear-gradient(140deg,#1b304c,#111f34); border:1px solid #3a4e69; border-top:3px solid #E31B23; border-radius:14px; padding:20px; }
+  .module-tile h3 { font-size:1.14rem; font-weight:800; margin:7px 0; }
+  .module-tile p { color:#bfcde0; font-size:.83rem; line-height:1.7; }
+  .module-tile .module-tag { font-size:.68rem; letter-spacing:.12em; color:#e2e8f0; font-weight:800; text-transform:uppercase; }
+  .syllabus-table-wrap { overflow-x:auto; border:1px solid #334762; border-radius:12px; }
+  .syllabus-table { border-collapse:collapse; width:100%; font-size:.83rem; min-width:500px; }
+  .syllabus-table th { background:#223957; color:#fff; font-weight:800; text-align:left; padding:13px 15px; }
+  .syllabus-table td { border-top:1px solid #30435d; padding:12px 15px; color:#d3deec; vertical-align:top; }
+  .syllabus-table tbody tr:nth-child(even) { background:rgba(35,56,85,.23); }
+  .syllabus-table .emphasis td { background:rgba(227,27,35,.1); color:white; font-weight:800; }
+  .syllabus-table .numeric { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .syllabus-notice { border-left:3px solid #E31B23; padding:12px 15px; background:rgba(227,27,35,.09); border-radius:0 9px 9px 0; color:#cbd5e1; font-size:.82rem; line-height:1.75; margin-top:16px; }
+  .assessment-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+  .assessment-card { background:#162540; border:1px solid #354b67; border-radius:12px; padding:18px; }
+  .assessment-card h3 { font-size:1rem; font-weight:800; margin:0 0 4px; }
+  .assessment-card .weight { font-size:1.5rem; color:white; font-weight:900; margin-bottom:13px; }
+  .assessment-row { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-top:1px solid #344660; font-size:.8rem; color:#cbd5e1; }
+  .assessment-row strong { white-space:nowrap; color:#fff; }
+  .assessment-row.sub { padding-left:12px; font-size:.75rem; }
+  .assessment-final { background:#182940; border:1px solid #435774; border-left:4px solid #E31B23; border-radius:12px; padding:18px; margin-top:15px; display:flex; justify-content:space-between; gap:15px; align-items:center; }
+  .assessment-final strong { font-size:1.45rem; }
+  .syllabus-formula { padding:15px; border-radius:10px; background:#0a1527; color:#e2e8f0; font-size:.82rem; margin-top:16px; text-align:center; font-weight:700; }
+  @media(max-width:700px){ .module-grid,.assessment-grid {grid-template-columns:1fr;} .syllabus-main{padding-top:24px;} }
+  @media print { #interactive-grid,nav {display:none!important;} body {background:#fff!important;color:#111!important;} .syllabus-panel,.module-tile,.assessment-card{break-inside:avoid;background:white;color:#111;border-color:#bbb;} .syllabus-panel p,.module-tile p,.syllabus-table td{color:#222;} }
+</style>
+</head>
+<body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+<canvas id="interactive-grid" aria-hidden="true"></canvas>
+<nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+      <div class="flex items-center gap-3 min-w-0 shrink-0">
+        <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+          <i class="fa-solid fa-network-wired text-xl"></i>
+        </div>
+        <div>
+          <div class="font-black tracking-wider flex items-center gap-2 leading-tight">MAPÚA MCL
+            <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">MITL</span>
+          </div>
+          <div class="text-xs text-slate-300 font-semibold">ECE144L: Data Communications Laboratory</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-1 sm:gap-3 text-xs font-bold">
+        <a class="px-3 py-2 rounded-lg hover:bg-mapua-panel transition" href="syllabus.html" aria-current="page">Course Syllabus</a>
+        <a class="px-3 py-2 rounded-lg hover:bg-mapua-panel transition" href="index.html#catalog-title">Laboratory Activities</a>
+      </div>
+    </div>
+  </nav>
+<header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+      <div class="lg:col-span-2 min-w-0">
+        <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">ECE144L · COURSE INFORMATION</div>
+        <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5" id="page-title">Course<br/><span class="text-slate-200">Syllabus</span></h1>
+        <p class="text-slate-300 leading-relaxed max-w-2xl">Course outline, learning schedule, assessment requirements, and grading system for Data Communications Laboratory.</p>
+      </div>
+      <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+        <h2 class="text-mapua-redBright uppercase font-black tracking-wider">Course Instructor</h2>
+        <p class="text-white font-extrabold text-base">Engr. Jess David A. Doria</p>
+        <hr class="border-mapua-border"/>
+        <p><i class="fa-solid fa-calendar-days text-mapua-redBright mr-2"></i>Term 2, Academic Year 2026–2027</p>
+        <p><i class="fa-solid fa-book text-mapua-redBright mr-2"></i>BS Electronics Engineering</p>
+        <p><i class="fa-solid fa-building-columns text-mapua-redBright mr-2"></i>Mapúa Institute of Technology at Laguna</p>
+      </aside>
+    </div>
+  </header>
+
+<main class="syllabus-main">
+  <section class="syllabus-panel" aria-labelledby="description-title">
+    <span class="syllabus-kicker">Course Overview</span>
+    <h2 id="description-title">Course Description</h2>
+    <p>This course is the laboratory component of ECE144 (Data Communication) which provides hands-on experience on data communications and networking. It covers foundational knowledge and skills needed to show how networks operate, including the devices, media, and protocols that enable network communications that validates a student’s skills and knowledge on entry-level networking concepts and topics.</p>
+  </section>
+
+  <section class="syllabus-panel" aria-labelledby="certification-title">
+    <span class="syllabus-kicker">Professional Preparation</span>
+    <h2 id="certification-title">Industry-Recognized Certification / Internship / Long-Term Project</h2>
+    <p>At the end of this laboratory course, students will be able to complete Cisco Network Technician professional certificate available at the Cisco Networking Academy, which prepares them for the entry-level Cisco Certified Support Technician (CCST) Network certification. Students will also design a network for a small building campus using Cisco Packet Tracer.</p>
+  </section>
+
+  <section aria-labelledby="modules-title">
+    <div class="section-heading"><div><h2 id="modules-title">Course Modules</h2><p>Two modules covering six parts of the textbook over a 13-week term.</p></div></div>
+    <div class="module-grid">
+      <article class="module-tile"><div class="module-tag">Module 01 · Weeks 1–6</div><h3>Network Foundations &amp; Access</h3><p>Part I — Packet Tracer Fundamentals<br>Part II — Network Fundamentals<br>Part III — Network Access</p><p><strong>Assessment:</strong> Module 1 Exam · Week 6</p></article>
+      <article class="module-tile"><div class="module-tag">Module 02 · Weeks 7–12</div><h3>Connectivity, Services &amp; Security</h3><p>Part IV — IP Connectivity<br>Part V — IP Services<br>Part VI — Security Fundamentals</p><p><strong>Assessment:</strong> Module 2 Exam · Week 12</p></article>
+    </div>
+  </section>
+
+  <section class="syllabus-panel" aria-labelledby="schedule-title">
+    <span class="syllabus-kicker">13-Week Plan</span>
+    <h2 id="schedule-title">Weekly Course Schedule</h2>
+    <div class="syllabus-table-wrap"><table class="syllabus-table"><thead><tr><th scope="col">Week</th><th scope="col">Module</th><th scope="col">Coverage / Activity</th></tr></thead><tbody>
+      <tr><td>1</td><td>Module 1</td><td>Part I — Chapters 1–3</td></tr>
+      <tr><td>2</td><td>Module 1</td><td>Part II — Chapters 4–6</td></tr>
+      <tr><td>3</td><td>Module 1</td><td>Part II — Chapters 7–9</td></tr>
+      <tr><td>4</td><td>Module 1</td><td>Part III — Chapters 10–11</td></tr>
+      <tr><td>5</td><td>Module 1</td><td>Part III — Chapters 12–13</td></tr>
+      <tr class="emphasis"><td>6</td><td>Module 1</td><td>Module 1 Examination</td></tr>
+      <tr><td>7</td><td>Module 2</td><td>Part IV — Chapters 14–16</td></tr>
+      <tr><td>8</td><td>Module 2</td><td>Part V — Chapters 17–18</td></tr>
+      <tr><td>9</td><td>Module 2</td><td>Part V — Chapters 19–20</td></tr>
+      <tr><td>10</td><td>Module 2</td><td>Part VI — Chapters 21–22</td></tr>
+      <tr><td>11</td><td>Module 2</td><td>Part VI — Chapters 23–24</td></tr>
+      <tr class="emphasis"><td>12</td><td>Module 2</td><td>Module 2 Examination</td></tr>
+      <tr class="emphasis"><td>13</td><td>Final Assessment</td><td>Project Presentation — Small Building Campus Network</td></tr>
+    </tbody></table></div>
+  </section>
+
+  <section class="syllabus-panel" aria-labelledby="assessment-title">
+    <span class="syllabus-kicker">Assessment &amp; Requirements</span>
+    <h2 id="assessment-title">Course Requirements</h2>
+    <p>A student’s final class standing shall be based on his/her performance on <strong class="text-white">ALL</strong> minor course assessment tasks, major course assessment tasks, and final course assessment that are requirements to pass the course.</p>
+    <div class="assessment-grid mt-5">
+      <article class="assessment-card"><h3>Module 1</h3><div class="weight">35% <span class="text-xs font-semibold text-slate-300">of final standing</span></div><div class="assessment-row"><span>Minor Course Assessment</span><strong>40%</strong></div><div class="assessment-row sub"><span>Learning Task</span><strong>30%</strong></div><div class="assessment-row sub"><span>CCST Network Certificate of Completion (Courses 1 &amp; 2)</span><strong>10%</strong></div><div class="assessment-row"><span>Major Course Assessment</span><strong>60%</strong></div><div class="assessment-row"><span><strong>Module 1 Grade</strong></span><strong>100%</strong></div></article>
+      <article class="assessment-card"><h3>Module 2</h3><div class="weight">35% <span class="text-xs font-semibold text-slate-300">of final standing</span></div><div class="assessment-row"><span>Minor Course Assessment</span><strong>40%</strong></div><div class="assessment-row sub"><span>Learning Task</span><strong>30%</strong></div><div class="assessment-row sub"><span>CCST Network Certificate of Completion (Courses 3 &amp; 4)</span><strong>10%</strong></div><div class="assessment-row"><span>Major Course Assessment</span><strong>60%</strong></div><div class="assessment-row"><span><strong>Module 2 Grade</strong></span><strong>100%</strong></div></article>
+    </div>
+    <div class="assessment-final"><div><div class="font-extrabold">Final Course Assessment</div><div class="text-sm text-slate-300 mt-1">Project Presentation</div></div><strong>30%</strong></div>
+    <div class="syllabus-formula">Final Class Standing = (Module 1 × 35%) + (Module 2 × 35%) + (Project Presentation × 30%)</div>
+    <div class="syllabus-notice">A 60% mark is the minimum passing performance for each course requirement. A final class standing of at least 60% is required to pass the course.</div>
+  </section>
+
+  <section class="syllabus-panel" aria-labelledby="grades-title">
+    <span class="syllabus-kicker">Grading System</span>
+    <h2 id="grades-title">Final Grade Equivalency</h2>
+    <div class="syllabus-table-wrap"><table class="syllabus-table"><thead><tr><th scope="col">Final Class Standing (%)</th><th class="numeric" scope="col">Final Grade</th></tr></thead><tbody>
+      <tr><td>Above 96.00</td><td class="numeric"><strong>1.00</strong></td></tr>
+      <tr><td>91.51 – 96.00</td><td class="numeric"><strong>1.25</strong></td></tr>
+      <tr><td>87.01 – 91.50</td><td class="numeric"><strong>1.50</strong></td></tr>
+      <tr><td>82.51 – 87.00</td><td class="numeric"><strong>1.75</strong></td></tr>
+      <tr><td>78.01 – 82.50</td><td class="numeric"><strong>2.00</strong></td></tr>
+      <tr><td>73.51 – 78.00</td><td class="numeric"><strong>2.25</strong></td></tr>
+      <tr><td>69.01 – 73.50</td><td class="numeric"><strong>2.50</strong></td></tr>
+      <tr><td>64.51 – 69.00</td><td class="numeric"><strong>2.75</strong></td></tr>
+      <tr><td>60.00 – 64.50</td><td class="numeric"><strong>3.00</strong></td></tr>
+      <tr class="emphasis"><td>Below 60.00</td><td class="numeric"><strong>5.00</strong></td></tr>
+    </tbody></table></div>
+  </section>
+</main>
+
+<footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    © Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+<script>
+  (() => {
+    const canvas = document.getElementById('interactive-grid');
+    const ctx = canvas.getContext('2d', {alpha:true});
+    if (!ctx) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
+    const spacing = 29;
+    let width=0, height=0, ratio=1, points=[], raf=0, last=0;
+    let mouse={x:-1000,y:-1000,active:false};
+    const resize=()=>{
+      width=window.innerWidth; height=window.innerHeight;
+      ratio=Math.min(window.devicePixelRatio||1,2);
+      canvas.width=Math.round(width*ratio); canvas.height=Math.round(height*ratio);
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      points=[];
+      for(let y=spacing/2;y<height;y+=spacing) for(let x=spacing/2;x<width;x+=spacing)
+        points.push({x,y,energy:0,dx:0,dy:0});
+      draw(0);
+    };
+    const draw=(time)=>{
+      ctx.clearRect(0,0,width,height);
+      const dt=Math.min((time-last)||16,50); last=time;
+      for(const p of points){
+        const distance=Math.hypot(p.x-mouse.x,p.y-mouse.y);
+        if(mouse.active && distance<145){
+          p.energy=Math.max(p.energy,Math.pow(1-distance/145,1.6));
+          const angle=Math.atan2(p.y-mouse.y,p.x-mouse.x);
+          p.dx=Math.cos(angle)*p.energy*6; p.dy=Math.sin(angle)*p.energy*6;
+        }
+        p.energy*=Math.pow(.947,dt/16);
+        p.dx*=Math.pow(.89,dt/16); p.dy*=Math.pow(.89,dt/16);
+        const energy=p.energy;
+        ctx.beginPath();
+        ctx.arc(p.x+p.dx,p.y+p.dy,1.05+energy*2.15,0,Math.PI*2);
+        ctx.fillStyle=energy>.035?`rgba(227,27,35,${.17+energy*.68})`:'rgba(104,137,179,.19)';
+        ctx.fill();
+      }
+      if(!reduced && !document.hidden) raf=requestAnimationFrame(draw);
+    };
+    window.addEventListener('resize',resize,{passive:true});
+    if(finePointer && !reduced){
+      window.addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true;},{passive:true});
+      document.addEventListener('pointerout',e=>{if(!e.relatedTarget) mouse.active=false;});
+    }
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!reduced){cancelAnimationFrame(raf);last=0;raf=requestAnimationFrame(draw);}});
+    resize();
+    if(!reduced) raf=requestAnimationFrame(draw);
+  })();
+  </script>
+</body>
+</html>
