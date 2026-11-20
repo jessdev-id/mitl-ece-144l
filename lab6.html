@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chapter 6: Configure and Verify IPv4 Addressing and Subnetting | ECE144L | Map&uacute;a MCL
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>
+   tailwind.config = { theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] }, colors: { mapua: { red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C' } } } } }
+  </script>
+  <style>
+   html,body{font-family:"Montserrat",sans-serif!important}button,input,select,textarea{font-family:inherit}nav,header{font-family:"Montserrat",sans-serif!important}.glass-panel{background:rgba(15,26,46,.92);backdrop-filter:blur(14px);border:1px solid rgba(227,27,35,.25)}.glass-panel-navy{background:rgba(22,37,64,.95);border:1px solid rgba(35,56,92,.6)}.pill{border:1px solid #23385C;background:#162540;border-radius:.65rem;padding:.7rem 1rem;font-size:.78rem;font-weight:700}.pill:hover,.pill.active{background:#E31B23;color:white;border-color:#FF2E36}.tab-content{display:none}.tab-content.active{display:block}.step{border:1px solid #23385C;border-radius:.8rem;padding:1rem;background:#162540}.step.done{border-color:#10b981}code,pre{font-family:'Fira Code',monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere}section{scroll-margin-top:6rem}
+  </style>
+  <style>
+   .practice-field{background:#080D1A;border:1px solid #23385C;border-radius:8px;padding:10px;color:#fff;min-width:105px;max-width:100%;font-family:"Fira Code",monospace}.practice-field:focus{outline:2px solid #E31B23}.practice-feedback{min-height:22px;margin-top:12px;font-size:13px}.practice-chip{border:1px solid #23385C;background:#162540;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}.practice-chip[aria-pressed=true]{background:#E31B23;border-color:#FF2E36}.practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}.practice-code{background:#080D1A;border:1px solid #23385C;border-radius:12px;padding:20px;line-height:2.9;font-family:"Fira Code",monospace;font-size:12px;overflow-x:auto}.practice-code input{width:160px}.practice-action{background:#E31B23;border:1px solid #FF2E36;border-radius:9px;padding:10px 18px;color:white;font-size:12px;font-weight:800;cursor:pointer}.practice-action:hover{background:#FF2E36}.practice-note{color:#CBD5E1;font-size:12px;line-height:1.8}.practice-card{background:#162540;border:1px solid #23385C;border-radius:12px;padding:18px}
+  </style>
+  <style>
+   .practice-field { background: #080D1A; border: 1px solid #23385C; border-radius: 8px; padding: 10px; color: white; min-width: 105px; max-width: 100%; font-family: "Fira Code", monospace; }
+.practice-field:focus { outline: 2px solid #E31B23; }
+.practice-feedback { min-height: 22px; margin-top: 12px; font-size: 13px; color: #CBD5E1; }
+.practice-chip { border: 1px solid #23385C; background: #162540; border-radius: 9px; padding: 10px 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.practice-chip[aria-pressed="true"] { background: #E31B23; border-color: #FF2E36; }
+.practice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; }
+.practice-action { background: #E31B23; border: 1px solid #FF2E36; border-radius: 9px; padding: 10px 18px; color: white; font-size: 12px; font-weight: 800; cursor: pointer; }
+.practice-note { color: #CBD5E1; font-size: 12px; line-height: 1.8; }
+.practice-card { background: #162540; border: 1px solid #23385C; border-radius: 12px; padding: 18px; }
+  </style>
+  <style>
+   .practice-field {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 8px;
+    padding: 10px;
+    color: white;
+    min-width: 105px;
+    max-width: 100%;
+    font-family: "Fira Code", monospace;
+}
+.practice-field:focus {
+    outline: 2px solid #E31B23;
+}
+.practice-code {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 20px;
+    line-height: 3.3;
+    font-family: "Fira Code", monospace;
+    font-size: 12px;
+    overflow-x: auto;
+}
+.practice-code input {
+    max-width: 100%;
+}
+.practice-feedback {
+    min-height: 22px;
+    margin-top: 12px;
+    font-size: 13px;
+}
+.practice-action {
+    background: #E31B23;
+    border: 1px solid #FF2E36;
+    border-radius: 9px;
+    padding: 10px 18px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.practice-action:hover {
+    background: #FF2E36;
+}
+.practice-card {
+    background: #162540;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 18px;
+}
+.practice-note {
+    color: #CBD5E1;
+    font-size: 12px;
+    line-height: 1.8;
+}
+  </style>
+ </head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAP&Uacute;A MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      Subnet Calculator
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#practice">
+      Interactive Practice
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 06 &middot; PART II: NETWORK FUNDAMENTALS
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 6:
+      <br/>
+      <span class="text-slate-200">
+       Configure and Verify IPv4 Addressing and Subnetting
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Practice IPv4 binary conversion, subnet masks, host ranges, address types, and client verification before completing the textbook Packet Tracer labs.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026&ndash;2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2">
+      </i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Map&uacute;a Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+   <section class="glass-panel rounded-2xl p-6" id="outcomes">
+    <h2 class="text-xl font-extrabold mb-4">
+     <i class="fa-solid fa-bullseye text-mapua-redBright mr-2">
+     </i>
+     Learning Outcomes
+    </h2>
+    <div class="grid md:grid-cols-1 gap-3 text-sm text-slate-300">
+     <p>
+      01 &middot; Convert IPv4 octets between decimal and binary.
+     </p>
+     <p>
+      02 &middot; Determine subnet IDs, masks, broadcast addresses, and usable hosts.
+     </p>
+     <p>
+      03 &middot; Differentiate unicast, broadcast, multicast, and private addressing.
+     </p>
+     <p>
+      04 &middot; Configure and verify IPv4 parameters in Packet Tracer.
+     </p>
+    </div>
+   </section>
+   <section id="lecture">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3">
+     </i>
+     Lecture &amp; Discussion Notes
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Based on textbook Chapter 6, pages 61&ndash;82. Select a topic to study.
+    </p>
+    <div class="flex flex-wrap gap-2 mb-5" id="tabs">
+     <button class="pill active" data-tab="binary">
+      Binary &amp; Masks
+     </button>
+     <button class="pill" data-tab="subnetting">
+      Subnetting
+     </button>
+     <button class="pill" data-tab="types">
+      Address Types
+     </button>
+     <button class="pill" data-tab="clients">
+      Client Verification
+     </button>
+    </div>
+    <div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+     <div class="tab-content active" id="binary">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       IPv4 Octets and Subnet Masks
+      </h3>
+      <p>
+       IPv4 addresses contain 32 bits, organized into four 8-bit octets. An octet has bit weights 128, 64, 32, 16, 8, 4, 2, and 1. Add the weights of set bits to convert binary to decimal.
+      </p>
+      <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4 mt-4 font-mono text-xs sm:text-sm text-emerald-300">
+       186 = 10111010
+       <br/>
+       11101111 = 239
+       <br/>
+       /27 = 255.255.255.224
+      </div>
+      <p class="mt-4">
+       Valid mask octets contain contiguous 1 bits followed by 0 bits: 0, 128, 192, 224, 240, 248, 252, 254, and 255. A /24 mask means 24 network bits and 8 host bits.
+      </p>
+     </div>
+     <div class="tab-content" id="subnetting">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Subnet IDs, Broadcasts, and Host Ranges
+      </h3>
+      <p>
+       For ordinary IPv4 subnets with host bits, usable hosts = 2
+       <sup>
+        host bits
+       </sup>
+       &minus; 2. The first address identifies the subnet; the final address is its directed broadcast. For example, 192.168.1.0/27 has 32 addresses, 30 usable hosts, and broadcast 192.168.1.31.
+      </p>
+      <p class="mt-4">
+       Borrowing 6 host bits produces 2
+       <sup>
+        6
+       </sup>
+       = 64 subnets. A /20 network has a block size of 16 in the third octet, such as 10.10.0.0/20, 10.10.16.0/20, and 10.10.32.0/20.
+      </p>
+     </div>
+     <div class="tab-content" id="types">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Address Classes and Traffic Types
+      </h3>
+      <div class="overflow-x-auto">
+       <table class="w-full text-left text-xs">
+        <thead>
+         <tr class="text-mapua-redBright border-b border-mapua-border">
+          <th class="p-3">
+           Class
+          </th>
+          <th class="p-3">
+           First Octet
+          </th>
+          <th class="p-3">
+           Traditional Mask
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="p-3">
+           A
+          </td>
+          <td class="p-3">
+           1&ndash;126 (127 reserved for loopback)
+          </td>
+          <td class="p-3">
+           /8
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           B
+          </td>
+          <td class="p-3">
+           128&ndash;191
+          </td>
+          <td class="p-3">
+           /16
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           C
+          </td>
+          <td class="p-3">
+           192&ndash;223
+          </td>
+          <td class="p-3">
+           /24
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           D
+          </td>
+          <td class="p-3">
+           224&ndash;239
+          </td>
+          <td class="p-3">
+           Multicast
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <p class="mt-4">
+       <strong>
+        Unicast:
+       </strong>
+       one destination.
+       <strong>
+        Broadcast:
+       </strong>
+       all hosts on a subnet.
+       <strong>
+        Multicast:
+       </strong>
+       a subscribed group. Private IPv4 ranges include 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16. NAT can translate private addresses for external communication.
+      </p>
+     </div>
+     <div class="tab-content" id="clients">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Checking IP Parameters
+      </h3>
+      <p>
+       On a simulated PC, open
+       <strong>
+        Desktop &rarr; IP Configuration
+       </strong>
+       to enter IPv4 address, subnet mask, and default gateway. Use
+       <code>
+        ipconfig
+       </code>
+       in a Windows command prompt to view IP parameters. The textbook also introduces
+       <code>
+        ifconfig
+       </code>
+       for macOS and Linux; modern Linux systems commonly use
+       <code>
+        ip addr
+       </code>
+       .
+      </p>
+      <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4 mt-4 font-mono text-xs text-emerald-300">
+       PC&gt; ipconfig
+       <br/>
+       PC&gt; ping 192.168.1.1
+       <br/>
+       Router# show ip interface brief
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="explorer">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-calculator text-mapua-redBright mr-3">
+     </i>
+     Interactive IPv4 Subnet Calculator
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     Experiment with an address and CIDR prefix. The tool shows the network, broadcast, and usable host range.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="grid sm:grid-cols-3 gap-4">
+      <label class="text-xs text-slate-300">
+       IPv4 address
+       <input class="practice-field w-full mt-2" id="calcIp" value="192.168.1.100"/>
+      </label>
+      <label class="text-xs text-slate-300">
+       Prefix length
+       <select class="practice-field w-full mt-2" id="calcPrefix">
+        <option value="24">
+         /24
+        </option>
+        <option value="25">
+         /25
+        </option>
+        <option value="26">
+         /26
+        </option>
+        <option selected="" value="27">
+         /27
+        </option>
+        <option value="28">
+         /28
+        </option>
+        <option value="29">
+         /29
+        </option>
+        <option value="30">
+         /30
+        </option>
+        <option value="16">
+         /16
+        </option>
+        <option value="20">
+         /20
+        </option>
+       </select>
+      </label>
+      <div class="flex items-end">
+       <button class="practice-action w-full" id="calculate">
+        Calculate
+       </button>
+      </div>
+     </div>
+     <div aria-live="polite" class="grid sm:grid-cols-2 gap-3 mt-5 text-xs" id="calcResults">
+     </div>
+    </div>
+   </section>
+   <section id="quiz">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <div class="flex flex-wrap justify-between gap-3 mb-5">
+      <div>
+       <h2 class="text-2xl font-extrabold">
+        <i class="fa-solid fa-circle-question text-mapua-redBright mr-2">
+        </i>
+        Knowledge Check
+       </h2>
+       <p class="text-xs text-slate-400 mt-2">
+        Choose an answer and receive immediate feedback.
+       </p>
+      </div>
+      <p class="text-mapua-redBright font-black text-sm" id="score">
+       Score: 0 / 8
+      </p>
+     </div>
+     <div class="space-y-4" id="questions">
+     </div>
+     <button class="pill mt-6" id="reset">
+      Reset Quiz
+     </button>
+    </div>
+   </section>
+   <section id="practice">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-keyboard text-mapua-redBright mr-3">
+     </i>
+     Interactive Preparation
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Complete these exercises before opening Cisco Packet Tracer.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-7">
+     <div class="practice-card">
+      <h3 class="font-bold mb-3">
+       Activity A &middot; Binary Conversion
+      </h3>
+      <p class="practice-note mb-4">
+       Convert decimal 187 to an eight-bit binary number.
+      </p>
+      <input class="practice-field" id="binaryAnswer" maxlength="8" placeholder="8 binary digits"/>
+      <button class="practice-action ml-2" id="checkBinary">
+       Check
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="binaryFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold mb-3">
+       Activity B &middot; Complete the Router Commands
+      </h3>
+      <p class="practice-note mb-4">
+       Fill in the missing commands for an example /24 network. This is practice, not the assigned .pka addressing plan.
+      </p>
+      <div class="practice-code">
+       Router&gt;
+       <input class="practice-field" id="cmd1" placeholder="privileged mode"/>
+       <br/>
+       Router#
+       <input class="practice-field" id="cmd2" placeholder="global config"/>
+       <br/>
+       Router(config)#
+       <input class="practice-field" id="cmd3" placeholder="interface g0/0"/>
+       <br/>
+       Router(config-if)#
+       <input class="practice-field" id="cmd4" placeholder="set IPv4 address" style="width:320px"/>
+       <br/>
+       Router(config-if)#
+       <input class="practice-field" id="cmd5" placeholder="enable port"/>
+      </div>
+      <button class="practice-action mt-4" id="checkCommands">
+       Check Commands
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="commandFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold mb-3">
+       Activity C &middot; Identify an Address Type
+      </h3>
+      <p class="practice-note mb-3">
+       Which traffic type uses the destination 224.0.0.10?
+      </p>
+      <select class="practice-field w-full" id="typeAnswer">
+       <option value="">
+        Select an answer
+       </option>
+       <option>
+        Unicast
+       </option>
+       <option>
+        Broadcast
+       </option>
+       <option>
+        Multicast
+       </option>
+      </select>
+      <button class="practice-action mt-4" id="checkType">
+       Check Answer
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="typeFeedback">
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="lab">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-flask text-mapua-redBright mr-3">
+     </i>
+     Guided Packet Tracer Laboratories
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     All steps are always visible. The book supplies assessed .pka activities; follow the requirements inside each downloaded file.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-8">
+     <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+      <h3 class="font-extrabold text-white">
+       Official Packet Tracer Lab Files
+      </h3>
+      <p class="text-xs text-slate-300 mt-2">
+       Insert your own downloadable links by replacing the placeholder URLs in the HTML source.
+      </p>
+      <div class="flex flex-wrap gap-2 mt-4">
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQBgy5B6EP1ESYk81xLaJpLwAcwPZi4cm1UoophVfCEGGsQ?e=jcTEsg" rel="noopener noreferrer" target="_blank">
+        Download Lab 6.1
+       </a>
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQC4VaSprRVnSbm5tEMI2cMRAbISckB0CN1rkTPXQeLfymo?e=zLhkRE" rel="noopener noreferrer" target="_blank">
+        Download Lab 6.2
+       </a>
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQDZGIa5YoAuSaMg8rI936QaAcYT6AWIj-18_ZMdT8s8JL0?e=il9m0U" rel="noopener noreferrer" target="_blank">
+        Download Lab 6.3
+       </a>
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQDiUFBsTB_CSrigPuwuT7efAfY2mBiUMrkpO7NQ2uLCzcI?e=lQC1po" rel="noopener noreferrer" target="_blank">
+        Download Lab 6.4
+       </a>
+      </div>
+     </div>
+     <div class="space-y-8" id="labLists">
+     </div>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4">
+      <p class="text-sm font-bold">
+       Guided progress:
+       <span class="text-mapua-redBright" id="labProgress">
+        0 / 0
+       </span>
+      </p>
+      <div class="h-2 bg-mapua-panel rounded-full mt-3 overflow-hidden">
+       <div class="h-full bg-mapua-red" id="progressBar" style="width:0%">
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="challenge">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <h2 class="text-2xl font-extrabold mb-3">
+      Chapter Review &middot; Lab 6.4
+     </h2>
+     <p class="text-sm text-slate-300 leading-7">
+      Complete the textbook&rsquo;s assessed Chapter 6 review activity using the official Packet Tracer file. The exact graded topology requirements are contained in that file, not specified in the printed chapter.
+     </p>
+     <div class="bg-mapua-panel rounded-xl p-5 mt-5">
+      <h3 class="font-bold mb-3">
+       Submission Readiness
+      </h3>
+      <div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables">
+      </div>
+      <p aria-live="polite" class="text-mapua-redBright text-xs mt-4" id="ready">
+      </p>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    &copy; Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+  <script>
+   const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+
+$('#menuBtn').addEventListener('click', () => {
+    const links = $('#links');
+    ['hidden', 'flex', 'flex-col', 'absolute', 'top-20', 'right-3', 'bg-mapua-card', 'p-5'].forEach(name => {
+        links.classList.toggle(name);
+    });
+});
+
+$$('[data-tab]').forEach(button => {
+    button.addEventListener('click', () => {
+        $$('[data-tab]').forEach(item => item.classList.remove('active'));
+        $$('.tab-content').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+    });
+});
+
+function parseIPv4(value) {
+    const parts = value.trim().split('.');
+    if (parts.length !== 4 || parts.some(part => !/^\d{1,3}$/.test(part) || Number(part) > 255)) {
+        return null;
+    }
+    return parts.reduce((acc, part) => ((acc << 8) | Number(part)) >>> 0, 0);
+}
+
+function formatIPv4(value) {
+    return [24, 16, 8, 0].map(shift => (value >>> shift) & 255).join('.');
+}
+
+function calculateSubnet() {
+    const ip = parseIPv4($('#calcIp').value);
+    const prefix = Number($('#calcPrefix').value);
+    const results = $('#calcResults');
+    if (ip === null) {
+        results.innerHTML = '<p class="text-rose-300">Enter a valid IPv4 address.</p>';
+        return;
+    }
+    const mask = (0xffffffff << (32 - prefix)) >>> 0;
+    const network = (ip & mask) >>> 0;
+    const broadcast = (network | (~mask >>> 0)) >>> 0;
+    const hosts = Math.pow(2, 32 - prefix) - 2;
+    const values = [
+        ['Subnet mask', formatIPv4(mask)],
+        ['Network address', formatIPv4(network)],
+        ['Broadcast address', formatIPv4(broadcast)],
+        ['Usable host range', `${formatIPv4(network + 1)} – ${formatIPv4(broadcast - 1)}`],
+        ['Usable host count', hosts.toLocaleString()],
+        ['Address class (historical)', ((ip >>> 24) < 128 ? 'A' : (ip >>> 24) < 192 ? 'B' : (ip >>> 24) < 224 ? 'C' : (ip >>> 24) < 240 ? 'D' : 'E')]
+    ];
+    results.innerHTML = values.map(([label, value]) => `
+        <div class="bg-mapua-panel border border-mapua-border rounded-lg p-4">
+            <span class="text-slate-400 block mb-2">${label}</span>
+            <strong class="text-emerald-300 font-mono break-all">${value}</strong>
+        </div>
+    `).join('');
+}
+
+$('#calculate').addEventListener('click', calculateSubnet);
+calculateSubnet();
+
+const questions = [
+    ['How many bits are in an IPv4 address?', ['16', '32', '48', '128'], 1, 'IPv4 contains four 8-bit octets, or 32 bits.'],
+    ['Which subnet mask corresponds to /27?', ['255.255.255.0', '255.255.255.192', '255.255.255.224', '255.255.255.240'], 2, '/27 has 27 consecutive 1 bits.'],
+    ['How many usable hosts does a conventional /27 subnet provide?', ['16', '30', '32', '62'], 1, 'There are 32 addresses, with two reserved for network and broadcast.'],
+    ['Which is the broadcast for 192.168.1.0/27?', ['192.168.1.0', '192.168.1.30', '192.168.1.31', '192.168.1.255'], 2, 'The /27 block spans .0 through .31.'],
+    ['Which first-octet range identifies multicast addresses?', ['1–126', '128–191', '192–223', '224–239'], 3, 'Class D multicast destinations use 224–239.'],
+    ['Which is a private IPv4 address?', ['8.8.8.8', '172.20.5.10', '203.0.113.5', '224.0.0.10'], 1, '172.16.0.0 through 172.31.255.255 is private.'],
+    ['Which command displays IP settings on a Windows client?', ['ipconfig', 'show version', 'enable', 'hostname'], 0, 'Windows uses ipconfig.'],
+    ['What does a default gateway help a host reach?', ['Only itself', 'Other IP networks', 'Only multicast groups', 'Only its switch port'], 1, 'The gateway forwards traffic to other networks.']
+];
+
+let answers = {};
+
+function renderQuiz() {
+    answers = {};
+    $('#questions').innerHTML = questions.map((question, index) => `
+        <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+            <p class="font-bold text-sm mb-3">${index + 1}. ${question[0]}</p>
+            <div class="grid sm:grid-cols-2 gap-2">
+                ${question[1].map((option, optionIndex) => `
+                    <button data-question="${index}" data-answer="${optionIndex}"
+                        class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright">
+                        ${String.fromCharCode(65 + optionIndex)}. ${option}
+                    </button>
+                `).join('')}
+            </div>
+            <p id="feedback${index}" class="hidden text-xs mt-3" aria-live="polite"></p>
+        </div>
+    `).join('');
+    $('#score').textContent = `Score: 0 / ${questions.length}`;
+    $$('[data-question]').forEach(button => {
+        button.addEventListener('click', () => {
+            const index = Number(button.dataset.question);
+            const optionIndex = Number(button.dataset.answer);
+            if (answers[index] !== undefined) return;
+            answers[index] = optionIndex;
+            $$(`[data-question="${index}"]`).forEach(item => {
+                item.disabled = true;
+                item.classList.add(Number(item.dataset.answer) === questions[index][2] ? 'border-emerald-500' : 'opacity-60');
+            });
+            const correct = optionIndex === questions[index][2];
+            button.classList.add(correct ? 'bg-emerald-900/40' : 'bg-rose-900/40');
+            const feedback = document.getElementById(`feedback${index}`);
+            feedback.classList.remove('hidden');
+            feedback.classList.add(correct ? 'text-emerald-300' : 'text-rose-300');
+            feedback.textContent = `${correct ? 'Correct.' : 'Not quite.'} ${questions[index][3]}`;
+            const score = Object.entries(answers).filter(([key, value]) => questions[Number(key)][2] === value).length;
+            $('#score').textContent = `Score: ${score} / ${questions.length}`;
+        });
+    });
+}
+
+renderQuiz();
+$('#reset').addEventListener('click', renderQuiz);
+
+$('#checkBinary').addEventListener('click', () => {
+    const correct = $('#binaryAnswer').value.trim() === '10111011';
+    $('#binaryFeedback').textContent = correct ? 'Correct: 187 = 10111011.' : 'Try again. Add 128 + 32 + 16 + 8 + 2 + 1.';
+    $('#binaryFeedback').style.color = correct ? '#6ee7b7' : '#fda4af';
+});
+
+const expectedCommands = [
+    'enable',
+    'configure terminal',
+    'interface gigabitethernet0/0',
+    'ip address 192.168.1.1 255.255.255.0',
+    'no shutdown'
+];
+
+$('#checkCommands').addEventListener('click', () => {
+    const results = expectedCommands.map((answer, index) => {
+        const input = document.getElementById(`cmd${index + 1}`);
+        const typed = input.value.trim().replace(/\s+/g, ' ').toLowerCase();
+        return typed === answer || (index === 2 && typed === 'interface gigabitethernet 0/0');
+    });
+    const correct = results.filter(Boolean).length;
+    $('#commandFeedback').textContent = `${correct} / 5 correct. ${correct === 5 ? 'All commands are correct.' : 'Review the example and retry.'}`;
+    $('#commandFeedback').style.color = correct === 5 ? '#6ee7b7' : '#fda4af';
+});
+
+$('#checkType').addEventListener('click', () => {
+    const correct = $('#typeAnswer').value === 'Multicast';
+    $('#typeFeedback').textContent = correct ? 'Correct. 224.0.0.10 is a multicast destination.' : 'Try again. The 224–239 range is reserved for multicast.';
+    $('#typeFeedback').style.color = correct ? '#6ee7b7' : '#fda4af';
+});
+
+const labs = [
+    {
+        title: 'Lab 6.1 · IPv4 Address Configuration and Verification',
+        note: 'Textbook page 68, Figure 6.2. The assigned .pka provides the specific topology and addressing requirements.',
+        steps: [
+            ['Open the activity', 'Download Lab 6.1, open the assigned Packet Tracer file, and read its built-in instructions and addressing table.'],
+            ['Inspect the topology', 'Identify routers, switches, clients, and the interfaces requiring IPv4 configuration.'],
+            ['Plan the addressing', 'Determine the appropriate subnet mask and gateway for each device based on the assigned table.'],
+            ['Configure interfaces', 'Use the CLI or PC Desktop → IP Configuration as appropriate. Enter the exact addresses required by the activity.'],
+            ['Enable required router interfaces', 'On each router interface, use no shutdown where required.'],
+            ['Verify connectivity', 'Use show ip interface brief and ping to verify interfaces and reachability.'],
+            ['Review assessment', 'Inspect the Packet Tracer activity feedback, correct errors, and save the file.']
+        ]
+    },
+    {
+        title: 'Lab 6.2 · IPv4 Address Types',
+        note: 'Textbook page 72, Figure 6.3. Explore unicast, broadcast, and multicast using the official activity.',
+        steps: [
+            ['Open Lab 6.2', 'Download the official activity and review the network shown in its topology.'],
+            ['Identify address types', 'Classify the addresses supplied in the activity as unicast, broadcast, or multicast.'],
+            ['Observe packet behavior', 'Use Simulation mode and packet inspection if the activity requests it.'],
+            ['Record your findings', 'Compare destination addressing and recipient behavior for the traffic types shown.'],
+            ['Complete assessment', 'Finish the file’s assigned tasks and save your work.']
+        ]
+    },
+    {
+        title: 'Lab 6.3 · Verify IPv4 on a Client OS',
+        note: 'Textbook page 77, Figure 6.5. Verify client address, mask, and gateway.',
+        steps: [
+            ['Open Lab 6.3', 'Download and open the assigned Packet Tracer activity.'],
+            ['Inspect the client', 'Click the PC and navigate to Desktop → IP Configuration.'],
+            ['Review addressing', 'Record the IPv4 address, subnet mask, and default gateway shown.'],
+            ['Use the command prompt', 'Open Desktop → Command Prompt and run ipconfig to compare displayed settings.'],
+            ['Test reachability', 'Run ping to an assigned local gateway or target if required by the activity.'],
+            ['Finish and save', 'Complete the official checks and save the assigned file.']
+        ]
+    },
+    {
+        title: 'Lab 6.4 · Chapter Review',
+        note: 'Textbook page 79, Figure 6.6. This is the assessed Chapter 6 Packet Tracer review.',
+        steps: [
+            ['Open the review file', 'Download Lab 6.4 and read all instructions and assessment requirements.'],
+            ['Review the subnet plan', 'Calculate network IDs, masks, broadcast addresses, and usable host ranges as needed.'],
+            ['Apply configurations', 'Configure IPv4 parameters using the device and interface assignments in the activity.'],
+            ['Verify and troubleshoot', 'Check interface states, host settings, and ping results.'],
+            ['Submit the finished work', 'Review the assessment, save the activity file, and submit as instructed.']
+        ]
+    }
+];
+
+const labContainer = $('#labLists');
+let totalSteps = 0;
+
+labs.forEach((lab, labIndex) => {
+    const section = document.createElement('div');
+    section.className = 'space-y-4';
+    section.innerHTML = `
+        <div>
+            <h3 class="text-xl font-extrabold text-white">${lab.title}</h3>
+            <p class="text-xs text-slate-400 mt-2">${lab.note}</p>
+        </div>
+    `;
+    lab.steps.forEach((step, stepIndex) => {
+        totalSteps += 1;
+        const label = document.createElement('label');
+        label.className = 'step flex items-start gap-4 cursor-pointer';
+        label.innerHTML = `
+            <input type="checkbox" class="mt-1 accent-red-600 w-5 h-5 shrink-0" data-labstep="${labIndex}-${stepIndex}">
+            <span>
+                <strong class="text-white text-sm">Step ${stepIndex + 1}: ${step[0]}</strong>
+                <span class="block text-slate-300 text-xs leading-6 mt-2">${step[1]}</span>
+            </span>
+        `;
+        section.appendChild(label);
+    });
+    labContainer.appendChild(section);
+});
+
+function updateProgress() {
+    const completed = $$('[data-labstep]:checked').length;
+    $('#labProgress').textContent = `${completed} / ${totalSteps}`;
+    $('#progressBar').style.width = `${100 * completed / totalSteps}%`;
+}
+
+$$('[data-labstep]').forEach(input => {
+    input.addEventListener('change', () => {
+        input.closest('.step').classList.toggle('done', input.checked);
+        updateProgress();
+    });
+});
+
+updateProgress();
+
+const deliverables = [
+    'Lab 6.1 completed',
+    'Lab 6.2 completed',
+    'Lab 6.3 completed',
+    'Lab 6.4 completed',
+    'Packet Tracer files saved',
+    'Connectivity verification reviewed'
+];
+
+$('#deliverables').innerHTML = deliverables.map((item, index) => `
+    <label class="flex gap-3 items-center bg-mapua-card p-3 rounded-lg">
+        <input type="checkbox" class="accent-red-600" data-deliverable="${index}">
+        ${item}
+    </label>
+`).join('');
+
+$$('[data-deliverable]').forEach(input => {
+    input.addEventListener('change', () => {
+        const completed = $$('[data-deliverable]:checked').length;
+        $('#ready').textContent = `${completed} / ${deliverables.length} items complete. ${completed === deliverables.length ? 'Ready for instructor review.' : 'Complete the remaining items.'}`;
+    });
+});
+  </script>
+ </body>
+</html>
