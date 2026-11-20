@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chapter 7: Configure IPv6 | ECE144L | Map&uacute;a MCL
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>
+   tailwind.config = { theme: { extend: { fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] }, colors: { mapua: { red: '#E31B23', redDark: '#C51017', redBright: '#FF2E36', navy: '#112244', navyDark: '#0A1428', navyLight: '#1B3461', silver: '#CBD5E1', darkBg: '#080D1A', card: '#0F1A2E', panel: '#162540', border: '#23385C' } } } } }
+  </script>
+  <style>
+   html,body{font-family:"Montserrat",sans-serif!important}button,input,select,textarea{font-family:inherit}nav,header{font-family:"Montserrat",sans-serif!important}.glass-panel{background:rgba(15,26,46,.92);backdrop-filter:blur(14px);border:1px solid rgba(227,27,35,.25)}.glass-panel-navy{background:rgba(22,37,64,.95);border:1px solid rgba(35,56,92,.6)}.pill{border:1px solid #23385C;background:#162540;border-radius:.65rem;padding:.7rem 1rem;font-size:.78rem;font-weight:700}.pill:hover,.pill.active{background:#E31B23;color:white;border-color:#FF2E36}.tab-content{display:none}.tab-content.active{display:block}.step{border:1px solid #23385C;border-radius:.8rem;padding:1rem;background:#162540}.step.done{border-color:#10b981}code,pre{font-family:'Fira Code',monospace}pre{white-space:pre-wrap;overflow-wrap:anywhere}section{scroll-margin-top:6rem}
+  </style>
+  <style>
+   .practice-field{background:#080D1A;border:1px solid #23385C;border-radius:8px;padding:10px;color:#fff;min-width:105px;max-width:100%;font-family:"Fira Code",monospace}.practice-field:focus{outline:2px solid #E31B23}.practice-feedback{min-height:22px;margin-top:12px;font-size:13px}.practice-chip{border:1px solid #23385C;background:#162540;border-radius:9px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer}.practice-chip[aria-pressed=true]{background:#E31B23;border-color:#FF2E36}.practice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}.practice-code{background:#080D1A;border:1px solid #23385C;border-radius:12px;padding:20px;line-height:2.9;font-family:"Fira Code",monospace;font-size:12px;overflow-x:auto}.practice-code input{width:160px}.practice-action{background:#E31B23;border:1px solid #FF2E36;border-radius:9px;padding:10px 18px;color:white;font-size:12px;font-weight:800;cursor:pointer}.practice-action:hover{background:#FF2E36}.practice-note{color:#CBD5E1;font-size:12px;line-height:1.8}.practice-card{background:#162540;border:1px solid #23385C;border-radius:12px;padding:18px}
+  </style>
+  <style>
+   .practice-field { background: #080D1A; border: 1px solid #23385C; border-radius: 8px; padding: 10px; color: white; min-width: 105px; max-width: 100%; font-family: "Fira Code", monospace; }
+.practice-field:focus { outline: 2px solid #E31B23; }
+.practice-feedback { min-height: 22px; margin-top: 12px; font-size: 13px; color: #CBD5E1; }
+.practice-chip { border: 1px solid #23385C; background: #162540; border-radius: 9px; padding: 10px 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.practice-chip[aria-pressed="true"] { background: #E31B23; border-color: #FF2E36; }
+.practice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; }
+.practice-action { background: #E31B23; border: 1px solid #FF2E36; border-radius: 9px; padding: 10px 18px; color: white; font-size: 12px; font-weight: 800; cursor: pointer; }
+.practice-note { color: #CBD5E1; font-size: 12px; line-height: 1.8; }
+.practice-card { background: #162540; border: 1px solid #23385C; border-radius: 12px; padding: 18px; }
+  </style>
+  <style>
+   .practice-field {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 8px;
+    padding: 10px;
+    color: white;
+    min-width: 105px;
+    max-width: 100%;
+    font-family: "Fira Code", monospace;
+}
+.practice-field:focus {
+    outline: 2px solid #E31B23;
+}
+.practice-code {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 20px;
+    line-height: 3.3;
+    font-family: "Fira Code", monospace;
+    font-size: 12px;
+    overflow-x: auto;
+}
+.practice-code input {
+    max-width: 100%;
+}
+.practice-feedback {
+    min-height: 22px;
+    margin-top: 12px;
+    font-size: 13px;
+}
+.practice-action {
+    background: #E31B23;
+    border: 1px solid #FF2E36;
+    border-radius: 9px;
+    padding: 10px 18px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.practice-action:hover {
+    background: #FF2E36;
+}
+.practice-card {
+    background: #162540;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 18px;
+}
+.practice-note {
+    color: #CBD5E1;
+    font-size: 12px;
+    line-height: 1.8;
+}
+  </style>
+ </head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAP&Uacute;A MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      IPv6 Explorer
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#practice">
+      Interactive Practice
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 07 &middot; PART II: NETWORK FUNDAMENTALS
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 7:
+      <br/>
+      <span class="text-slate-200">
+       Configure IPv6
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Explore IPv6 addressing, SLAAC, modified EUI-64, and client verification through interactive practice and the assigned Cisco Packet Tracer labs.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026&ndash;2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2">
+      </i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Map&uacute;a Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+   <section class="glass-panel rounded-2xl p-6" id="outcomes">
+    <h2 class="text-xl font-extrabold mb-4">
+     <i class="fa-solid fa-bullseye text-mapua-redBright mr-2">
+     </i>
+     Learning Outcomes
+    </h2>
+    <div class="grid md:grid-cols-1 gap-3 text-sm text-slate-300">
+     <p>
+      01 &middot; Recognize IPv6 address types and their prefixes.
+     </p>
+     <p>
+      02 &middot; Compress and expand IPv6 addresses correctly.
+     </p>
+     <p>
+      03 &middot; Configure, verify, and troubleshoot IPv6 addressing and EUI-64.
+     </p>
+     <p>
+      04 &middot; Explain SLAAC and verify client IPv6 settings.
+     </p>
+    </div>
+   </section>
+   <section id="lecture">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3">
+     </i>
+     Lecture &amp; Discussion Notes
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Based on Chapter 7, pages 83&ndash;99, of the Cisco Press textbook.
+    </p>
+    <div class="flex flex-wrap gap-2 mb-5" id="tabs">
+     <button class="pill active" data-tab="format">
+      IPv6 Format
+     </button>
+     <button class="pill" data-tab="types">
+      Address Types
+     </button>
+     <button class="pill" data-tab="configuration">
+      Configuration
+     </button>
+     <button class="pill" data-tab="autoconfig">
+      EUI-64 &amp; SLAAC
+     </button>
+     <button class="pill" data-tab="client">
+      Client Verification
+     </button>
+    </div>
+    <div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+     <div class="tab-content active" id="format">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       128-Bit IPv6 Addressing
+      </h3>
+      <p>
+       IPv6 addresses contain 128 bits written as eight hexadecimal hextets. Omit leading zeros in a hextet, and use
+       <code>
+        ::
+       </code>
+       once to replace one or more consecutive all-zero hextets.
+      </p>
+      <pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-300 text-xs">2001:0000:0011:0001:0000:0000:0001:1AB1
+2001:0:11:1::1:1AB1</pre>
+      <p class="mt-4">
+       The textbook frequently uses a /64 prefix: 64 bits for the network and 64 bits for the interface identifier.
+      </p>
+     </div>
+     <div class="tab-content" id="types">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Recognizing IPv6 Address Types
+      </h3>
+      <div class="overflow-x-auto">
+       <table class="w-full text-left text-xs">
+        <thead>
+         <tr class="text-mapua-redBright border-b border-mapua-border">
+          <th class="p-3">
+           Type
+          </th>
+          <th class="p-3">
+           Prefix / Example
+          </th>
+          <th class="p-3">
+           Purpose
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="p-3">
+           Global unicast
+          </td>
+          <td class="p-3 font-mono">
+           2001:DB8::/32 (documentation example)
+          </td>
+          <td class="p-3">
+           Globally scoped unicast
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Unique local
+          </td>
+          <td class="p-3 font-mono">
+           FC00::/7
+          </td>
+          <td class="p-3">
+           Private-use addressing
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Link-local
+          </td>
+          <td class="p-3 font-mono">
+           FE80::/10
+          </td>
+          <td class="p-3">
+           Local-link communication
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Multicast
+          </td>
+          <td class="p-3 font-mono">
+           FF00::/8
+          </td>
+          <td class="p-3">
+           Group delivery; FF02::1 reaches all nodes on a link
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Anycast
+          </td>
+          <td class="p-3">
+           Shared unicast address
+          </td>
+          <td class="p-3">
+           Route to a nearby member of a group
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <p class="mt-3">
+       IPv6 uses multicast rather than IPv4-style broadcast.
+      </p>
+     </div>
+     <div class="tab-content" id="configuration">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Configure and Verify IPv6 on IOS
+      </h3>
+      <p>
+       On an interface, use
+       <code>
+        ipv6 address
+       </code>
+       with the prefix length and enable the port with
+       <code>
+        no shutdown
+       </code>
+       . Enable router IPv6 forwarding with
+       <code>
+        ipv6 unicast-routing
+       </code>
+       when routing between interfaces is required.
+      </p>
+      <pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-300 text-xs">R1(config)# ipv6 unicast-routing
+R1(config)# interface fastethernet0/0
+R1(config-if)# ipv6 address 2001:AAAA:BBBB::1/64
+R1(config-if)# no shutdown
+R1# show ipv6 interface brief
+R1# show ipv6 interface fastethernet0/0</pre>
+      <p class="mt-3">
+       The interface identifier varies by hardware and device model; always check the actual interface name in the assigned Packet Tracer file.
+      </p>
+     </div>
+     <div class="tab-content" id="autoconfig">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Modified EUI-64 and SLAAC
+      </h3>
+      <p>
+       <strong>
+        Modified EUI-64
+       </strong>
+       derives a 64-bit interface identifier from a 48-bit MAC address by inserting FFFE and inverting the universal/local bit.
+       <strong>
+        SLAAC
+       </strong>
+       uses IPv6 Router Advertisements to allow hosts to configure an address automatically. Neighbor Discovery uses ICMPv6, including link-local addresses.
+      </p>
+      <pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-300 text-xs">R1(config-if)# ipv6 address 2001:DB8:1:1::/64 eui-64
+R1(config-if)# ipv6 address autoconfig</pre>
+      <p class="mt-3">
+       SLAAC and DHCPv6 can be used in different combinations depending on network requirements.
+      </p>
+     </div>
+     <div class="tab-content" id="client">
+      <h3 class="text-lg font-extrabold text-white mb-3">
+       Verify IPv6 Parameters on a Client
+      </h3>
+      <p>
+       Windows uses
+       <code>
+        ipconfig /all
+       </code>
+       to display IPv6 addresses, temporary addresses, link-local addresses, and gateway information. The textbook references
+       <code>
+        ifconfig
+       </code>
+       for macOS and Linux; current Linux installations may use
+       <code>
+        ip -6 addr
+       </code>
+       .
+      </p>
+      <p class="mt-3">
+       In Packet Tracer, open a PC, inspect
+       <strong>
+        Desktop &rarr; IP Configuration
+       </strong>
+       , and use the command prompt to verify reachability.
+      </p>
+      <pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-300 text-xs">PC&gt; ipconfig
+PC&gt; ping 2001:DB8:1:1::1</pre>
+     </div>
+    </div>
+   </section>
+   <section id="explorer">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-magnifying-glass text-mapua-redBright mr-3">
+     </i>
+     Interactive IPv6 Address Explorer
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     Enter an IPv6 address to practice zero compression and address classification. This exercise runs entirely in the browser.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <label class="text-xs text-slate-300 block">
+      IPv6 address
+      <input class="practice-field w-full mt-2" id="ipv6Input" value="2001:0000:0011:0001:0000:0000:0001:1AB1"/>
+     </label>
+     <button class="practice-action mt-4" id="analyzeIPv6">
+      Analyze Address
+     </button>
+     <div aria-live="polite" class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4 mt-4 text-xs leading-7" id="ipv6Result">
+      Select Analyze Address to inspect this example.
+     </div>
+    </div>
+   </section>
+   <section id="quiz">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <div class="flex flex-wrap justify-between gap-3 mb-5">
+      <div>
+       <h2 class="text-2xl font-extrabold">
+        <i class="fa-solid fa-circle-question text-mapua-redBright mr-2">
+        </i>
+        Knowledge Check
+       </h2>
+       <p class="text-xs text-slate-400 mt-2">
+        Immediate grading and explanations.
+       </p>
+      </div>
+      <p class="text-mapua-redBright font-black text-sm" id="score">
+       Score: 0 / 8
+      </p>
+     </div>
+     <div class="space-y-4" id="questions">
+     </div>
+     <button class="pill mt-6" id="reset">
+      Reset Quiz
+     </button>
+    </div>
+   </section>
+   <section id="practice">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-keyboard text-mapua-redBright mr-3">
+     </i>
+     Interactive Preparation
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Practice the concepts before using the official Packet Tracer activities.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-7">
+     <div class="practice-card">
+      <h3 class="font-bold mb-3">
+       Activity A &middot; Compress an IPv6 Address
+      </h3>
+      <p class="practice-note mb-3">
+       Shorten
+       <code>
+        2001:0000:0011:0001:0000:0000:0001:1AB1
+       </code>
+       .
+      </p>
+      <input class="practice-field w-full" id="compressAnswer" placeholder="Enter compressed IPv6 address"/>
+      <button class="practice-action mt-4" id="checkCompress">
+       Check Compression
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="compressFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold mb-3">
+       Activity B &middot; Complete IOS Commands
+      </h3>
+      <p class="practice-note mb-3">
+       Fill in each missing IOS command using the example address.
+      </p>
+      <div class="practice-code">
+       R1(config)#
+       <input class="practice-field" id="cmd1" placeholder="enable IPv6 routing" style="width:260px"/>
+       <br/>
+       R1(config)#
+       <input class="practice-field" id="cmd2" placeholder="select interface" style="width:260px"/>
+       <br/>
+       R1(config-if)#
+       <input class="practice-field" id="cmd3" placeholder="IPv6 address /64" style="width:350px"/>
+       <br/>
+       R1(config-if)#
+       <input class="practice-field" id="cmd4" placeholder="enable interface"/>
+       <br/>
+       R1#
+       <input class="practice-field" id="cmd5" placeholder="verify IPv6 interfaces" style="width:290px"/>
+      </div>
+      <button class="practice-action mt-4" id="checkCommands">
+       Check Commands
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="commandFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold mb-3">
+       Activity C &middot; Match the Address Type
+      </h3>
+      <p class="practice-note mb-3">
+       What kind of IPv6 address is
+       <code>
+        FE80::1234
+       </code>
+       ?
+      </p>
+      <select class="practice-field w-full" id="typeAnswer">
+       <option value="">
+        Choose an address type
+       </option>
+       <option>
+        Global unicast
+       </option>
+       <option>
+        Unique local
+       </option>
+       <option>
+        Link-local
+       </option>
+       <option>
+        Multicast
+       </option>
+      </select>
+      <button class="practice-action mt-4" id="checkType">
+       Check Answer
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="typeFeedback">
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="lab">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-flask text-mapua-redBright mr-3">
+     </i>
+     Guided Packet Tracer Laboratories
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     All steps are permanently visible. Use the instructions and addressing values inside each official activity file; this webpage provides preparation and a companion checklist.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-8">
+     <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+      <h3 class="font-extrabold text-white">
+       Packet Tracer Lab Downloads
+      </h3>
+      <p class="text-xs text-slate-300 mt-2">
+       Replace each placeholder href with your assigned .pka or .pkt file link.
+      </p>
+      <div class="flex flex-wrap gap-2 mt-4">
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQBAXiwribEUQK5-m7XNHKdHAbjt37RjU-adeHuzS7w7TUI?e=TUofKV" rel="noopener noreferrer" target="_blank">
+        Download Lab 7.1
+       </a>
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQCvafFPDQy0RqbT-sO8JkoOARrTGgrH2XfHkZONpcsWInI?e=L12xfE" rel="noopener noreferrer" target="_blank">
+        Download Lab 7.2
+       </a>
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQCumCV_HpnBRKhLpHQhJo2VATNW50JpBOpOBMqXo-DLPvw?e=Brg7Cs" rel="noopener noreferrer" target="_blank">
+        Download Lab 7.3
+       </a>
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQB9HvhBFBFUQbhx4ITVOC7LAVyWuJW4ObNvM6TN908fkqA?e=WvaJYw" rel="noopener noreferrer" target="_blank">
+        Download Lab 7.4
+       </a>
+      </div>
+     </div>
+     <div class="space-y-8" id="labLists">
+     </div>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4">
+      <p class="text-sm font-bold">
+       Guided progress:
+       <span class="text-mapua-redBright" id="labProgress">
+        0 / 0
+       </span>
+      </p>
+      <div class="h-2 bg-mapua-panel rounded-full mt-3 overflow-hidden">
+       <div class="h-full bg-mapua-red" id="progressBar" style="width:0%">
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="challenge">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <h2 class="text-2xl font-extrabold mb-3">
+      Chapter Review &middot; Lab 7.4
+     </h2>
+     <p class="text-sm text-slate-300 leading-7">
+      Complete the assigned Chapter 7 review Packet Tracer activity. Its precise configuration and grading requirements are contained in the official file, not in the printed chapter.
+     </p>
+     <div class="bg-mapua-panel rounded-xl p-5 mt-5">
+      <h3 class="font-bold mb-3">
+       Submission Readiness
+      </h3>
+      <div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables">
+      </div>
+      <p aria-live="polite" class="text-mapua-redBright text-xs mt-4" id="ready">
+      </p>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    &copy; Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+  <script>
+   const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+
+$('#menuBtn').addEventListener('click', () => {
+    const links = $('#links');
+    ['hidden', 'flex', 'flex-col', 'absolute', 'top-20', 'right-3', 'bg-mapua-card', 'p-5'].forEach(name => {
+        links.classList.toggle(name);
+    });
+});
+
+$$('[data-tab]').forEach(button => {
+    button.addEventListener('click', () => {
+        $$('[data-tab]').forEach(item => item.classList.remove('active'));
+        $$('.tab-content').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+    });
+});
+
+function parseIPv6(address) {
+    const input = address.trim().toLowerCase();
+    if (!/^[0-9a-f:]+$/.test(input) || input.includes(':::')) return null;
+    const chunks = input.split('::');
+    if (chunks.length > 2) return null;
+    const left = chunks[0] ? chunks[0].split(':') : [];
+    const right = chunks.length === 2 && chunks[1] ? chunks[1].split(':') : [];
+    const items = [...left, ...right];
+    if (items.some(item => !/^[0-9a-f]{1,4}$/.test(item))) return null;
+    if (chunks.length === 1 && items.length !== 8) return null;
+    if (chunks.length === 2 && items.length >= 8) return null;
+    const middle = chunks.length === 2 ? Array(8 - items.length).fill('0') : [];
+    return [...left, ...middle, ...right].map(part => parseInt(part, 16));
+}
+
+function compressIPv6(parts) {
+    const hex = parts.map(part => part.toString(16));
+    let bestStart = -1;
+    let bestLength = 1;
+    for (let i = 0; i < 8;) {
+        if (parts[i] !== 0) {
+            i++;
+            continue;
+        }
+        let j = i;
+        while (j < 8 && parts[j] === 0) j++;
+        if (j - i > bestLength) {
+            bestStart = i;
+            bestLength = j - i;
+        }
+        i = j;
+    }
+    if (bestStart < 0) return hex.join(':');
+    const before = hex.slice(0, bestStart).join(':');
+    const after = hex.slice(bestStart + bestLength).join(':');
+    return before + '::' + after;
+}
+
+function classifyIPv6(parts) {
+    const first = parts[0];
+    if (first === 0 && parts.slice(1, 7).every(part => part === 0) && parts[7] === 1) return 'Loopback';
+    if (parts.every(part => part === 0)) return 'Unspecified';
+    if ((first & 0xFE00) === 0xFC00) return 'Unique local (FC00::/7)';
+    if ((first & 0xFFC0) === 0xFE80) return 'Link-local (FE80::/10)';
+    if ((first & 0xFF00) === 0xFF00) return 'Multicast (FF00::/8)';
+    if ((first & 0xE000) === 0x2000) return 'Global unicast (2000::/3)';
+    return 'Other / reserved IPv6 range';
+}
+
+$('#analyzeIPv6').addEventListener('click', () => {
+    const parts = parseIPv6($('#ipv6Input').value);
+    const result = $('#ipv6Result');
+    result.replaceChildren();
+    if (!parts) {
+        result.textContent = 'Invalid IPv6 address. Enter eight hextets, or use :: once to compress zeros.';
+        return;
+    }
+    const lines = [
+        'Compressed: ' + compressIPv6(parts),
+        'Expanded: ' + parts.map(part => part.toString(16).padStart(4, '0')).join(':'),
+        'Type: ' + classifyIPv6(parts)
+    ];
+    lines.forEach(line => {
+        const p = document.createElement('p');
+        p.textContent = line;
+        result.appendChild(p);
+    });
+});
+
+const questions = [
+    ['How many bits are in an IPv6 address?', ['32', '64', '128', '256'], 2, 'IPv6 uses 128-bit addresses.'],
+    ['How many times can :: appear in one valid IPv6 address?', ['Once', 'Twice', 'Four times', 'Unlimited'], 0, 'The double-colon zero-compression notation can occur only once.'],
+    ['Which prefix identifies IPv6 link-local addresses?', ['FF00::/8', 'FC00::/7', 'FE80::/10', '2001:DB8::/32'], 2, 'FE80::/10 is the link-local prefix.'],
+    ['Which IPv6 address type resembles private IPv4 addressing?', ['Unique local', 'Multicast', 'Anycast', 'Link-local only'], 0, 'Unique local IPv6 addresses use FC00::/7.'],
+    ['What replaces IPv4 broadcast behavior in IPv6?', ['Multicast', 'ARP broadcast', 'NAT', 'Telnet'], 0, 'IPv6 uses multicast groups, including FF02::1.'],
+    ['Which IOS command summarizes IPv6 interface addresses?', ['show ipv6 interface brief', 'show ip route', 'ipconfig /all', 'show version'], 0, 'show ipv6 interface brief provides an interface overview.'],
+    ['What is modified EUI-64 used for?', ['Generating an interface identifier', 'Changing a subnet mask', 'Encrypting IPv6 packets', 'Assigning DNS names'], 0, 'Modified EUI-64 derives a 64-bit interface identifier.'],
+    ['What is the term for running IPv4 and IPv6 together?', ['Dual stack', 'Anycast', 'SLAAC', 'Broadcast'], 0, 'Dual stack runs both protocols on an interface or device.']
+];
+
+let answers = {};
+function renderQuiz() {
+    answers = {};
+    $('#questions').innerHTML = questions.map((question, index) => `
+        <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+            <p class="font-bold text-sm mb-3">${index + 1}. ${question[0]}</p>
+            <div class="grid sm:grid-cols-2 gap-2">
+                ${question[1].map((option, choice) => `
+                    <button data-question="${index}" data-answer="${choice}" class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright">
+                        ${String.fromCharCode(65 + choice)}. ${option}
+                    </button>
+                `).join('')}
+            </div>
+            <p id="feedback${index}" class="hidden text-xs mt-3" aria-live="polite"></p>
+        </div>
+    `).join('');
+    $('#score').textContent = `Score: 0 / ${questions.length}`;
+    $$('[data-question]').forEach(button => {
+        button.addEventListener('click', () => {
+            const index = Number(button.dataset.question);
+            const choice = Number(button.dataset.answer);
+            if (answers[index] !== undefined) return;
+            answers[index] = choice;
+            $$(`[data-question="${index}"]`).forEach(item => {
+                item.disabled = true;
+                item.classList.add(Number(item.dataset.answer) === questions[index][2] ? 'border-emerald-500' : 'opacity-60');
+            });
+            const correct = choice === questions[index][2];
+            button.classList.add(correct ? 'bg-emerald-900/40' : 'bg-rose-900/40');
+            const feedback = document.getElementById(`feedback${index}`);
+            feedback.classList.remove('hidden');
+            feedback.classList.add(correct ? 'text-emerald-300' : 'text-rose-300');
+            feedback.textContent = `${correct ? 'Correct.' : 'Not quite.'} ${questions[index][3]}`;
+            const score = Object.entries(answers).filter(([key, value]) => questions[Number(key)][2] === value).length;
+            $('#score').textContent = `Score: ${score} / ${questions.length}`;
+        });
+    });
+}
+renderQuiz();
+$('#reset').addEventListener('click', renderQuiz);
+
+$('#checkCompress').addEventListener('click', () => {
+    const actual = parseIPv6($('#compressAnswer').value);
+    const target = parseIPv6('2001:0000:0011:0001:0000:0000:0001:1AB1');
+    const correct = actual && JSON.stringify(actual) === JSON.stringify(target) && $('#compressAnswer').value.includes('::');
+    $('#compressFeedback').textContent = correct ? 'Correct! Your compressed form represents the same address.' : 'Try again. Remove leading zeros and compress the consecutive zero hextets using ::.';
+});
+
+const commands = [
+    'ipv6 unicast-routing',
+    'interface fastethernet0/0',
+    'ipv6 address 2001:aaaa:bbbb::1/64',
+    'no shutdown',
+    'show ipv6 interface brief'
+];
+$('#checkCommands').addEventListener('click', () => {
+    const correct = commands.filter((expected, index) => {
+        const entered = document.getElementById(`cmd${index + 1}`).value.trim().replace(/\s+/g, ' ').toLowerCase();
+        return entered === expected;
+    }).length;
+    $('#commandFeedback').textContent = `${correct} / ${commands.length} correct. ${correct === commands.length ? 'All commands are correct.' : 'Check the configuration examples and try again.'}`;
+});
+
+$('#checkType').addEventListener('click', () => {
+    $('#typeFeedback').textContent = $('#typeAnswer').value === 'Link-local' ? 'Correct! FE80::/10 identifies link-local IPv6 addresses.' : 'Try again. Check the link-local prefix in the lecture notes.';
+});
+
+const labs = [
+    {
+        title: 'Lab 7.1 · IPv6 Address Configuration and Verification',
+        note: 'Use the assigned Packet Tracer file and its addressing plan. The textbook introduces ipv6 address and show ipv6 interface commands.',
+        steps: [
+            ['Open the activity', 'Download Lab 7.1 and read its topology, interface names, IPv6 prefixes, and scoring requirements.'],
+            ['Identify target interfaces', 'Open the required router or switch CLI. Use show ipv6 interface brief to inspect existing IPv6 addresses and interface state.'],
+            ['Configure assigned addresses', 'Enter enable, configure terminal, and the correct interface command. Apply the IPv6 address and prefix length specified by the activity.'],
+            ['Enable routing if required', 'If the lab requires forwarding between IPv6 networks, enter ipv6 unicast-routing in global configuration mode. Enable assigned interfaces with no shutdown.'],
+            ['Verify reachability', 'Use show ipv6 interface brief, show ipv6 interface, and ping to verify the activity’s required destinations.'],
+            ['Save and assess', 'Save your configuration and check the Packet Tracer activity assessment for incomplete items.']
+        ]
+    },
+    {
+        title: 'Lab 7.2 · IPv6 EUI-64 Address Configuration and Verification',
+        note: 'Practice deriving interface identifiers from MAC addresses. Follow the assigned .pka file for the exact topology and addresses.',
+        steps: [
+            ['Open Lab 7.2', 'Download the activity and identify the interface and /64 prefix where modified EUI-64 is requested.'],
+            ['Inspect the interface', 'Check the assigned device’s interface status and MAC address before making changes.'],
+            ['Apply EUI-64', 'In interface configuration mode, use ipv6 address followed by the assigned /64 prefix and the eui-64 keyword.'],
+            ['Enable and verify', 'Use no shutdown if required, then show ipv6 interface brief and show ipv6 interface to inspect the generated address.'],
+            ['Observe SLAAC concepts', 'Review how Router Advertisements provide prefix information to clients; distinguish this from manually configured EUI-64.'],
+            ['Check the assessment', 'Verify all required addresses and save the assigned activity file.']
+        ]
+    },
+    {
+        title: 'Lab 7.3 · IPv6 on a Client OS',
+        note: 'Configure and verify a client IPv6 configuration using the official activity topology (Figure 7.4).',
+        steps: [
+            ['Open Lab 7.3', 'Download the assigned Packet Tracer file and read its client addressing requirements.'],
+            ['Inspect the client', 'Select the PC, open Desktop, and inspect IP Configuration for IPv6 and gateway settings.'],
+            ['Configure the client', 'Enter the specified IPv6 address and prefix or use automatic configuration if the lab requires it.'],
+            ['Inspect assigned addresses', 'Use the PC command prompt and ipconfig to identify the global and link-local IPv6 addresses.'],
+            ['Test connectivity', 'Ping the assigned IPv6 gateway and other lab destinations; troubleshoot any failed checks.'],
+            ['Save and verify', 'Review the official Packet Tracer assessment and save the completed file.']
+        ]
+    },
+    {
+        title: 'Lab 7.4 · Chapter Review',
+        note: 'The textbook’s chapter review is an assessed Packet Tracer activity; its exact requirements are inside the companion file.',
+        steps: [
+            ['Open the review', 'Download Lab 7.4 and examine the complete topology and requirements.'],
+            ['Plan the configuration', 'Identify address types, prefixes, interfaces, EUI-64 or SLAAC tasks, and client settings required by the file.'],
+            ['Implement the requirements', 'Complete the assigned router, switch, and host configuration tasks without replacing the file’s addresses with webpage examples.'],
+            ['Verify and troubleshoot', 'Inspect IPv6 interfaces, client settings, and end-to-end reachability; correct discrepancies.'],
+            ['Submit the completed activity', 'Save the activity and submit it using your instructor’s required naming convention.']
+        ]
+    }
+];
+
+const labContainer = $('#labLists');
+let total = 0;
+labs.forEach((lab, labIndex) => {
+    const section = document.createElement('div');
+    section.className = 'space-y-4';
+    section.innerHTML = `
+        <div>
+            <h3 class="text-xl font-extrabold text-white">${lab.title}</h3>
+            <p class="text-xs text-slate-400 mt-2">${lab.note}</p>
+        </div>
+    `;
+    lab.steps.forEach((step, stepIndex) => {
+        total++;
+        const label = document.createElement('label');
+        label.className = 'step flex items-start gap-4 cursor-pointer';
+        label.innerHTML = `
+            <input type="checkbox" class="mt-1 accent-red-600 w-5 h-5 shrink-0" data-labstep="${labIndex}-${stepIndex}">
+            <span>
+                <strong class="text-white text-sm">Step ${stepIndex + 1}: ${step[0]}</strong>
+                <span class="block text-slate-300 text-xs leading-6 mt-2">${step[1]}</span>
+            </span>
+        `;
+        section.appendChild(label);
+    });
+    labContainer.appendChild(section);
+});
+
+function updateProgress() {
+    const completed = $$('[data-labstep]:checked').length;
+    $('#labProgress').textContent = `${completed} / ${total}`;
+    $('#progressBar').style.width = `${100 * completed / total}%`;
+}
+$$('[data-labstep]').forEach(input => {
+    input.addEventListener('change', () => {
+        input.closest('.step').classList.toggle('done', input.checked);
+        updateProgress();
+    });
+});
+updateProgress();
+
+const deliverables = [
+    'Lab 7.1 completed',
+    'Lab 7.2 completed',
+    'Lab 7.3 completed',
+    'Lab 7.4 completed',
+    'IPv6 verification evidence reviewed',
+    'Completed Packet Tracer files saved'
+];
+$('#deliverables').innerHTML = deliverables.map((item, index) => `
+    <label class="flex gap-3 items-center bg-mapua-card p-3 rounded-lg">
+        <input type="checkbox" class="accent-red-600" data-deliverable="${index}">
+        ${item}
+    </label>
+`).join('');
+$$('[data-deliverable]').forEach(input => {
+    input.addEventListener('change', () => {
+        const count = $$('[data-deliverable]:checked').length;
+        $('#ready').textContent = `${count} / ${deliverables.length} items complete. ${count === deliverables.length ? 'Ready for instructor review.' : 'Complete the remaining items.'}`;
+    });
+});
+  </script>
+ </body>
+</html>
