@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Chapter 11: Configure and Verify Layer 2 Discovery Protocols | ECE144L | Map&uacute;a MCL
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>
+   tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Montserrat', 'sans-serif'],
+                    mono: ['Fira Code', 'monospace']
+                },
+                colors: {
+                    mapua: {
+                        red: '#E31B23',
+                        redDark: '#C51017',
+                        redBright: '#FF2E36',
+                        navy: '#112244',
+                        navyDark: '#0A1428',
+                        navyLight: '#1B3461',
+                        silver: '#CBD5E1',
+                        darkBg: '#080D1A',
+                        card: '#0F1A2E',
+                        panel: '#162540',
+                        border: '#23385C'
+                    }
+                }
+            }
+        }
+    };
+  </script>
+  <style>
+   html, body {
+    font-family: "Montserrat", sans-serif !important;
+}
+button, input, select, textarea {
+    font-family: inherit;
+}
+nav, header {
+    font-family: "Montserrat", sans-serif !important;
+}
+.glass-panel {
+    background: rgba(15, 26, 46, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(227, 27, 35, 0.25);
+}
+.glass-panel-navy {
+    background: rgba(22, 37, 64, 0.95);
+    border: 1px solid rgba(35, 56, 92, 0.6);
+}
+.pill {
+    border: 1px solid #23385C;
+    background: #162540;
+    border-radius: 0.65rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.pill:hover, .pill.active {
+    background: #E31B23;
+    color: white;
+    border-color: #FF2E36;
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+.step {
+    border: 1px solid #23385C;
+    border-radius: 0.8rem;
+    padding: 1rem;
+    background: #162540;
+}
+.step.done {
+    border-color: #10b981;
+}
+code, pre {
+    font-family: "Fira Code", monospace;
+}
+pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+section {
+    scroll-margin-top: 6rem;
+}
+.practice-field {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 8px;
+    padding: 10px;
+    color: white;
+    min-width: 80px;
+    max-width: 100%;
+    font-family: "Fira Code", monospace;
+}
+.practice-field:focus {
+    outline: 2px solid #E31B23;
+}
+.practice-feedback {
+    min-height: 22px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #CBD5E1;
+}
+.practice-chip {
+    border: 1px solid #23385C;
+    background: #162540;
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.practice-chip[aria-pressed="true"] {
+    background: #E31B23;
+    border-color: #FF2E36;
+}
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 10px;
+}
+.practice-code {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 20px;
+    line-height: 2.9;
+    font-family: "Fira Code", monospace;
+    font-size: 12px;
+    overflow-x: auto;
+}
+.practice-action {
+    display: inline-block;
+    background: #E31B23;
+    border: 1px solid #FF2E36;
+    border-radius: 9px;
+    padding: 10px 18px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.practice-action:hover {
+    background: #FF2E36;
+}
+.practice-note {
+    color: #CBD5E1;
+    font-size: 12px;
+    line-height: 1.8;
+}
+.practice-card {
+    background: #162540;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 18px;
+}
+  </style>
+ </head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAP&Uacute;A MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      Discovery Explorer
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#practice">
+      Interactive Practice
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 11 &middot; PART III: NETWORK ACCESS
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 11:
+      <br/>
+      <span class="text-slate-200">
+       Layer 2 Discovery Protocols
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Discover directly connected network devices using Cisco Discovery Protocol (CDP) and Link Layer Discovery Protocol (LLDP), then verify neighbors in Packet Tracer.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026&ndash;2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2">
+      </i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Map&uacute;a Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+   <section class="glass-panel rounded-2xl p-6" id="outcomes">
+    <h2 class="text-xl font-extrabold mb-4">
+     <i class="fa-solid fa-bullseye text-mapua-redBright mr-2">
+     </i>
+     Learning Outcomes
+    </h2>
+    <div class="grid md:grid-cols-1 gap-3 text-sm text-slate-300">
+     <p>
+      01 &middot; Explain the purpose of Layer 2 neighbor discovery.
+     </p>
+     <p>
+      02 &middot; Distinguish Cisco-proprietary CDP from standards-based LLDP.
+     </p>
+     <p>
+      03 &middot; Configure CDP and LLDP globally and on Ethernet interfaces.
+     </p>
+     <p>
+      04 &middot; Verify neighboring devices and interpret discovery information.
+     </p>
+    </div>
+   </section>
+   <section id="lecture">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3">
+     </i>
+     Lecture &amp; Discussion Notes
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Based on Chapter 11, pages 143&ndash;149, of
+     <em>
+      CCNA 200-301 Hands-on Mastery with Packet Tracer
+     </em>
+     .
+    </p>
+    <div class="flex flex-wrap gap-2 mb-5" id="tabs">
+     <button class="pill active" data-tab="concept">
+      Discovery Fundamentals
+     </button>
+     <button class="pill" data-tab="cdp">
+      Cisco Discovery Protocol
+     </button>
+     <button class="pill" data-tab="lldp">
+      Link Layer Discovery Protocol
+     </button>
+     <button class="pill" data-tab="compare">
+      Compare &amp; Verify
+     </button>
+    </div>
+    <div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+     <div class="tab-content active" id="concept">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Who Is Connected to This Device?
+      </h3>
+      <p>
+       Layer 2 discovery protocols let a device advertise information about itself to directly connected neighbors. Network administrators use these advertisements to identify device names, local and remote interfaces, and adjacent equipment without already knowing the entire topology.
+      </p>
+      <p class="mt-4">
+       CDP and LLDP are
+       <strong>
+        neighbor-discovery protocols
+       </strong>
+       , not IP routing protocols. A router does not forward CDP messages to devices beyond the directly connected link.
+      </p>
+     </div>
+     <div class="tab-content" id="cdp">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       CDP &mdash; Cisco Proprietary
+      </h3>
+      <p>
+       CDP is enabled by default on Cisco routers and switches. It operates at Layer 2 without relying on TCP, UDP, or ICMP. Cisco IP phones can use CDP to exchange capability and VLAN-related information with switches.
+      </p>
+      <pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-400 text-xs">Switch# configure terminal
+Switch(config)# cdp run
+Switch(config)# interface gigabitethernet0/1
+Switch(config-if)# cdp enable
+Switch(config-if)# end
+Switch# show cdp neighbors detail</pre>
+      <p class="mt-3">
+       To disable CDP globally, use
+       <code>
+        no cdp run
+       </code>
+       . To disable it on one interface, use
+       <code>
+        no cdp enable
+       </code>
+       . Limit discovery advertisements on interfaces where they would reveal information unnecessarily.
+      </p>
+     </div>
+     <div class="tab-content" id="lldp">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       LLDP &mdash; Open Standard
+      </h3>
+      <p>
+       LLDP performs similar neighbor discovery across equipment from different vendors. The chapter explains that LLDP is not globally enabled by default on Cisco IOS. Use
+       <code>
+        lldp run
+       </code>
+       to enable it, then
+       <code>
+        lldp transmit
+       </code>
+       and
+       <code>
+        lldp receive
+       </code>
+       for interface-level behavior.
+      </p>
+      <pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-400 text-xs">Switch# configure terminal
+Switch(config)# lldp run
+Switch(config)# interface gigabitethernet0/1
+Switch(config-if)# lldp transmit
+Switch(config-if)# lldp receive
+Switch(config-if)# end
+Switch# show lldp neighbors detail</pre>
+      <p class="mt-3">
+       LLDP is used on Ethernet interfaces. CDP can be used for discovery on supported non-Ethernet interfaces.
+      </p>
+     </div>
+     <div class="tab-content" id="compare">
+      <h3 class="text-lg text-white font-extrabold mb-3">
+       Key Differences &amp; Verification
+      </h3>
+      <div class="overflow-x-auto">
+       <table class="w-full text-left text-xs">
+        <thead>
+         <tr class="text-mapua-redBright border-b border-mapua-border">
+          <th class="p-3">
+           Feature
+          </th>
+          <th class="p-3">
+           CDP
+          </th>
+          <th class="p-3">
+           LLDP
+          </th>
+         </tr>
+        </thead>
+        <tbody class="divide-y divide-mapua-border">
+         <tr>
+          <td class="p-3">
+           Origin
+          </td>
+          <td class="p-3">
+           Cisco proprietary
+          </td>
+          <td class="p-3">
+           Open standard
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           IOS global default
+          </td>
+          <td class="p-3">
+           Enabled
+          </td>
+          <td class="p-3">
+           Not enabled
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Enable globally
+          </td>
+          <td class="p-3 font-mono">
+           cdp run
+          </td>
+          <td class="p-3 font-mono">
+           lldp run
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Interface commands
+          </td>
+          <td class="p-3 font-mono">
+           cdp enable
+          </td>
+          <td class="p-3 font-mono">
+           lldp transmit / receive
+          </td>
+         </tr>
+         <tr>
+          <td class="p-3">
+           Show neighbors
+          </td>
+          <td class="p-3 font-mono">
+           show cdp neighbors detail
+          </td>
+          <td class="p-3 font-mono">
+           show lldp neighbors detail
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <p class="mt-4">
+       Use
+       <code>
+        show cdp
+       </code>
+       /
+       <code>
+        show lldp
+       </code>
+       for global status, and
+       <code>
+        show cdp interface
+       </code>
+       /
+       <code>
+        show lldp interface
+       </code>
+       for interface status.
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="explorer">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-diagram-project text-mapua-redBright mr-3">
+     </i>
+     Interactive Discovery Explorer
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     Choose a protocol and inspect what its neighbor-discovery output is used for. This is a conceptual preview, not a live Packet Tracer connection.
+    </p>
+    <div class="glass-panel rounded-2xl p-6">
+     <div class="flex flex-wrap gap-2" id="discoveryButtons">
+      <button class="pill active" data-discovery="cdp">
+       CDP
+      </button>
+      <button class="pill" data-discovery="lldp">
+       LLDP
+      </button>
+      <button class="pill" data-discovery="off">
+       Disabled
+      </button>
+     </div>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-5 mt-5">
+      <p class="font-mono text-emerald-400 text-sm whitespace-pre-wrap" id="discoveryCommand">
+       Switch# show cdp neighbors detail
+      </p>
+      <p class="text-slate-300 text-sm mt-3" id="discoveryText">
+       Shows directly connected CDP-speaking Cisco neighbors and their advertised details.
+      </p>
+     </div>
+     <p class="practice-note mt-4">
+      In the real lab, the neighbor list depends on the topology, connected ports, and protocol settings in the supplied Packet Tracer activity.
+     </p>
+    </div>
+   </section>
+   <section id="quiz">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <div class="flex flex-wrap justify-between gap-3 mb-5">
+      <div>
+       <h2 class="text-2xl font-extrabold">
+        <i class="fa-solid fa-circle-question text-mapua-redBright mr-2">
+        </i>
+        Knowledge Check
+       </h2>
+       <p class="text-xs text-slate-400 mt-2">
+        Eight questions with immediate explanations.
+       </p>
+      </div>
+      <p class="text-mapua-redBright font-black text-sm" id="score">
+       Score: 0 / 8
+      </p>
+     </div>
+     <div class="space-y-4" id="questions">
+     </div>
+     <button class="pill mt-6" id="reset">
+      Reset Quiz
+     </button>
+    </div>
+   </section>
+   <section id="practice">
+    <h2 class="text-2xl font-extrabold mb-2">
+     <i class="fa-solid fa-keyboard text-mapua-redBright mr-3">
+     </i>
+     Interactive Preparation
+    </h2>
+    <p class="text-sm text-slate-400 mb-6">
+     Practice the commands and concepts before opening the official Packet Tracer activity.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-7">
+     <div class="practice-card">
+      <h3 class="font-bold mb-2">
+       Activity A &middot; Complete the Discovery Commands
+      </h3>
+      <p class="practice-note mb-4">
+       Enter the missing IOS command. Capitalization and repeated spaces are ignored.
+      </p>
+      <div class="space-y-4 font-mono text-xs">
+       <label class="block">
+        Switch(config)#
+        <input aria-label="Enable CDP globally" class="practice-field" id="fill1" placeholder="enable CDP globally" style="width:230px"/>
+       </label>
+       <label class="block">
+        Switch(config)#
+        <input aria-label="Enable LLDP globally" class="practice-field" id="fill2" placeholder="enable LLDP globally" style="width:230px"/>
+       </label>
+       <label class="block">
+        Switch(config-if)#
+        <input aria-label="Enable LLDP reception" class="practice-field" id="fill3" placeholder="receive LLDP frames" style="width:230px"/>
+       </label>
+       <label class="block">
+        Switch#
+        <input aria-label="Show CDP neighbors detail" class="practice-field" id="fill4" placeholder="inspect CDP neighbors" style="width:320px"/>
+       </label>
+      </div>
+      <button class="practice-action mt-4" id="checkFill">
+       Check Commands
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="fillFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold mb-2">
+       Activity B &middot; Put LLDP Setup in Order
+      </h3>
+      <p class="practice-note mb-3">
+       Click commands in the order needed to enter configuration mode, enable LLDP, select an interface, and allow reception.
+      </p>
+      <div class="flex flex-wrap gap-2" id="sequenceOptions">
+      </div>
+      <div class="bg-mapua-darkBg border border-mapua-border rounded-lg p-4 mt-4 font-mono text-xs text-emerald-400 min-h-16 whitespace-pre-line" id="sequenceResult">
+       Selected sequence appears here.
+      </div>
+      <div class="flex flex-wrap gap-2 mt-4">
+       <button class="practice-action" id="checkSequence">
+        Check Sequence
+       </button>
+       <button class="pill" id="clearSequence">
+        Reset
+       </button>
+      </div>
+      <p aria-live="polite" class="practice-feedback" id="sequenceFeedback">
+      </p>
+     </div>
+     <div class="practice-card">
+      <h3 class="font-bold mb-2">
+       Activity C &middot; Choose the Correct Verification Command
+      </h3>
+      <p class="practice-note mb-4">
+       Which command shows detailed information about directly connected LLDP neighbors?
+      </p>
+      <select class="practice-field w-full" id="verifySelect">
+       <option value="">
+        Select a command
+       </option>
+       <option>
+        show cdp interface
+       </option>
+       <option>
+        show lldp neighbors detail
+       </option>
+       <option>
+        show ip route
+       </option>
+       <option>
+        lldp transmit
+       </option>
+      </select>
+      <button class="practice-action mt-4" id="checkVerify">
+       Check Answer
+      </button>
+      <p aria-live="polite" class="practice-feedback" id="verifyFeedback">
+      </p>
+     </div>
+    </div>
+   </section>
+   <section id="lab">
+    <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">
+     <i class="fa-solid fa-flask text-mapua-redBright mr-3">
+     </i>
+     Guided Packet Tracer Laboratories
+    </h2>
+    <p class="text-sm text-slate-400 mb-5">
+     All steps remain visible without dropdowns. Follow the official activity's specific device names, interfaces, and assessment requirements.
+    </p>
+    <div class="glass-panel rounded-2xl p-6 space-y-8">
+     <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+      <h3 class="font-extrabold text-white">
+       Official Packet Tracer Lab File
+      </h3>
+      <p class="text-xs text-slate-300 mt-2">
+       Download the textbook's Chapter 11 review activity. The exact topology and graded tasks are supplied inside that file.
+      </p>
+      <div class="flex flex-wrap gap-2 mt-4">
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQBVmf5EaGpMSYbhgUd_3ON2AZa4Rj0AupYa2sZpWgLjCl0?e=AfNuLS" rel="noopener noreferrer" target="_blank">
+        Download Lab 11.1
+       </a>
+      </div>
+     </div>
+     <div class="space-y-8" id="labLists">
+     </div>
+     <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4">
+      <p class="text-sm font-bold">
+       Guided progress:
+       <span class="text-mapua-redBright" id="labProgress">
+        0 / 0
+       </span>
+      </p>
+      <div class="h-2 bg-mapua-panel rounded-full mt-3 overflow-hidden">
+       <div class="h-full bg-mapua-red" id="progressBar" style="width:0%">
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section id="challenge">
+    <div class="glass-panel rounded-2xl p-6 sm:p-8">
+     <h2 class="text-2xl font-extrabold mb-3">
+      Chapter Review &middot; Lab 11.1
+     </h2>
+     <p class="text-sm text-slate-300 leading-7">
+      The textbook assigns one evaluated Packet Tracer activity for Chapter 11. Configure and verify Layer 2 discovery using the instructions and topology embedded in the official file. Compare your observations against the required neighbor relationships and submit the completed activity.
+     </p>
+     <div class="bg-mapua-panel rounded-xl p-5 mt-5">
+      <h3 class="font-bold mb-3">
+       Submission Readiness
+      </h3>
+      <div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables">
+      </div>
+      <p aria-live="polite" class="text-mapua-redBright text-xs mt-4" id="ready">
+      </p>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    &copy; Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+  <script>
+   const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+
+$('#menuBtn').addEventListener('click', () => {
+    const links = $('#links');
+    ['hidden', 'flex', 'flex-col', 'absolute', 'top-20', 'right-3', 'bg-mapua-card', 'p-5'].forEach(name => {
+        links.classList.toggle(name);
+    });
+});
+
+$$('[data-tab]').forEach(button => {
+    button.addEventListener('click', () => {
+        $$('[data-tab]').forEach(item => item.classList.remove('active'));
+        $$('.tab-content').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+    });
+});
+
+const discoveryModes = {
+    cdp: ['Switch# show cdp neighbors detail', 'Shows directly connected CDP-speaking Cisco neighbors and their advertised details.'],
+    lldp: ['Switch# show lldp neighbors detail', 'Shows directly connected LLDP-speaking neighbors, including standards-based equipment.'],
+    off: ['Switch(config)# no cdp run', 'When CDP is disabled globally, this device stops participating in CDP neighbor discovery.']
+};
+$$('[data-discovery]').forEach(button => {
+    button.addEventListener('click', () => {
+        $$('[data-discovery]').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        const item = discoveryModes[button.dataset.discovery];
+        $('#discoveryCommand').textContent = item[0];
+        $('#discoveryText').textContent = item[1];
+    });
+});
+
+const questions = [
+    ['At which layer does CDP operate?', ['Layer 2', 'Layer 3', 'Layer 4', 'Layer 7'], 0, 'CDP is a Layer 2 discovery protocol.'],
+    ['Which protocol is Cisco proprietary?', ['LLDP', 'CDP', 'OSPF', 'ARP'], 1, 'CDP is Cisco proprietary; LLDP is an open standard.'],
+    ['What is the default global CDP status on Cisco IOS devices?', ['Disabled', 'Enabled', 'Enabled only on servers', 'Unavailable'], 1, 'CDP is enabled by default on Cisco routers and switches.'],
+    ['Which command enables LLDP globally?', ['lldp enable', 'lldp receive', 'lldp run', 'show lldp'], 2, 'Use lldp run in global configuration mode.'],
+    ['Which command allows an interface to process received LLDP frames?', ['lldp receive', 'lldp run', 'cdp enable', 'lldp forward'], 0, 'lldp receive controls LLDP reception at an interface.'],
+    ['Which command lists detailed CDP neighbor information?', ['show ip route', 'show cdp neighbors detail', 'show vlan brief', 'show lldp interface'], 1, 'show cdp neighbors detail displays advertised neighbor information.'],
+    ['Which command disables CDP globally?', ['no cdp enable', 'cdp stop', 'no cdp run', 'disable cdp'], 2, 'no cdp run disables CDP globally.'],
+    ['Which type of link does the chapter associate with LLDP?', ['Only serial', 'Ethernet', 'Only console', 'Only wireless WAN'], 1, 'The chapter describes LLDP on Ethernet interfaces.']
+];
+
+let answers = {};
+function renderQuiz() {
+    answers = {};
+    $('#questions').innerHTML = questions.map((question, index) => `
+        <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+            <p class="font-bold text-sm mb-3">${index + 1}. ${question[0]}</p>
+            <div class="grid sm:grid-cols-2 gap-2">
+                ${question[1].map((option, optionIndex) => `
+                    <button data-question="${index}" data-answer="${optionIndex}"
+                        class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright">
+                        ${String.fromCharCode(65 + optionIndex)}. ${option}
+                    </button>
+                `).join('')}
+            </div>
+            <p id="feedback${index}" class="hidden text-xs mt-3" aria-live="polite"></p>
+        </div>
+    `).join('');
+    $('#score').textContent = `Score: 0 / ${questions.length}`;
+    $$('[data-question]').forEach(button => {
+        button.addEventListener('click', () => {
+            const index = Number(button.dataset.question);
+            const answer = Number(button.dataset.answer);
+            if (answers[index] !== undefined) return;
+            answers[index] = answer;
+            $$(`[data-question="${index}"]`).forEach(item => {
+                item.disabled = true;
+                item.classList.add(Number(item.dataset.answer) === questions[index][2] ? 'border-emerald-500' : 'opacity-60');
+            });
+            const correct = answer === questions[index][2];
+            button.classList.add(correct ? 'bg-emerald-900/40' : 'bg-rose-900/40');
+            const feedback = document.getElementById(`feedback${index}`);
+            feedback.classList.remove('hidden');
+            feedback.classList.add(correct ? 'text-emerald-300' : 'text-rose-300');
+            feedback.textContent = `${correct ? 'Correct.' : 'Not quite.'} ${questions[index][3]}`;
+            const score = Object.entries(answers).filter(([key, value]) => questions[Number(key)][2] === value).length;
+            $('#score').textContent = `Score: ${score} / ${questions.length}`;
+        });
+    });
+}
+renderQuiz();
+$('#reset').addEventListener('click', renderQuiz);
+
+$('#checkFill').addEventListener('click', () => {
+    const expected = ['cdp run', 'lldp run', 'lldp receive', 'show cdp neighbors detail'];
+    const results = expected.map((answer, index) => {
+        const entered = document.getElementById(`fill${index + 1}`).value.trim().replace(/\s+/g, ' ').toLowerCase();
+        return entered === answer;
+    });
+    const correct = results.filter(Boolean).length;
+    $('#fillFeedback').textContent = `${correct} / ${expected.length} correct. ${correct === expected.length ? 'All commands are correct.' : 'Review the lecture examples and try again.'}`;
+    $('#fillFeedback').style.color = correct === expected.length ? '#6ee7b7' : '#fda4af';
+});
+
+const sequence = ['enable', 'configure terminal', 'lldp run', 'interface gigabitethernet0/1', 'lldp receive'];
+let selected = [];
+function drawSequence() {
+    $('#sequenceResult').textContent = selected.length
+        ? selected.map((command, index) => `${index + 1}. ${command}`).join('\n')
+        : 'Selected sequence appears here.';
+    $$('#sequenceOptions button').forEach(button => {
+        button.disabled = selected.includes(button.dataset.command);
+    });
+}
+const shuffled = [sequence[3], sequence[2], sequence[4], sequence[0], sequence[1]];
+$('#sequenceOptions').innerHTML = shuffled.map(command => `
+    <button class="practice-chip" data-command="${command}">${command}</button>
+`).join('');
+$$('#sequenceOptions button').forEach(button => {
+    button.addEventListener('click', () => {
+        selected.push(button.dataset.command);
+        drawSequence();
+    });
+});
+$('#checkSequence').addEventListener('click', () => {
+    $('#sequenceFeedback').textContent = JSON.stringify(selected) === JSON.stringify(sequence)
+        ? 'Correct sequence. You are ready to configure LLDP in Packet Tracer.'
+        : 'Not quite. Enter privileged EXEC, then global configuration, enable LLDP, and configure the interface.';
+});
+$('#clearSequence').addEventListener('click', () => {
+    selected = [];
+    $('#sequenceFeedback').textContent = '';
+    drawSequence();
+});
+$('#checkVerify').addEventListener('click', () => {
+    $('#verifyFeedback').textContent = $('#verifySelect').value === 'show lldp neighbors detail'
+        ? 'Correct. This command displays detailed LLDP neighbor information.'
+        : 'Try again. Look for the LLDP command that displays neighbors in detail.';
+});
+
+const labs = [
+    {
+        title: 'Lab 11.1 · Chapter Review',
+        note: 'Use the official Packet Tracer activity and follow its embedded instructions. The book does not print the complete graded task list.',
+        steps: [
+            ['Download and open Lab 11.1', 'Open the assigned Packet Tracer file. Read the assessment instructions and inspect the provided network topology.'],
+            ['Identify directly connected devices', 'Examine the topology and record which switches or routers are physically adjacent. Do not assume every device is a direct neighbor.'],
+            ['Inspect CDP status', 'On the devices specified in the activity, check show cdp and show cdp interface. Determine where CDP is enabled.'],
+            ['Inspect CDP neighbors', 'Use show cdp neighbors detail and compare discovered devices and interfaces with the topology.'],
+            ['Configure CDP where required', 'Apply cdp run, cdp enable, or their no forms only on the devices and interfaces specified in the official activity.'],
+            ['Configure LLDP where required', 'Use lldp run and, when needed, interface-level lldp transmit and lldp receive on the assigned Ethernet interfaces.'],
+            ['Verify LLDP neighbors', 'Use show lldp, show lldp interface, and show lldp neighbors detail. Check the expected neighboring devices.'],
+            ['Complete and submit', 'Review the Packet Tracer assessment results, correct unmet requirements, save the file, and submit it as instructed.']
+        ]
+    }
+];
+
+const labContainer = $('#labLists');
+let total = 0;
+labs.forEach((lab, labIndex) => {
+    const section = document.createElement('div');
+    section.className = 'space-y-4';
+    section.innerHTML = `
+        <div>
+            <h3 class="text-xl font-extrabold text-white">${lab.title}</h3>
+            <p class="text-xs text-slate-400 mt-2">${lab.note}</p>
+        </div>
+    `;
+    lab.steps.forEach((step, stepIndex) => {
+        total += 1;
+        const label = document.createElement('label');
+        label.className = 'step flex items-start gap-4 cursor-pointer';
+        label.innerHTML = `
+            <input type="checkbox" class="mt-1 accent-red-600 w-5 h-5 shrink-0" data-labstep="${labIndex}-${stepIndex}">
+            <span>
+                <strong class="text-white text-sm">Step ${stepIndex + 1}: ${step[0]}</strong>
+                <span class="block text-slate-300 text-xs leading-6 mt-2">${step[1]}</span>
+            </span>
+        `;
+        section.appendChild(label);
+    });
+    labContainer.appendChild(section);
+});
+function updateProgress() {
+    const completed = $$('[data-labstep]:checked').length;
+    $('#labProgress').textContent = `${completed} / ${total}`;
+    $('#progressBar').style.width = `${100 * completed / total}%`;
+}
+$$('[data-labstep]').forEach(input => {
+    input.addEventListener('change', () => {
+        input.closest('.step').classList.toggle('done', input.checked);
+        updateProgress();
+    });
+});
+updateProgress();
+
+const deliverables = [
+    'Lab 11.1 completed',
+    'CDP neighbors verified',
+    'LLDP neighbors verified',
+    'Packet Tracer activity saved',
+    'Assessment results reviewed'
+];
+$('#deliverables').innerHTML = deliverables.map((item, index) => `
+    <label class="flex gap-3 items-center bg-mapua-card p-3 rounded-lg">
+        <input type="checkbox" class="accent-red-600" data-deliverable="${index}">
+        ${item}
+    </label>
+`).join('');
+$$('[data-deliverable]').forEach(input => {
+    input.addEventListener('change', () => {
+        const count = $$('[data-deliverable]:checked').length;
+        $('#ready').textContent = `${count} / ${deliverables.length} items complete. ${count === deliverables.length ? 'Ready for instructor review.' : 'Complete the remaining items.'}`;
+    });
+});
+  </script>
+ </body>
+</html>

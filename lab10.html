@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Chapter 10: Configure and Verify VLANs and Interswitch Connectivity | ECE144L | Mapúa MCL</title>
+<script src="https://cdn.tailwindcss.com">
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<script>
+   tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Montserrat', 'sans-serif'],
+                    mono: ['Fira Code', 'monospace']
+                },
+                colors: {
+                    mapua: {
+                        red: '#E31B23',
+                        redDark: '#C51017',
+                        redBright: '#FF2E36',
+                        navy: '#112244',
+                        navyDark: '#0A1428',
+                        navyLight: '#1B3461',
+                        silver: '#CBD5E1',
+                        darkBg: '#080D1A',
+                        card: '#0F1A2E',
+                        panel: '#162540',
+                        border: '#23385C'
+                    }
+                }
+            }
+        }
+    };
+  </script>
+<style>
+   html, body {
+    font-family: "Montserrat", sans-serif !important;
+}
+button, input, select, textarea {
+    font-family: inherit;
+}
+nav, header {
+    font-family: "Montserrat", sans-serif !important;
+}
+.glass-panel {
+    background: rgba(15, 26, 46, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(227, 27, 35, 0.25);
+}
+.glass-panel-navy {
+    background: rgba(22, 37, 64, 0.95);
+    border: 1px solid rgba(35, 56, 92, 0.6);
+}
+.pill {
+    border: 1px solid #23385C;
+    background: #162540;
+    border-radius: 0.65rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.pill:hover, .pill.active {
+    background: #E31B23;
+    color: white;
+    border-color: #FF2E36;
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+.step {
+    border: 1px solid #23385C;
+    border-radius: 0.8rem;
+    padding: 1rem;
+    background: #162540;
+}
+.step.done {
+    border-color: #10b981;
+}
+code, pre {
+    font-family: "Fira Code", monospace;
+}
+pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+section {
+    scroll-margin-top: 6rem;
+}
+.practice-field {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 8px;
+    padding: 10px;
+    color: white;
+    min-width: 80px;
+    max-width: 100%;
+    font-family: "Fira Code", monospace;
+}
+.practice-field:focus {
+    outline: 2px solid #E31B23;
+}
+.practice-feedback {
+    min-height: 22px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #CBD5E1;
+}
+.practice-chip {
+    border: 1px solid #23385C;
+    background: #162540;
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.practice-chip[aria-pressed="true"] {
+    background: #E31B23;
+    border-color: #FF2E36;
+}
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 10px;
+}
+.practice-code {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 20px;
+    line-height: 2.9;
+    font-family: "Fira Code", monospace;
+    font-size: 12px;
+    overflow-x: auto;
+}
+.practice-action {
+    display: inline-block;
+    background: #E31B23;
+    border: 1px solid #FF2E36;
+    border-radius: 9px;
+    padding: 10px 18px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.practice-action:hover {
+    background: #FF2E36;
+}
+.practice-note {
+    color: #CBD5E1;
+    font-size: 12px;
+    line-height: 1.8;
+}
+.practice-card {
+    background: #162540;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 18px;
+}
+  </style>
+</head>
+<body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+<nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+<div class="flex items-center gap-3 min-w-0 shrink-0">
+<div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+<i class="fa-solid fa-network-wired text-xl">
+</i>
+</div>
+<div>
+<div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAPÚA MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+</div>
+<div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+</div>
+</div>
+<button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+<i class="fa-solid fa-bars">
+</i>
+</button>
+<div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+<a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+<a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+<a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">VLAN Explorer</a>
+<a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+<a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#practice">
+      Interactive Practice
+     </a>
+<a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+<a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+</div>
+</div>
+</nav>
+<header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+<div class="lg:col-span-2 min-w-0">
+<div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">LABORATORY ACTIVITY 10 · PART III: NETWORK ACCESS</div>
+<h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">Chapter 10:<br/><span class="text-slate-200">VLANs and Interswitch Connectivity</span></h1>
+<p class="text-slate-300 leading-relaxed max-w-2xl">Practice VLAN segmentation, 802.1Q trunks, and EtherChannel before completing the four assigned Packet Tracer laboratories.</p>
+</div>
+<aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+<h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+<p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+<hr class="border-mapua-border"/>
+<p>
+<i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+</i>
+      Term 2, Academic Year 2026–2027
+     </p>
+<p>
+<i class="fa-solid fa-book text-mapua-redBright mr-2">
+</i>
+      BS Electronics Engineering
+     </p>
+<p>
+<i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+</i>
+      Mapúa Institute of Technology at Laguna
+     </p>
+</aside>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16"><section class="glass-panel rounded-2xl p-6" id="outcomes"><h2 class="text-xl font-extrabold mb-4"><i class="fa-solid fa-bullseye text-mapua-redBright mr-2"></i>Learning Outcomes</h2><div class="grid md:grid-cols-1 gap-3 text-sm text-slate-300"><p>01 · Explain VLANs as separate Layer 2 broadcast domains and relate them to IP subnets.</p><p>02 · Configure and verify VLAN membership and access ports.</p><p>03 · Explain 802.1Q trunks and native VLAN behavior.</p><p>04 · Compare static EtherChannel, PAgP, and LACP and verify channel formation.</p></div></section>
+<section id="lecture"><h2 class="text-2xl sm:text-3xl font-extrabold mb-2"><i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3"></i>Lecture &amp; Discussion Notes</h2><p class="text-sm text-slate-400 mb-6">Based on Chapter 10, pages 119–141, of <em>CCNA 200-301 Hands-on Mastery with Packet Tracer</em>.</p><div class="flex flex-wrap gap-2 mb-5" id="tabs"><button class="pill active" data-tab="vlans">VLAN Fundamentals</button><button class="pill" data-tab="trunks">802.1Q Trunks</button><button class="pill" data-tab="channels">EtherChannel</button><button class="pill" data-tab="commands">IOS Verification</button></div><div class="glass-panel rounded-xl p-6 text-sm leading-7 text-slate-300">
+<div class="tab-content active" id="vlans"><h3 class="text-lg text-white font-extrabold mb-3">VLANs Separate Broadcast Domains</h3><p>A VLAN creates a logical broadcast domain on a switch. Hosts in different VLANs generally require a Layer 3 device to communicate. A switch access port belongs to one data VLAN. VLAN 1 is the default VLAN on Cisco switches.</p><pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-400 text-xs">Switch(config)# vlan 30
+Switch(config-vlan)# name ENGINEERING
+Switch(config)# interface fastethernet0/1
+Switch(config-if)# switchport mode access
+Switch(config-if)# switchport access vlan 30</pre><p class="mt-3">VTP can distribute VLAN information between participating switches; its mode and behavior depend on the configured network.</p></div>
+<div class="tab-content" id="trunks"><h3 class="text-lg text-white font-extrabold mb-3">802.1Q Interswitch Trunks</h3><p>A trunk can transport traffic from multiple VLANs over one physical link. IEEE 802.1Q inserts a VLAN tag into frames on the trunk, except that frames in the native VLAN are normally sent untagged. The default native VLAN is VLAN 1.</p><pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-400 text-xs">Switch(config)# interface gigabitethernet0/1
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# switchport trunk native vlan 99
+Switch# show interfaces trunk</pre><p class="mt-3">Configure matching native VLANs on both ends of the trunk and follow the assigned activity's VLAN plan.</p></div>
+<div class="tab-content" id="channels"><h3 class="text-lg text-white font-extrabold mb-3">Link Aggregation with EtherChannel</h3><p>EtherChannel bundles compatible physical links into a logical port-channel. The textbook covers three approaches: static <code>on</code>, Cisco PAgP (<code>desirable</code>/<code>auto</code>), and standards-based LACP (<code>active</code>/<code>passive</code>). Both sides must use compatible settings.</p><pre class="bg-mapua-darkBg rounded-xl p-4 mt-4 text-emerald-400 text-xs">Switch(config)# interface range gigabitethernet0/1 - 2
+Switch(config-if-range)# channel-group 1 mode active
+Switch# show etherchannel summary</pre><p class="mt-3">Member links must agree on important parameters such as speed, duplex, and VLAN/trunk settings.</p></div>
+<div class="tab-content" id="commands"><h3 class="text-lg text-white font-extrabold mb-3">Verification Commands</h3><div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead><tr class="text-mapua-redBright border-b border-mapua-border"><th class="p-3">Command</th><th class="p-3">Purpose</th></tr></thead><tbody class="divide-y divide-mapua-border"><tr><td class="p-3 font-mono">show vlan brief</td><td class="p-3">List VLANs and assigned access ports</td></tr><tr><td class="p-3 font-mono">show interfaces trunk</td><td class="p-3">Inspect trunking and allowed VLANs</td></tr><tr><td class="p-3 font-mono">show etherchannel summary</td><td class="p-3">Inspect port-channel status and members</td></tr><tr><td class="p-3 font-mono">show running-config</td><td class="p-3">Review current switch configuration</td></tr></tbody></table></div></div></div></section><section id="explorer"><h2 class="text-2xl font-extrabold mb-2"><i class="fa-solid fa-diagram-project text-mapua-redBright mr-3"></i>Interactive VLAN Membership Explorer</h2><p class="text-sm text-slate-400 mb-5">Two PCs connect to a Layer 2 switch. Choose their VLAN memberships to predict whether they share a broadcast domain.</p><div class="glass-panel rounded-2xl p-6"><div class="grid sm:grid-cols-2 gap-5"><label class="block text-sm">Engineering PC VLAN<select class="practice-field w-full mt-2" id="vlanA"><option value="10">VLAN 10</option><option value="20">VLAN 20</option><option value="30">VLAN 30</option></select></label><label class="block text-sm">Office PC VLAN<select class="practice-field w-full mt-2" id="vlanB"><option value="20">VLAN 20</option><option value="10">VLAN 10</option><option value="30">VLAN 30</option></select></label></div><button class="practice-action mt-5" id="checkDomains">Inspect Broadcast Domains</button><p aria-live="polite" class="practice-feedback" id="domainResult"></p><p class="practice-note">This explorer models VLAN membership only. It does not emulate routing or Packet Tracer.</p></div></section>
+<section id="quiz"><div class="glass-panel rounded-2xl p-6 sm:p-8"><div class="flex flex-wrap justify-between gap-3 mb-5"><div><h2 class="text-2xl font-extrabold"><i class="fa-solid fa-circle-question text-mapua-redBright mr-2"></i>Knowledge Check</h2><p class="text-xs text-slate-400 mt-2">Eight questions with immediate explanations.</p></div><p class="text-mapua-redBright font-black text-sm" id="score">Score: 0 / 8</p></div><div class="space-y-4" id="questions"></div><button class="pill mt-6" id="reset">Reset Quiz</button></div></section>
+<section id="practice"><h2 class="text-2xl font-extrabold mb-2"><i class="fa-solid fa-keyboard text-mapua-redBright mr-3"></i>Interactive Preparation</h2><p class="text-sm text-slate-400 mb-6">Try these exercises before configuring the assigned Packet Tracer files.</p><div class="glass-panel rounded-2xl p-6 space-y-7"><div class="practice-card"><h3 class="font-bold mb-2">Activity A · Complete the VLAN Configuration</h3><p class="practice-note mb-4">Enter the missing commands; capitalization is not important.</p><div class="space-y-4 text-xs font-mono"><label class="block">Switch(config)# <input aria-label="Create VLAN 30" class="practice-field" id="fill1" placeholder="create VLAN 30"/></label><label class="block">Switch(config-if)# <input aria-label="Assign access VLAN" class="practice-field" id="fill2" placeholder="assign access VLAN 30" style="width:270px"/></label><label class="block">Switch# <input aria-label="Verify VLANs" class="practice-field" id="fill3" placeholder="verify VLANs" style="width:260px"/></label></div><button class="practice-action mt-4" id="checkFill">Check Commands</button><p aria-live="polite" class="practice-feedback" id="fillFeedback"></p></div><div class="practice-card"><h3 class="font-bold mb-2">Activity B · Identify Trunk Behavior</h3><p class="practice-note mb-4">Which VLAN is normally sent without an 802.1Q tag on a trunk?</p><select class="practice-field w-full" id="nativeAnswer"><option value="">Select an answer</option><option>Native VLAN</option><option>Voice VLAN</option><option>All VLANs</option><option>Management VLAN only</option></select><button class="practice-action mt-4" id="checkNative">Check Answer</button><p aria-live="polite" class="practice-feedback" id="nativeFeedback"></p></div><div class="practice-card"><h3 class="font-bold mb-2">Activity C · Match EtherChannel Modes</h3><p class="practice-note mb-4">Select the LACP mode that actively initiates negotiation.</p><div class="practice-grid" id="channelOptions"><button class="practice-chip" data-channel="wrong">desirable</button><button class="practice-chip" data-channel="correct">active</button><button class="practice-chip" data-channel="wrong">on</button><button class="practice-chip" data-channel="wrong">auto</button></div><p aria-live="polite" class="practice-feedback" id="channelFeedback"></p></div></div></section>
+<section id="lab"><h2 class="text-2xl sm:text-3xl font-extrabold mb-2"><i class="fa-solid fa-flask text-mapua-redBright mr-3"></i>Guided Packet Tracer Laboratories</h2><p class="text-sm text-slate-400 mb-5">All instructions are visible without dropdowns. Complete each task in Packet Tracer, then mark it done.</p><div class="glass-panel rounded-2xl p-6 space-y-8"><div class="bg-mapua-panel border border-mapua-border rounded-xl p-5"><h3 class="font-extrabold text-white">Official Packet Tracer Lab Files</h3><p class="text-xs text-slate-300 mt-2">Use the textbook's assigned files. The precise graded topology and values are specified inside each activity.</p><div class="flex flex-wrap gap-2 mt-4"><a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQDngmb-52w9S5Fw0JM__uy3AfP7B3GmqQ221zV1uM7OAqU?e=2mX7ek" rel="noopener noreferrer" target="_blank">Download Lab 10.1</a><a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQBxdrNjBbffQ5skTPPksJXwARHRtwuMiKMCL29HwAwNXqk?e=wtLVEx" rel="noopener noreferrer" target="_blank">Download Lab 10.2</a><a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQBpBLvZ7X7nTZjFCQ3Cxp9xAbkYVYlMRlVqOTmNS8ZzmhQ?e=5jyZee" rel="noopener noreferrer" target="_blank">Download Lab 10.3</a><a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQA6U8qp7b3cTpHD5SQRsetxAX-DGeNViRXM_5qh8qw3SLE?e=JGvxtA" rel="noopener noreferrer" target="_blank">Download Lab 10.4</a></div></div><div class="space-y-8" id="labLists"></div><div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4"><p class="text-sm font-bold">Guided progress: <span class="text-mapua-redBright" id="labProgress">0 / 0</span></p><div class="h-2 bg-mapua-panel rounded-full mt-3 overflow-hidden"><div class="h-full bg-mapua-red" id="progressBar" style="width:0%"></div></div></div></div></section>
+<section id="challenge"><div class="glass-panel rounded-2xl p-6 sm:p-8"><h2 class="text-2xl font-extrabold mb-3">Chapter Review · Lab 10.4</h2><p class="text-sm text-slate-300 leading-7">Complete the assigned Chapter 10 review Packet Tracer activity using its embedded instructions and grading requirements. Verify VLAN membership, interswitch trunks, and EtherChannel where requested, then save the completed activity.</p><div class="bg-mapua-panel rounded-xl p-5 mt-5"><h3 class="font-bold mb-3">Submission Readiness</h3><div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables"></div><p aria-live="polite" class="text-mapua-redBright text-xs mt-4" id="ready"></p></div></div></section></main>
+<footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+<p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+<p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+<p class="text-mapua-redBright font-extrabold mt-2">
+    © Copyright Reserved 2026
+   </p>
+<p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+</footer>
+<script>
+const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+
+$('#menuBtn').addEventListener('click', () => {
+    const links = $('#links');
+    ['hidden', 'flex', 'flex-col', 'absolute', 'top-20', 'right-3', 'bg-mapua-card', 'p-5'].forEach(name => {
+        links.classList.toggle(name);
+    });
+});
+
+$$('[data-tab]').forEach(button => {
+    button.addEventListener('click', () => {
+        $$('[data-tab]').forEach(item => item.classList.remove('active'));
+        $$('.tab-content').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+    });
+});
+
+$('#checkDomains').addEventListener('click', () => {
+    const same = $('#vlanA').value === $('#vlanB').value;
+    $('#domainResult').textContent = same
+        ? 'Same VLAN: both PCs share a Layer 2 broadcast domain.'
+        : 'Different VLANs: the PCs are in separate Layer 2 broadcast domains. Inter-VLAN communication requires routing.';
+});
+
+const questions = [
+    ['What does a VLAN define?', ['A Layer 2 broadcast domain', 'A physical cable', 'A routing protocol', 'A MAC address'], 0, 'Each VLAN forms a separate Layer 2 broadcast domain.'],
+    ['What is the default VLAN on a Cisco switch?', ['10', '99', '1', '4094'], 2, 'VLAN 1 is the default VLAN.'],
+    ['Which command creates VLAN 30?', ['switchport vlan 30', 'vlan 30', 'ip vlan 30', 'create vlan'], 1, 'Use vlan 30 in global configuration mode.'],
+    ['Which command lists VLANs and access ports?', ['show vlan brief', 'show ip route', 'show version', 'show etherchannel'], 0, 'show vlan brief lists VLANs and assigned ports.'],
+    ['Which standard is used for Ethernet VLAN trunk tagging?', ['802.11', '802.1Q', '802.3af', '802.1X'], 1, 'IEEE 802.1Q is used for VLAN tagging on Ethernet trunks.'],
+    ['Which VLAN is normally untagged on an 802.1Q trunk?', ['Voice VLAN', 'Native VLAN', 'All VLANs', 'Disabled VLAN'], 1, 'Native VLAN frames are normally transmitted untagged.'],
+    ['Which EtherChannel protocol uses active and passive modes?', ['PAgP', 'CDP', 'LACP', 'VTP'], 2, 'LACP uses active and passive modes.'],
+    ['Which command summarizes EtherChannel groups?', ['show vlan brief', 'show etherchannel summary', 'show ip interface brief', 'show interfaces status'], 1, 'show etherchannel summary reports port-channel and member status.']
+];
+
+let answers = {};
+function renderQuiz() {
+    answers = {};
+    $('#questions').innerHTML = questions.map((question, index) => `
+        <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+            <p class="font-bold text-sm mb-3">${index + 1}. ${question[0]}</p>
+            <div class="grid sm:grid-cols-2 gap-2">
+                ${question[1].map((option, optionIndex) => `
+                    <button data-question="${index}" data-answer="${optionIndex}"
+                        class="text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright">
+                        ${String.fromCharCode(65 + optionIndex)}. ${option}
+                    </button>
+                `).join('')}
+            </div>
+            <p id="feedback${index}" class="hidden text-xs mt-3" aria-live="polite"></p>
+        </div>
+    `).join('');
+    $('#score').textContent = `Score: 0 / ${questions.length}`;
+    $$('[data-question]').forEach(button => {
+        button.addEventListener('click', () => {
+            const index = Number(button.dataset.question);
+            const answer = Number(button.dataset.answer);
+            if (answers[index] !== undefined) return;
+            answers[index] = answer;
+            $$(`[data-question="${index}"]`).forEach(item => {
+                item.disabled = true;
+                item.classList.add(Number(item.dataset.answer) === questions[index][2] ? 'border-emerald-500' : 'opacity-60');
+            });
+            const correct = answer === questions[index][2];
+            button.classList.add(correct ? 'bg-emerald-900/40' : 'bg-rose-900/40');
+            const feedback = document.getElementById(`feedback${index}`);
+            feedback.classList.remove('hidden');
+            feedback.classList.add(correct ? 'text-emerald-300' : 'text-rose-300');
+            feedback.textContent = `${correct ? 'Correct.' : 'Not quite.'} ${questions[index][3]}`;
+            const score = Object.entries(answers).filter(([key, value]) => questions[Number(key)][2] === value).length;
+            $('#score').textContent = `Score: ${score} / ${questions.length}`;
+        });
+    });
+}
+renderQuiz();
+$('#reset').addEventListener('click', renderQuiz);
+
+$('#checkFill').addEventListener('click', () => {
+    const expected = ['vlan 30', 'switchport access vlan 30', 'show vlan brief'];
+    const correct = expected.filter((answer, index) => {
+        const entered = document.getElementById(`fill${index + 1}`).value.trim().replace(/\s+/g, ' ').toLowerCase();
+        return entered === answer;
+    }).length;
+    $('#fillFeedback').textContent = `${correct} / 3 correct. ${correct === 3 ? 'All commands are correct.' : 'Review the VLAN commands and try again.'}`;
+    $('#fillFeedback').style.color = correct === 3 ? '#6ee7b7' : '#fda4af';
+});
+$('#checkNative').addEventListener('click', () => {
+    const correct = $('#nativeAnswer').value === 'Native VLAN';
+    $('#nativeFeedback').textContent = correct ? 'Correct! The native VLAN is normally untagged.' : 'Try again. Review the 802.1Q Trunks tab.';
+    $('#nativeFeedback').style.color = correct ? '#6ee7b7' : '#fda4af';
+});
+$$('[data-channel]').forEach(button => {
+    button.addEventListener('click', () => {
+        $$('[data-channel]').forEach(item => item.setAttribute('aria-pressed', 'false'));
+        button.setAttribute('aria-pressed', 'true');
+        const correct = button.dataset.channel === 'correct';
+        $('#channelFeedback').textContent = correct ? 'Correct! LACP active initiates negotiation.' : 'Not quite. PAgP uses desirable/auto, and static EtherChannel uses on.';
+        $('#channelFeedback').style.color = correct ? '#6ee7b7' : '#fda4af';
+    });
+});
+
+const labs = [
+    {
+        title: 'Lab 10.1 · Configuring VLANs',
+        note: 'Use the assigned textbook Packet Tracer activity and its VLAN and port assignments.',
+        steps: [
+            ['Open Lab 10.1', 'Download and open the assigned activity. Read the VLAN IDs, switch names, and port requirements.'],
+            ['Inspect existing VLANs', 'Use show vlan brief on each relevant switch to identify current VLANs and access ports.'],
+            ['Create required VLANs', 'Enter global configuration mode and use vlan <ID> for each VLAN required by the assigned file. Name them if requested.'],
+            ['Assign access ports', 'Select each required interface, configure access mode, and assign the correct switchport access vlan <ID>.'],
+            ['Verify VLAN membership', 'Use show vlan brief to confirm each port belongs to the specified VLAN.'],
+            ['Check and save', 'Review the Packet Tracer assessment feedback, correct mistakes, and save your work.']
+        ]
+    },
+    {
+        title: 'Lab 10.2 · Configuring Interswitch Connectivity',
+        note: 'Use the assigned topology and trunk/native VLAN settings from the official activity.',
+        steps: [
+            ['Open Lab 10.2', 'Inspect the connected switches and identify the interswitch interfaces.'],
+            ['Review VLAN requirements', 'Identify which VLANs need to cross each interswitch link.'],
+            ['Configure trunks', 'On the specified ports, enter interface configuration mode and use switchport mode trunk where supported.'],
+            ['Set assigned trunk parameters', 'Apply the native VLAN and allowed VLAN list only as requested in the activity.'],
+            ['Verify trunking', 'Use show interfaces trunk and compare both ends of each trunk.'],
+            ['Assess and save', 'Check the official activity results and save your configured file.']
+        ]
+    },
+    {
+        title: 'Lab 10.3 · Configuring EtherChannel',
+        note: 'Follow the assigned EtherChannel group numbers, physical ports, and protocol modes.',
+        steps: [
+            ['Open Lab 10.3', 'Identify the switches, member links, port-channel groups, and required aggregation method.'],
+            ['Check link compatibility', 'Inspect member interfaces for compatible speed, duplex, and VLAN/trunk settings.'],
+            ['Select member ports', 'Use interface range for the specified interfaces, or configure each port individually.'],
+            ['Configure the required mode', 'Use channel-group <number> mode on for static, desirable/auto for PAgP, or active/passive for LACP as assigned.'],
+            ['Verify channel formation', 'Use show etherchannel summary and inspect member port and port-channel status.'],
+            ['Troubleshoot and save', 'Correct mismatched settings, review the assessment, and save the completed activity.']
+        ]
+    },
+    {
+        title: 'Lab 10.4 · Chapter Review',
+        note: 'Complete the official graded chapter review. Its specific requirements are inside the activity file.',
+        steps: [
+            ['Open Lab 10.4', 'Read all instructions and identify VLAN, trunk, and EtherChannel tasks.'],
+            ['Plan changes', 'Create a checklist of VLAN IDs, port assignments, trunk links, and channel-group settings.'],
+            ['Configure the assigned topology', 'Apply the exact settings requested by the Packet Tracer activity.'],
+            ['Verify results', 'Use show vlan brief, show interfaces trunk, and show etherchannel summary where appropriate.'],
+            ['Save and submit', 'Review assessment results and submit the completed file as instructed.']
+        ]
+    }
+];
+
+const labContainer = $('#labLists');
+let total = 0;
+labs.forEach((lab, labIndex) => {
+    const section = document.createElement('div');
+    section.className = 'space-y-4';
+    section.innerHTML = `
+        <div>
+            <h3 class="text-xl font-extrabold text-white">${lab.title}</h3>
+            <p class="text-xs text-slate-400 mt-2">${lab.note}</p>
+        </div>
+    `;
+    lab.steps.forEach((step, stepIndex) => {
+        total += 1;
+        const label = document.createElement('label');
+        label.className = 'step flex items-start gap-4 cursor-pointer';
+        label.innerHTML = `
+            <input type="checkbox" class="mt-1 accent-red-600 w-5 h-5 shrink-0" data-labstep="${labIndex}-${stepIndex}">
+            <span>
+                <strong class="text-white text-sm">Step ${stepIndex + 1}: ${step[0]}</strong>
+                <span class="block text-slate-300 text-xs leading-6 mt-2">${step[1]}</span>
+            </span>
+        `;
+        section.appendChild(label);
+    });
+    labContainer.appendChild(section);
+});
+
+function updateProgress() {
+    const completed = $$('[data-labstep]:checked').length;
+    $('#labProgress').textContent = `${completed} / ${total}`;
+    $('#progressBar').style.width = `${100 * completed / total}%`;
+}
+$$('[data-labstep]').forEach(input => {
+    input.addEventListener('change', () => {
+        input.closest('.step').classList.toggle('done', input.checked);
+        updateProgress();
+    });
+});
+updateProgress();
+
+const deliverables = [
+    'Lab 10.1 completed',
+    'Lab 10.2 completed',
+    'Lab 10.3 completed',
+    'Lab 10.4 completed',
+    'Saved Packet Tracer files',
+    'Verification evidence reviewed'
+];
+$('#deliverables').innerHTML = deliverables.map((item, index) => `
+    <label class="flex gap-3 items-center bg-mapua-card p-3 rounded-lg">
+        <input type="checkbox" class="accent-red-600" data-deliverable="${index}">
+        ${item}
+    </label>
+`).join('');
+$$('[data-deliverable]').forEach(input => {
+    input.addEventListener('change', () => {
+        const count = $$('[data-deliverable]:checked').length;
+        $('#ready').textContent = `${count} / ${deliverables.length} items complete. ${count === deliverables.length ? 'Ready for instructor review.' : 'Complete the remaining items.'}`;
+    });
+});
+</script>
+</body>
+</html>
