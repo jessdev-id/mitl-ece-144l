@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080D1A">
+  <title>ECE144L | Part IV Culminating Activity</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Montserrat', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
+          colors: { mapua: { red: '#E31B23', redBright: '#FF2E36', navyDark: '#0A1428', card: '#0F1A2E', panel: '#162540', border: '#23385C', darkBg: '#080D1A' } }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; font-family:'Montserrat',sans-serif; background:#080D1A; color:#f1f5f9; isolation:isolate; }
+    #interactive-grid { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:.9; }
+    body > nav, body > header, body > main, body > footer { position:relative; z-index:1; }
+    body > header { background:linear-gradient(to bottom,rgba(10,20,40,.91),rgba(15,26,46,.88),rgba(8,13,26,.78)) !important; }
+    .glass-panel-navy { background:rgba(22,37,64,.95); border:1px solid rgba(35,56,92,.6); }
+    .panel { background:rgba(15,26,46,.95); border:1px solid #2b405f; border-radius:18px; padding:clamp(18px,3vw,28px); min-width:0; }
+    .section-tag { display:inline-block; background:#E31B23; color:white; font-size:.69rem; font-weight:900; letter-spacing:.09em; padding:5px 10px; border-radius:5px; text-transform:uppercase; }
+    .muted { color:#b2c2d6; }
+    .task { min-width:0; background:#162540; border:1px solid #354968; border-radius:13px; padding:16px; }
+    .task > label { display:flex; align-items:flex-start; gap:12px; cursor:pointer; min-width:0; }
+    .task > label > span { min-width:0; overflow-wrap:anywhere; }
+    input[type=checkbox],input[type=radio] { accent-color:#E31B23; width:17px; height:17px; flex-shrink:0; margin-top:3px; }
+    textarea,input[type=text] { background:#0b1729; color:#fff; border:1px solid #435773; border-radius:9px; padding:11px 12px; width:100%; }
+    textarea:focus,input:focus { outline:2px solid #E31B23; outline-offset:2px; }
+    .btn { background:#E31B23; color:#fff; font-weight:800; border-radius:10px; padding:11px 17px; cursor:pointer; }
+    .btn.secondary { background:#1e3452; border:1px solid #4a6080; }
+    .btn:hover { filter:brightness(1.12); }
+    .mono,pre,code { font-family:'Fira Code',monospace; }
+    .quiz-card { display:block; min-width:0; }
+    .quiz-title { font-weight:800; font-size:.9rem; line-height:1.55; margin:0 0 14px; overflow-wrap:anywhere; }
+    .quiz-option { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; border:1px solid #374c6b; border-radius:9px; cursor:pointer; margin-top:9px; width:100%; min-width:0; }
+    .quiz-option span { min-width:0; overflow-wrap:anywhere; line-height:1.5; }
+    .quiz-option:has(input:checked) { border-color:#E31B23; background:#321d2d; }
+    .progress-track { height:9px; background:#263954; border-radius:20px; overflow:hidden; }
+    .progress-fill { height:100%; width:0%; background:#E31B23; transition:width .2s; }
+    .table-wrap { overflow-x:auto; }
+    th,td { padding:11px; border-bottom:1px solid #334762; vertical-align:top; }
+    th { background:#243956; text-align:left; }
+    pre { background:#091221; color:#e5edf8; border:1px solid #344663; border-radius:10px; padding:17px; overflow-x:auto; font-size:.78rem; line-height:1.8; white-space:pre; }
+    footer { background:#0F1A2E; border-top:1px solid #23385C; }
+    @media print { nav,#interactive-grid,.no-print,header aside { display:none!important; } body { background:white;color:black; } .panel,.task { background:white;color:black;border:1px solid #999; } .muted { color:#444; } pre { color:black;background:white;white-space:pre-wrap; } }
+    @media(prefers-reduced-motion:reduce) { #interactive-grid { opacity:.5; } }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+  <canvas aria-hidden="true" id="interactive-grid"></canvas>
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+      <div class="flex items-center gap-3 min-w-0 shrink-0">
+        <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center"><i class="fa-solid fa-network-wired text-xl"></i></div>
+        <div><div class="font-black tracking-wider flex items-center gap-2 leading-tight">MAPÚA MCL <span class="text-[10px] bg-[#1B3461] px-2 py-1 rounded">MITL</span></div><div class="text-xs text-slate-300 font-semibold">ECE144L: Data Communications Laboratory</div></div>
+      </div>
+      <a class="text-xs font-bold px-3 py-2 rounded-lg hover:bg-mapua-panel transition" href="index.html">Learning Portal</a>
+    </div>
+  </nav>
+  <header class="border-b border-mapua-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+      <div class="lg:col-span-2 min-w-0"><div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">PART IV · IP CONNECTIVITY</div><h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">Part IV<br><span class="text-slate-200">Culminating Activity</span></h1><p class="text-slate-300 leading-relaxed max-w-2xl">Build and troubleshoot a routed campus network using static routes, IPv6 and single-area OSPFv2.</p></div>
+      <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center"><h2 class="text-mapua-redBright uppercase font-black tracking-wider">Course Instructor</h2><p class="text-white font-extrabold text-base">Engr. Jess David A. Doria</p><hr class="border-mapua-border"><p><i class="fa-solid fa-calendar-days text-mapua-redBright mr-2"></i>Term 2, Academic Year 2026–2027</p><p><i class="fa-solid fa-book text-mapua-redBright mr-2"></i>BS Electronics Engineering</p><p><i class="fa-solid fa-building-columns text-mapua-redBright mr-2"></i>Mapúa Institute of Technology at Laguna</p></aside>
+    </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-7">
+    <div class="flex flex-wrap justify-between gap-3"><a href="index.html" class="text-sm font-bold text-slate-300 hover:text-white">← Back to laboratory portal</a><span class="text-xs text-slate-300 font-bold">PART IV · CHAPTERS 14–16</span></div>
+    <section class="panel border-t-4 border-t-mapua-red">
+      <span class="section-tag">Mission 04 · Culminating Activity</span>
+      <h2 class="text-2xl sm:text-3xl font-black mt-4 mb-3">Campus Interbuilding Routing Commissioning Challenge</h2>
+      <p class="muted leading-relaxed">Three campus buildings—Engineering, Administration and Research—must communicate across a routed backbone. You are the assigned network engineer. Commission dual-stack links, document routing-table decisions, implement static routes, migrate IPv4 routing to single-area OSPFv2 and recover from a deliberate transit-link outage. Deliver two independently working Packet Tracer snapshots: static routing and OSPFv2.</p>
+      <div class="grid sm:grid-cols-3 gap-3 mt-6 text-sm"><div class="task"><div class="text-xs muted uppercase font-bold">Estimated duration</div><strong>180–240 minutes</strong></div><div class="task"><div class="text-xs muted uppercase font-bold">Work mode</div><strong>Individual · Hands-on</strong></div><div class="task"><div class="text-xs muted uppercase font-bold">Deliverables</div><strong>2 .pkt files + evidence report</strong></div></div>
+    </section>
+    <section class="panel"><span class="section-tag">01 · Mission Brief</span><h2 class="text-xl font-black mt-3 mb-3">Scope and success criteria</h2>
+      <div class="grid md:grid-cols-2 gap-4 text-sm"><div class="task"><strong>Learning targets</strong><p class="muted mt-2">Chapter 14: interpret route codes, next hops, administrative distance and longest-prefix matching. Chapter 15: configure IPv4/IPv6 static and default routes. Chapter 16: configure and verify single-area OSPFv2.</p></div><div class="task"><strong>Successful outcome</strong><p class="muted mt-2">All LANs communicate by IPv4 and IPv6 using static routes; a separate snapshot routes IPv4 through OSPFv2 while IPv6 retains static routing. Students explain route entries, observe adjacency changes, restore service and save verified configurations.</p></div></div>
+      <h3 class="font-extrabold mt-6 mb-2">Required equipment</h3><p class="muted text-sm">Cisco Packet Tracer; 3 Cisco 2911 routers (R1–R3); 3 Catalyst 2960 switches (SW1–SW3); 3 PCs (PC-A–PC-C); suitable Ethernet cables. All router configurations must use Cisco IOS CLI. The PC Desktop IP Configuration utility may be used for end-device addressing.</p>
+    </section>
+    <section class="panel"><span class="section-tag">02 · Topology and Addressing</span><h2 class="text-xl font-black mt-3 mb-4">Required dual-stack topology</h2>
+      <div class="task mb-5"><div class="text-xs muted uppercase font-bold mb-3">Logical reference · not a live Packet Tracer simulation</div>
+        <svg viewBox="0 0 840 270" role="img" aria-label="PC-A connected to SW1 and R1; R1 linked to R2; R2 linked to R3; R3 connected to SW3 and PC-C; R2 also connected to SW2 and PC-B." style="display:block;width:100%;height:auto">
+          <g stroke="#a8bedb" stroke-width="3" fill="none"><path d="M85 132 H140 M218 132 H275 M353 132 H400 M478 132 H525 M603 132 H650 M728 132 H785 M439 165 V205"/></g>
+          <g fill="#1b3461" stroke="#91b3d9" stroke-width="2"><rect x="140" y="99" width="78" height="66" rx="10"/><rect x="275" y="99" width="78" height="66" rx="10"/><rect x="400" y="99" width="78" height="66" rx="10"/><rect x="525" y="99" width="78" height="66" rx="10"/><rect x="650" y="99" width="78" height="66" rx="10"/><rect x="400" y="205" width="78" height="50" rx="9"/></g>
+          <g fill="#17263c" stroke="#a8bedb" stroke-width="2"><rect x="15" y="105" width="70" height="54" rx="9"/><rect x="785" y="105" width="48" height="54" rx="9"/></g>
+          <g fill="#fff" font-size="16" font-weight="800" text-anchor="middle" font-family="Montserrat,sans-serif"><text x="50" y="137">PC-A</text><text x="179" y="137">SW1</text><text x="314" y="137">R1</text><text x="439" y="137">R2</text><text x="564" y="137">R3</text><text x="689" y="137">SW3</text><text x="809" y="137">PC-C</text><text x="439" y="237">SW2</text></g>
+          <g fill="#ff9da2" font-size="11" font-family="Montserrat,sans-serif" text-anchor="middle"><text x="377" y="104">10.0.12.0/30</text><text x="501" y="104">10.0.23.0/30</text><text x="439" y="192">LAN-B</text><text x="116" y="87">LAN-A</text><text x="740" y="87">LAN-C</text></g>
+        </svg><p class="muted text-xs mt-3">Connect PC-B to SW2 Fa0/1; SW2 Fa0/24 to R2 Gi0/0. Router-to-router interfaces are R1 Gi0/1 ↔ R2 Gi0/1 and R2 Gi0/2 ↔ R3 Gi0/1. R1/R2/R3 Gi0/0 connect to SW1/SW2/SW3 Fa0/24 respectively.</p></div>
+      <div class="table-wrap"><table class="w-full text-sm"><thead><tr><th>Device / Interface</th><th>IPv4 / Mask</th><th>IPv6 / Prefix</th><th>Purpose</th></tr></thead><tbody>
+        <tr><td>R1 Gi0/0</td><td>192.168.10.1 /24</td><td>2001:DB8:144:10::1/64</td><td>Engineering LAN</td></tr>
+        <tr><td>R1 Gi0/1</td><td>10.0.12.1 /30</td><td>2001:DB8:144:12::1/64</td><td>R1–R2</td></tr>
+        <tr><td>R2 Gi0/0</td><td>192.168.20.1 /24</td><td>2001:DB8:144:20::1/64</td><td>Administration LAN</td></tr>
+        <tr><td>R2 Gi0/1</td><td>10.0.12.2 /30</td><td>2001:DB8:144:12::2/64</td><td>R2–R1</td></tr>
+        <tr><td>R2 Gi0/2</td><td>10.0.23.1 /30</td><td>2001:DB8:144:23::1/64</td><td>R2–R3</td></tr>
+        <tr><td>R3 Gi0/0</td><td>192.168.30.1 /24</td><td>2001:DB8:144:30::1/64</td><td>Research LAN</td></tr>
+        <tr><td>R3 Gi0/1</td><td>10.0.23.2 /30</td><td>2001:DB8:144:23::2/64</td><td>R3–R2</td></tr>
+        <tr><td>PC-A</td><td>192.168.10.10 /24; GW .1</td><td>2001:DB8:144:10::10/64; GW 2001:DB8:144:10::1</td><td>Engineering</td></tr>
+        <tr><td>PC-B</td><td>192.168.20.10 /24; GW .1</td><td>2001:DB8:144:20::10/64; GW 2001:DB8:144:20::1</td><td>Administration</td></tr>
+        <tr><td>PC-C</td><td>192.168.30.10 /24; GW .1</td><td>2001:DB8:144:30::10/64; GW 2001:DB8:144:30::1</td><td>Research</td></tr>
+      </tbody></table></div><p class="muted text-xs mt-3">IPv6 uses the documentation prefix 2001:DB8::/32. The IPv4 gateway abbreviation “GW .1” means the .1 address in the corresponding LAN (192.168.10.1, .20.1, or .30.1).</p>
+    </section>
+    <section class="panel"><div class="flex flex-wrap justify-between items-center gap-3"><div><span class="section-tag">03 · Practical Checkpoints</span><h2 class="text-xl font-black mt-3">Complete the engineering mission</h2></div><span id="progress-label" class="text-sm font-bold text-slate-200">0 of 12 tasks complete</span></div><div class="progress-track mt-4 mb-6"><div id="progress-fill" class="progress-fill"></div></div><div id="task-list" class="space-y-3">
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Build and label the topology</strong><span class="block muted text-sm mt-2">Place three Cisco 2911 routers R1, R2, R3, three Catalyst 2960 switches SW1–SW3 and PCs PC-A, PC-B, PC-C. Cable each PC to its local switch and each switch to router Gi0/0. Cable R1 Gi0/1 to R2 Gi0/1 and R2 Gi0/2 to R3 Gi0/1. Use copper straight-through for host-to-switch and switch-to-router, and supported copper links for router-to-router. Evidence E1.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Configure baseline IOS and interface descriptions</strong><span class="block muted text-sm mt-2">Configure hostnames R1, R2, R3. Add interface descriptions and enable required router interfaces with no shutdown. Verify with show ip interface brief. Evidence E2.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Assign IPv4 LAN and transit addresses</strong><span class="block muted text-sm mt-2">Configure all router interfaces using the addressing plan. Set PC IPv4 addresses, masks and default gateways. Verify that each PC reaches its local gateway. Evidence E3.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Configure IPv6 dual-stack interfaces</strong><span class="block muted text-sm mt-2">Enable ipv6 unicast-routing on all routers. Assign the specified IPv6 /64 addresses to each routed interface and IPv6 addresses and gateways to PCs. Verify using show ipv6 interface brief and local IPv6 pings. Evidence E4.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Interpret directly connected and local routes</strong><span class="block muted text-sm mt-2">Run show ip route and show ipv6 route on R2. Identify C and L entries, prefix length, outgoing interface and next-hop implications. Record why remote LAN routes are initially absent. Evidence E5.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Implement IPv4 static routing</strong><span class="block muted text-sm mt-2">Add IPv4 static routes for all remote LANs on R1, R2 and R3 using appropriate next-hop transit addresses. Confirm routes appear with code S and test PC-A to PC-C reachability. Evidence E6.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Implement IPv6 static routing</strong><span class="block muted text-sm mt-2">Add IPv6 static routes for remote LAN prefixes on all three routers. Test IPv6 reachability between PC-A and PC-C and document next-hop selection. Evidence E7.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Test a default route and explain route selection</strong><span class="block muted text-sm mt-2">On R1 replace its specific remote IPv4 LAN static routes with one default route pointing to R2. Confirm remote IPv4 pings still work. Explain longest-prefix match and why a more specific route overrides the default. Evidence E8.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Prepare an OSPFv2 configuration snapshot</strong><span class="block muted text-sm mt-2">Save a separate copy of the working static-routing project as PART04_Static_YourSurname.pkt. In the new OSPF copy, remove IPv4 static/default routes from all routers while preserving IPv6 static routes. Evidence E9.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Configure single-area OSPFv2</strong><span class="block muted text-sm mt-2">Configure OSPF process 1, area 0, on R1–R3. Advertise only each router’s connected IPv4 LAN and transit subnets; make LAN-facing interfaces passive. Assign router IDs 1.1.1.1, 2.2.2.2 and 3.3.3.3. Evidence E10.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Verify OSPF neighbors and learned routes</strong><span class="block muted text-sm mt-2">Check show ip ospf neighbor and show ip route ospf. Verify R1–R2 and R2–R3 FULL adjacencies and PC-A ↔ PC-C IPv4 connectivity. Compare OSPF O entries with the previous static S entries. Evidence E11.</span></span></label></article>
+      <article class="task"><label><input type="checkbox" class="task-check"><span><strong>Inject, diagnose, restore and save</strong><span class="block muted text-sm mt-2">Temporarily shut down R2 Gi0/2. Observe neighbor loss, missing OSPF routes and failed remote ping; then restore no shutdown and verify recovery. Save IOS configurations, save PART04_OSPF_YourSurname.pkt, reopen both .pkt files and document E12.</span></span></label></article>
+</div><p class="muted text-xs mt-4">Tick each checkpoint only after completing it in Packet Tracer. The webpage does not inspect .pkt files.</p></section>
+    <section class="panel"><span class="section-tag">04 · IOS Command Reference</span><h2 class="text-xl font-black mt-3 mb-3">CLI configuration and verification guide</h2><p class="muted text-sm mb-4">Reference commands show prompt modes. Adapt interface addressing for R2/R3 using the table; do not paste router prompts into the Cisco CLI.</p>
+      <h3 class="font-bold mb-2">R1 — IPv4/IPv6 interfaces and static routes</h3><pre>Router&gt; enable
+Router# configure terminal
+Router(config)# hostname R1
+R1(config)# ipv6 unicast-routing
+R1(config)# interface gigabitethernet0/0
+R1(config-if)# description ENGINEERING_LAN
+R1(config-if)# ip address 192.168.10.1 255.255.255.0
+R1(config-if)# ipv6 address 2001:DB8:144:10::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# interface gigabitethernet0/1
+R1(config-if)# description TO_R2_GI0/1
+R1(config-if)# ip address 10.0.12.1 255.255.255.252
+R1(config-if)# ipv6 address 2001:DB8:144:12::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# ip route 192.168.20.0 255.255.255.0 10.0.12.2
+R1(config)# ip route 192.168.30.0 255.255.255.0 10.0.12.2
+R1(config)# ipv6 route 2001:DB8:144:20::/64 2001:DB8:144:12::2
+R1(config)# ipv6 route 2001:DB8:144:30::/64 2001:DB8:144:12::2
+R1(config)# end
+R1# show ip route
+R1# show ipv6 route
+R1# copy running-config startup-config</pre>
+      <h3 class="font-bold mt-5 mb-2">R2 — static routes for remote LANs</h3><pre>R2&gt; enable
+R2# configure terminal
+R2(config)# ip route 192.168.10.0 255.255.255.0 10.0.12.1
+R2(config)# ip route 192.168.30.0 255.255.255.0 10.0.23.2
+R2(config)# ipv6 route 2001:DB8:144:10::/64 2001:DB8:144:12::1
+R2(config)# ipv6 route 2001:DB8:144:30::/64 2001:DB8:144:23::2
+R2(config)# end
+R2# show ip route static
+R2# show ipv6 route static</pre>
+      <h3 class="font-bold mt-5 mb-2">R3 — static routes for remote LANs</h3><pre>R3&gt; enable
+R3# configure terminal
+R3(config)# ip route 192.168.10.0 255.255.255.0 10.0.23.1
+R3(config)# ip route 192.168.20.0 255.255.255.0 10.0.23.1
+R3(config)# ipv6 route 2001:DB8:144:10::/64 2001:DB8:144:23::1
+R3(config)# ipv6 route 2001:DB8:144:20::/64 2001:DB8:144:23::1
+R3(config)# end
+R3# show ip route static</pre>
+      <h3 class="font-bold mt-5 mb-2">R1 — optional IPv4 default-route experiment</h3><pre>R1&gt; enable
+R1# configure terminal
+R1(config)# no ip route 192.168.20.0 255.255.255.0 10.0.12.2
+R1(config)# no ip route 192.168.30.0 255.255.255.0 10.0.12.2
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.12.2
+R1(config)# end
+R1# show ip route</pre>
+      <h3 class="font-bold mt-5 mb-2">OSPFv2 — example for R1 (repeat with router-specific networks)</h3><pre>R1&gt; enable
+R1# configure terminal
+R1(config)# no ip route 0.0.0.0 0.0.0.0 10.0.12.2
+R1(config)# router ospf 1
+R1(config-router)# router-id 1.1.1.1
+R1(config-router)# network 192.168.10.0 0.0.0.255 area 0
+R1(config-router)# network 10.0.12.0 0.0.0.3 area 0
+R1(config-router)# passive-interface gigabitethernet0/0
+R1(config-router)# end
+R1# show ip ospf neighbor
+R1# show ip route ospf
+R1# copy running-config startup-config</pre>
+      <p class="muted text-sm mt-4">For R2: advertise 192.168.20.0/24, 10.0.12.0/30 and 10.0.23.0/30 with matching wildcard masks; router-id 2.2.2.2. For R3: advertise 192.168.30.0/24 and 10.0.23.0/30; router-id 3.3.3.3. On all routers, make Gi0/0 passive. Remove all remaining IPv4 static routes before verifying OSPF learning. IPv6 static routes remain in place.</p>
+    </section>
+    <section class="panel"><span class="section-tag">05 · Fault Injection</span><h2 class="text-xl font-black mt-3 mb-3">Controlled troubleshooting challenge</h2><div class="task"><strong>Fault A — Missing IPv4 static route</strong><p class="muted text-sm mt-2">In the static-routing snapshot, remove R2's route to 192.168.30.0/24. Test PC-B → PC-C and inspect <code>show ip route</code>. Restore the route and retest. Explain why directly connected subnets continue to work.</p></div><div class="task mt-3"><strong>Fault B — OSPF adjacency loss</strong><p class="muted text-sm mt-2">In the OSPF snapshot, shut down R2 Gi0/2. Record neighbor changes, missing routes and connectivity failure; restore the interface, wait for adjacency and route recovery, and repeat pings.</p></div><p class="muted text-xs mt-3">Restore injected faults before final submission. Diagnose physical/interface status first, then addressing, neighbors and route entries.</p></section>
+    <section class="panel"><span class="section-tag">06 · Evidence Log</span><h2 class="text-xl font-black mt-3 mb-4">Record your engineering observations</h2><div class="grid md:grid-cols-2 gap-4"><label class="text-sm font-bold">Student Number<input id="student" type="text" placeholder="Enter your student number" class="mt-2"></label><label class="text-sm font-bold">Packet Tracer version<input id="version" type="text" placeholder="e.g., 8.x" class="mt-2"></label></div><div class="mt-4 space-y-4"><label class="block text-sm font-bold">Routing table analysis<textarea id="notes1" rows="4" class="mt-2" placeholder="Compare C, L, S and O routes; include next hops and prefixes..."></textarea></label><label class="block text-sm font-bold">IPv4 and IPv6 static routing verification<textarea id="notes2" rows="4" class="mt-2" placeholder="Record PC-to-PC pings and IPv6 results..."></textarea></label><label class="block text-sm font-bold">OSPFv2 adjacency and convergence<textarea id="notes3" rows="4" class="mt-2" placeholder="Record FULL neighbors, learned routes, fault symptoms and recovery..."></textarea></label><label class="block text-sm font-bold">Fault diagnosis and corrective actions<textarea id="notes4" rows="4" class="mt-2" placeholder="State fault, verification command, fix and retest..."></textarea></label><label class="block text-sm font-bold">Screenshot filenames (E1–E12)<textarea id="evidence" rows="4" class="mt-2" placeholder="E1: topology.png&#10;E2: baseline.png&#10;..."></textarea></label></div></section>
+    <section class="panel"><span class="section-tag">07 · Knowledge Check</span><h2 class="text-xl font-black mt-3 mb-2">Confirm your understanding</h2><p class="muted text-sm mb-5">Answer all ten questions. Each question and its answer options remain aligned inside a dedicated card.</p><div id="quiz" class="space-y-5"></div><button id="grade" class="btn mt-6" type="button">Check my answers</button><div id="quiz-result" class="mt-4 text-sm font-bold" role="status" aria-live="polite"></div></section>
+    <section class="panel"><span class="section-tag">08 · Submission & Assessment</span><h2 class="text-xl font-black mt-3 mb-4">100-point assessment rubric</h2><div class="table-wrap"><table class="w-full text-sm"><thead><tr><th>Criterion</th><th>Evidence</th><th>Points</th></tr></thead><tbody><tr><td>Topology, cabling, baseline and addressing</td><td>E1–E4</td><td>20</td></tr><tr><td>Routing-table interpretation</td><td>E5, E8</td><td>15</td></tr><tr><td>IPv4 and IPv6 static/default routing</td><td>E6–E9</td><td>25</td></tr><tr><td>Single-area OSPFv2 and verification</td><td>E10–E11</td><td>20</td></tr><tr><td>Fault isolation, restoration and evidence</td><td>E12, report</td><td>15</td></tr><tr><td>Saved project quality and documentation</td><td>Both .pkt files</td><td>5</td></tr></tbody><tfoot class="font-black"><tr><td colspan="2">TOTAL</td><td>100</td></tr></tfoot></table></div><div class="task mt-5 text-sm"><strong>Required submission:</strong><p class="muted mt-2">(1) <code>PART04_Static_YourSurname.pkt</code>; (2) <code>PART04_OSPF_YourSurname.pkt</code>; (3) exported evidence report and E1–E12 screenshots. This webpage does not upload or automatically grade Packet Tracer projects.</p></div><div class="flex flex-wrap gap-3 mt-5 no-print"><button id="export" class="btn" type="button"><i class="fa-solid fa-file-arrow-down mr-2"></i>Export evidence report (.txt)</button><button id="print" class="btn secondary" type="button"><i class="fa-solid fa-print mr-2"></i>Print / Save as PDF</button><button id="reset" class="btn secondary" type="button">Reset activity</button></div><p class="muted text-xs mt-4">Progress and written answers are stored locally in this browser. Save your Packet Tracer files and screenshots separately.</p></section>
+  </main>
+  <footer class="py-8 text-center text-xs text-slate-400 px-4"><p class="font-bold text-white">This laboratory manual is for internal circulation only.</p><p class="mt-2">Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer</p><p class="text-mapua-redBright font-extrabold mt-2">© Copyright Reserved 2026</p><p class="mt-2">No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.</p></footer>
+  <script>
+    'use strict';
+    const questions = [{"q": "Which route code identifies a directly connected IPv4 network?", "options": ["C", "S", "O"], "answer": 0, "why": "C denotes a connected network."}, {"q": "What does an L route represent?", "options": ["A local interface host route", "A learned OSPF route", "A default route"], "answer": 0, "why": "L is the local host route for the interface address."}, {"q": "Which route is chosen when multiple matching prefixes exist?", "options": ["The longest matching prefix", "The oldest route", "The lowest interface number"], "answer": 0, "why": "Routers use longest-prefix matching."}, {"q": "Which IPv4 command installs a static route?", "options": ["ip route 192.168.30.0 255.255.255.0 10.0.12.2", "router ospf 1", "ipv6 unicast-routing"], "answer": 0, "why": "ip route accepts destination network, mask and next hop."}, {"q": "What IPv4 prefix denotes a default route?", "options": ["0.0.0.0/0", "127.0.0.0/8", "255.255.255.255/32"], "answer": 0, "why": "0.0.0.0/0 matches when no more specific route applies."}, {"q": "Which command displays IPv6 routing information?", "options": ["show ipv6 route", "show ip arp", "show vlan brief"], "answer": 0, "why": "show ipv6 route lists IPv6 routes."}, {"q": "Which OSPFv2 area is used in this mission?", "options": ["Area 0", "Area 10", "Area 255"], "answer": 0, "why": "All routed links are in single backbone area 0."}, {"q": "Which command checks OSPF neighbor state?", "options": ["show ip ospf neighbor", "show interfaces trunk", "show cdp traffic"], "answer": 0, "why": "show ip ospf neighbor reports discovered adjacencies."}, {"q": "Why use passive-interface on LAN-facing OSPF interfaces?", "options": ["Advertise the subnet without forming neighbors on that interface", "Disable the LAN interface", "Remove the LAN from routing"], "answer": 0, "why": "A passive interface is advertised but does not send OSPF hellos."}, {"q": "After shutting down R2–R3, what should happen to routes learned only across that link?", "options": ["They disappear after OSPF detects adjacency loss", "They become connected routes", "They remain permanently valid"], "answer": 0, "why": "OSPF recalculates when adjacency and reachability are lost."}];
+    const quiz = document.getElementById('quiz');
+    questions.forEach((item,index) => {
+      const block = document.createElement('div');
+      block.className = 'task quiz-card';
+      const title = document.createElement('p');
+      title.className = 'quiz-title';
+      title.textContent = `${index + 1}. ${item.q}`;
+      block.appendChild(title);
+      item.options.forEach((option,choice) => {
+        const label = document.createElement('label');
+        label.className = 'quiz-option text-sm';
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = `question-${index}`;
+        input.value = String(choice);
+        const text = document.createElement('span');
+        text.textContent = option;
+        label.append(input,text);
+        block.appendChild(label);
+      });
+      const feedback = document.createElement('p');
+      feedback.id = `feedback-${index}`;
+      feedback.className = 'text-xs muted mt-3';
+      block.appendChild(feedback);
+      quiz.appendChild(block);
+    });
+    const checks = [...document.querySelectorAll('.task-check')];
+    const fields = ['student','version','notes1','notes2','notes3','notes4','evidence'];
+    const key = 'ece144l-part4-capstone-v1';
+    function updateProgress() {
+      const completed = checks.filter(c => c.checked).length;
+      document.getElementById('progress-label').textContent = `${completed} of ${checks.length} tasks complete`;
+      document.getElementById('progress-fill').style.width = `${100 * completed / checks.length}%`;
+    }
+    function save() {
+      const state = {
+        checks: checks.map(c => c.checked),
+        fields: Object.fromEntries(fields.map(id => [id,document.getElementById(id).value])),
+        answers: questions.map((_,i) => document.querySelector(`input[name="question-${i}"]:checked`)?.value ?? '')
+      };
+      try { localStorage.setItem(key,JSON.stringify(state)); } catch (_) {}
+      updateProgress();
+    }
+    try {
+      const saved = JSON.parse(localStorage.getItem(key) || '{}');
+      checks.forEach((c,i) => c.checked = !!saved.checks?.[i]);
+      fields.forEach(id => document.getElementById(id).value = saved.fields?.[id] || '');
+      questions.forEach((_,i) => {
+        const value = saved.answers?.[i];
+        if(value !== undefined && value !== '') {
+          const el = document.querySelector(`input[name="question-${i}"][value="${value}"]`);
+          if(el) el.checked = true;
+        }
+      });
+    } catch (_) {}
+    updateProgress();
+    document.querySelectorAll('input,textarea').forEach(el => el.addEventListener('input',save));
+    document.getElementById('grade').addEventListener('click',() => {
+      let score = 0;
+      questions.forEach((item,i) => {
+        const selected = document.querySelector(`input[name="question-${i}"]:checked`);
+        const correct = selected && Number(selected.value) === item.answer;
+        if(correct) score++;
+        document.getElementById(`feedback-${i}`).textContent = `${correct ? 'Correct.' : 'Review:'} ${item.why}`;
+      });
+      document.getElementById('quiz-result').textContent = `Knowledge check: ${score} / ${questions.length} correct. Review the explanations and retry if needed.`;
+      save();
+    });
+    document.getElementById('export').addEventListener('click',() => {
+      const value = id => document.getElementById(id).value.trim() || '(not provided)';
+      const lines = [
+        'ECE144L - PART IV CULMINATING ACTIVITY','Campus Interbuilding Routing Commissioning Challenge','',
+        `Student: ${value('student')}`,`Packet Tracer version: ${value('version')}`,'','TASK COMPLETION',
+        ...checks.map((c,i) => `${i+1}. ${c.checked ? 'Completed' : 'Not completed'}`),
+        '','ROUTING TABLE ANALYSIS',value('notes1'),'','STATIC ROUTING VERIFICATION',value('notes2'),
+        '','TROUBLESHOOTING',value('notes3'),'','FAULT DIAGNOSIS',value('notes4'),
+        '','SCREENSHOT EVIDENCE (E1-E12)',value('evidence'),'','KNOWLEDGE CHECK',
+        ...questions.map((q,i) => `${i+1}. ${q.q}\nAnswer: ${document.querySelector(`input[name="question-${i}"]:checked`)?.parentElement.textContent || '(not answered)'}`),
+        '','Attach the .pkt file and screenshots separately.'
+      ];
+      const blob = new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'PART04_Routing_Evidence_Report.txt';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url),1000);
+    });
+    document.getElementById('print').addEventListener('click',() => window.print());
+    document.getElementById('reset').addEventListener('click',() => {
+      if(!confirm('Clear your locally saved progress and answers?')) return;
+      localStorage.removeItem(key);
+      checks.forEach(c => c.checked = false);
+      fields.forEach(id => document.getElementById(id).value = '');
+      document.querySelectorAll('input[type=radio]').forEach(el => el.checked = false);
+      document.querySelectorAll('[id^=feedback-]').forEach(el => el.textContent = '');
+      document.getElementById('quiz-result').textContent = '';
+      updateProgress();
+    });
+  </script>
+  <script>
+    (() => {
+      const canvas = document.getElementById('interactive-grid');
+      const ctx = canvas.getContext('2d',{alpha:true});
+      if(!ctx) return;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const finePointer = window.matchMedia('(pointer: fine)').matches;
+      const spacing = 29;
+      let width=0,height=0,ratio=1,points=[],raf=0,last=0;
+      const mouse={x:-1000,y:-1000,active:false};
+      const draw = time => {
+        ctx.clearRect(0,0,width,height);
+        const dt = Math.min((time-last)||16,50);
+        last=time;
+        for(const point of points) {
+          const distance = Math.hypot(point.x-mouse.x,point.y-mouse.y);
+          if(mouse.active && distance<145) {
+            point.energy=Math.max(point.energy,Math.pow(1-distance/145,1.6));
+            const angle=Math.atan2(point.y-mouse.y,point.x-mouse.x);
+            point.dx=Math.cos(angle)*point.energy*6;
+            point.dy=Math.sin(angle)*point.energy*6;
+          }
+          point.energy*=Math.pow(.947,dt/16);
+          point.dx*=Math.pow(.89,dt/16);
+          point.dy*=Math.pow(.89,dt/16);
+          ctx.beginPath();
+          ctx.arc(point.x+point.dx,point.y+point.dy,1.05+point.energy*2.15,0,Math.PI*2);
+          ctx.fillStyle=point.energy>.035?`rgba(227,27,35,${.17+point.energy*.68})`:'rgba(104,137,179,.19)';
+          ctx.fill();
+        }
+        if(!reduced && !document.hidden) raf=requestAnimationFrame(draw);
+      };
+      const resize=() => {
+        width=window.innerWidth;
+        height=window.innerHeight;
+        ratio=Math.min(window.devicePixelRatio||1,2);
+        canvas.width=Math.round(width*ratio);
+        canvas.height=Math.round(height*ratio);
+        ctx.setTransform(ratio,0,0,ratio,0,0);
+        points=[];
+        for(let y=spacing/2;y<height;y+=spacing) {
+          for(let x=spacing/2;x<width;x+=spacing) points.push({x,y,energy:0,dx:0,dy:0});
+        }
+        draw(0);
+      };
+      window.addEventListener('resize',resize,{passive:true});
+      if(finePointer && !reduced) {
+        window.addEventListener('pointermove',event => {mouse.x=event.clientX;mouse.y=event.clientY;mouse.active=true;},{passive:true});
+        document.addEventListener('pointerout',event => {if(!event.relatedTarget) mouse.active=false;});
+      }
+      document.addEventListener('visibilitychange',() => {
+        if(!document.hidden && !reduced) {
+          cancelAnimationFrame(raf);
+          last=0;
+          raf=requestAnimationFrame(draw);
+        }
+      });
+      resize();
+      if(!reduced) raf=requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>
