@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>Chapter 18: Configure and Verify NTP | ECE144L | Map&uacute;a MCL</title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&amp;family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+  <script>
+   tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['Montserrat', 'sans-serif'],
+                    mono: ['Fira Code', 'monospace']
+                },
+                colors: {
+                    mapua: {
+                        red: '#E31B23',
+                        redDark: '#C51017',
+                        redBright: '#FF2E36',
+                        navy: '#112244',
+                        navyDark: '#0A1428',
+                        navyLight: '#1B3461',
+                        silver: '#CBD5E1',
+                        darkBg: '#080D1A',
+                        card: '#0F1A2E',
+                        panel: '#162540',
+                        border: '#23385C'
+                    }
+                }
+            }
+        }
+    };
+  </script>
+  <style>
+   html, body {
+    font-family: "Montserrat", sans-serif !important;
+}
+button, input, select, textarea {
+    font-family: inherit;
+}
+nav, header {
+    font-family: "Montserrat", sans-serif !important;
+}
+.glass-panel {
+    background: rgba(15, 26, 46, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(227, 27, 35, 0.25);
+}
+.glass-panel-navy {
+    background: rgba(22, 37, 64, 0.95);
+    border: 1px solid rgba(35, 56, 92, 0.6);
+}
+.pill {
+    border: 1px solid #23385C;
+    background: #162540;
+    border-radius: 0.65rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.pill:hover, .pill.active {
+    background: #E31B23;
+    color: white;
+    border-color: #FF2E36;
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+.step {
+    border: 1px solid #23385C;
+    border-radius: 0.8rem;
+    padding: 1rem;
+    background: #162540;
+}
+.step.done {
+    border-color: #10b981;
+}
+code, pre {
+    font-family: "Fira Code", monospace;
+}
+pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+section {
+    scroll-margin-top: 6rem;
+}
+.practice-field {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 8px;
+    padding: 10px;
+    color: white;
+    min-width: 80px;
+    max-width: 100%;
+    font-family: "Fira Code", monospace;
+}
+.practice-field:focus {
+    outline: 2px solid #E31B23;
+}
+.practice-feedback {
+    min-height: 22px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #CBD5E1;
+}
+.practice-chip {
+    border: 1px solid #23385C;
+    background: #162540;
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.practice-chip[aria-pressed="true"] {
+    background: #E31B23;
+    border-color: #FF2E36;
+}
+.practice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 10px;
+}
+.practice-code {
+    background: #080D1A;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 20px;
+    line-height: 2.9;
+    font-family: "Fira Code", monospace;
+    font-size: 12px;
+    overflow-x: auto;
+}
+.practice-action {
+    display: inline-block;
+    background: #E31B23;
+    border: 1px solid #FF2E36;
+    border-radius: 9px;
+    padding: 10px 18px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.practice-action:hover {
+    background: #FF2E36;
+}
+.practice-note {
+    color: #CBD5E1;
+    font-size: 12px;
+    line-height: 1.8;
+}
+.practice-card {
+    background: #162540;
+    border: 1px solid #23385C;
+    border-radius: 12px;
+    padding: 18px;
+}
+  </style>
+ </head>
+ <body class="bg-mapua-darkBg text-slate-100 antialiased min-h-screen">
+  <nav class="sticky top-0 z-50 bg-mapua-card/95 backdrop-blur-md border-b border-mapua-border shadow-2xl">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between min-h-20 gap-5 py-3">
+    <div class="flex items-center gap-3 min-w-0 shrink-0">
+     <div class="w-11 h-11 shrink-0 rounded-xl bg-mapua-red flex items-center justify-center">
+      <i class="fa-solid fa-network-wired text-xl">
+      </i>
+     </div>
+     <div>
+      <div class="font-black tracking-wider flex items-center gap-2 leading-tight">
+       MAP&Uacute;A MCL
+       <span class="text-[10px] bg-mapua-navyLight px-2 py-1 rounded">
+        MITL
+       </span>
+      </div>
+      <div class="text-xs text-slate-300 font-semibold">
+       ECE144L: Data Communications Laboratory
+      </div>
+     </div>
+    </div>
+    <button aria-label="Toggle navigation" class="lg:hidden text-slate-200" id="menuBtn">
+     <i class="fa-solid fa-bars">
+     </i>
+    </button>
+    <div class="hidden lg:flex items-center justify-end gap-1 xl:gap-2 text-xs font-bold whitespace-nowrap" id="links">
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#overview">
+      Overview
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lecture">
+      Lecture Notes
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#explorer">
+      Concept Explorer
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#quiz">
+      Knowledge Check
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#practice">
+      Interactive Practice
+     </a>
+     <a class="px-2 py-2 rounded-lg hover:bg-mapua-panel transition" href="#lab">
+      Guided Lab
+     </a>
+     <a class="bg-mapua-red rounded-lg px-3 py-2" href="#challenge">
+      Chapter Review
+     </a>
+    </div>
+   </div>
+  </nav>
+  <header class="bg-gradient-to-b from-mapua-navyDark via-mapua-card to-mapua-darkBg border-b border-mapua-border" id="overview">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-center">
+    <div class="lg:col-span-2 min-w-0">
+     <div class="inline-block bg-mapua-red/20 border border-mapua-red/40 text-mapua-redBright rounded-full px-4 py-1 text-xs font-black mb-5">
+      LABORATORY ACTIVITY 18 &middot; PART V: IP SERVICES
+     </div>
+     <h1 class="text-3xl sm:text-5xl font-black leading-tight mb-5">
+      Chapter 18:
+      <br/>
+      <span class="text-slate-200">
+       Configure and Verify NTP
+      </span>
+     </h1>
+     <p class="text-slate-300 leading-relaxed max-w-2xl">
+      Explore configure and verify ntp through interactive preparation, knowledge checks, and guided Cisco Packet Tracer activities.
+     </p>
+    </div>
+    <aside class="glass-panel-navy rounded-2xl p-6 text-xs space-y-3 w-full self-center">
+     <h2 class="text-mapua-redBright uppercase font-black tracking-wider">
+      Course Instructor
+     </h2>
+     <p class="text-white font-extrabold text-base">
+      Engr. Jess David A. Doria
+     </p>
+     <hr class="border-mapua-border"/>
+     <p>
+      <i class="fa-solid fa-calendar-days text-mapua-redBright mr-2">
+      </i>
+      Term 2, Academic Year 2026&ndash;2027
+     </p>
+     <p>
+      <i class="fa-solid fa-book text-mapua-redBright mr-2">
+      </i>
+      BS Electronics Engineering
+     </p>
+     <p>
+      <i class="fa-solid fa-building-columns text-mapua-redBright mr-2">
+      </i>
+      Map&uacute;a Institute of Technology at Laguna
+     </p>
+    </aside>
+   </div>
+  </header>
+   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+    <section class="glass-panel rounded-2xl p-6" id="outcomes">
+     <h2 class="text-xl font-extrabold mb-4"><i class="fa-solid fa-bullseye text-mapua-redBright mr-2"></i>Learning Outcomes</h2>
+     <div class="grid md:grid-cols-1 gap-3 text-sm text-slate-300">
+      <p>01 · Explain the main concepts and terminology of configure and verify ntp.</p>
+      <p>02 · Identify relevant commands, configurations, and verification tools.</p>
+      <p>03 · Practice essential concepts through interactive exercises.</p>
+      <p>04 · Complete the assigned textbook Packet Tracer laboratory activities.</p>
+     </div>
+    </section>
+
+    <section id="lecture">
+     <h2 class="text-2xl sm:text-3xl font-extrabold mb-2"><i class="fa-solid fa-chalkboard-user text-mapua-redBright mr-3"></i>Lecture &amp; Discussion Notes</h2>
+     <p class="text-sm text-slate-400 mb-6">Based on Chapter 18, textbook pages 221–228. Review each concept before attempting the exercises.</p>
+     <div class="grid md:grid-cols-3 gap-4">
+      <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+       <h3 class="text-white font-extrabold mb-2">Why time matters</h3>
+       <p class="text-slate-300 text-sm leading-7">Accurate timestamps support logging, troubleshooting, and event correlation.</p>
+      </div>
+      <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+       <h3 class="text-white font-extrabold mb-2">NTP client/server</h3>
+       <p class="text-slate-300 text-sm leading-7">Network Time Protocol synchronizes device clocks using time sources.</p>
+      </div>
+      <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+       <h3 class="text-white font-extrabold mb-2">Verification</h3>
+       <p class="text-slate-300 text-sm leading-7">Inspect NTP associations, synchronization state, and the device clock.</p>
+      </div>
+     </div>
+    </section>
+
+    <section id="explorer">
+     <h2 class="text-2xl font-extrabold mb-2"><i class="fa-solid fa-network-wired text-mapua-redBright mr-3"></i>Interactive Concept Explorer</h2>
+     <p class="text-sm text-slate-400 mb-5">Select a concept to inspect its meaning.</p>
+     <div class="glass-panel rounded-2xl p-6">
+      <div class="flex flex-wrap gap-2" id="explorerButtons">
+       <button class="pill" data-explore="0">NTP server</button>
+       <button class="pill" data-explore="1">NTP client</button>
+       <button class="pill" data-explore="2">Stratum</button>
+      </div>
+      <div class="bg-mapua-darkBg rounded-xl p-5 mt-5 border border-mapua-border">
+       <h3 class="text-mapua-redBright font-extrabold" id="explorerTitle">Choose a concept</h3>
+       <p class="text-slate-300 text-sm mt-3 leading-7" id="explorerDescription">The explanation appears here.</p>
+      </div>
+     </div>
+    </section>
+
+    <section id="quiz">
+     <div class="glass-panel rounded-2xl p-6 sm:p-8">
+      <div class="flex flex-wrap justify-between gap-3 mb-5">
+       <div>
+        <h2 class="text-2xl font-extrabold"><i class="fa-solid fa-circle-question text-mapua-redBright mr-2"></i>Knowledge Check</h2>
+        <p class="text-xs text-slate-400 mt-2">Eight questions with immediate feedback and explanations.</p>
+       </div>
+       <p class="text-mapua-redBright font-black text-sm" id="score">Score: 0 / 8</p>
+      </div>
+      <div class="space-y-4" id="questions"></div>
+      <button class="pill mt-6" id="reset">Reset Quiz</button>
+     </div>
+    </section>
+
+    <section id="practice">
+     <h2 class="text-2xl font-extrabold mb-2"><i class="fa-solid fa-keyboard text-mapua-redBright mr-3"></i>Interactive Preparation</h2>
+     <p class="text-sm text-slate-400 mb-6">Complete the missing terms or commands before opening Packet Tracer. Capitalization is not graded.</p>
+     <div class="glass-panel rounded-2xl p-6 space-y-5">
+       <label class="block bg-mapua-panel rounded-xl p-4 text-sm">
+        <span class="block mb-3 text-slate-200">Which protocol synchronizes device clocks?</span>
+        <input class="practice-field w-full sm:w-80" id="answer0" autocomplete="off" placeholder="Type your answer" />
+       </label>
+       <label class="block bg-mapua-panel rounded-xl p-4 text-sm">
+        <span class="block mb-3 text-slate-200">Which command displays NTP associations?</span>
+        <input class="practice-field w-full sm:w-80" id="answer1" autocomplete="off" placeholder="Type your answer" />
+       </label>
+       <label class="block bg-mapua-panel rounded-xl p-4 text-sm">
+        <span class="block mb-3 text-slate-200">Which command displays the device clock?</span>
+        <input class="practice-field w-full sm:w-80" id="answer2" autocomplete="off" placeholder="Type your answer" />
+       </label>
+      <button class="practice-action" id="checkAnswers">Check Answers</button>
+      <p class="practice-feedback" id="practiceFeedback" aria-live="polite"></p>
+     </div>
+    </section>
+
+    <section id="lab">
+     <h2 class="text-2xl sm:text-3xl font-extrabold mb-2"><i class="fa-solid fa-flask text-mapua-redBright mr-3"></i>Guided Packet Tracer Laboratories</h2>
+     <p class="text-sm text-slate-400 mb-5">All instructions stay visible. Complete each task in Packet Tracer and check it off here.</p>
+     <div class="glass-panel rounded-2xl p-6 space-y-8">
+      <div class="bg-mapua-panel border border-mapua-border rounded-xl p-5">
+       <h3 class="font-extrabold text-white">Official Packet Tracer Lab Files</h3>
+       <p class="text-xs text-slate-300 mt-2 leading-6">Insert the download links in the HTML. The official activity files contain any topology-specific settings and assessed tasks not printed in the textbook.</p>
+       <div class="flex flex-wrap gap-2 mt-4">
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQDp8BO-37HGRL8jVfIabL27ASd2VnkTMpmSqvfV10WRMNs?e=xBx9AD" target="_blank" rel="noopener noreferrer">Download Lab 18.1</a>
+       <a class="practice-action inline-block" href="https://livemcledu-my.sharepoint.com/:u:/g/personal/jdadoria_mcl_edu_ph/IQARzO0LyL7oR7AyKbaf9NMyAZPrljyU7xaOQ_TuzFvC50Q?e=mjKGTr" target="_blank" rel="noopener noreferrer">Download Lab 18.2</a>
+       </div>
+      </div>
+      <div class="space-y-8" id="labLists"></div>
+      <div class="bg-mapua-darkBg border border-mapua-border rounded-xl p-4">
+       <p class="text-sm font-bold">Guided progress: <span class="text-mapua-redBright" id="labProgress">0 / 0</span></p>
+       <div class="h-2 bg-mapua-panel rounded-full mt-3 overflow-hidden"><div class="h-full bg-mapua-red" id="progressBar" style="width: 0%"></div></div>
+      </div>
+     </div>
+    </section>
+
+    <section id="challenge">
+     <div class="glass-panel rounded-2xl p-6 sm:p-8">
+      <h2 class="text-2xl font-extrabold mb-3">Chapter Review &amp; Submission</h2>
+      <p class="text-sm text-slate-300 leading-7">Complete the textbook Chapter 18 review activity and submit the assigned Packet Tracer file(s). This webpage supplements the original lab; it does not replace the official activity's grading instructions.</p>
+      <div class="bg-mapua-panel rounded-xl p-5 mt-5">
+       <h3 class="font-bold mb-3">Submission Readiness</h3>
+       <div class="grid sm:grid-cols-2 gap-3 text-sm" id="deliverables"></div>
+       <p class="text-mapua-redBright text-xs mt-4" id="ready" aria-live="polite"></p>
+      </div>
+     </div>
+    </section>
+   </main>
+  <footer class="bg-mapua-card border-t border-mapua-border py-8 text-center text-xs text-slate-400 px-4">
+   <p class="font-bold text-white">
+    This laboratory manual is for internal circulation only.
+   </p>
+   <p class="mt-2">
+    Excerpt from Cisco CCNA 200-301: Hands-on Mastery with Packet Tracer
+   </p>
+   <p class="text-mapua-redBright font-extrabold mt-2">
+    &copy; Copyright Reserved 2026
+   </p>
+   <p class="mt-2">
+    No part of this manual may be reproduced, used, or stored without prior permission of the author, instructor, or the institution.
+   </p>
+  </footer>
+   <script>
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => [...document.querySelectorAll(selector)];
+
+    $('#menuBtn').addEventListener('click', () => {
+        const links = $('#links');
+        [
+            'hidden', 'flex', 'flex-col', 'absolute',
+            'top-20', 'right-3', 'bg-mapua-card', 'p-5'
+        ].forEach(name => links.classList.toggle(name));
+    });
+
+    const explorerItems = [
+    [
+        "NTP server",
+        "Provides time information to clients."
+    ],
+    [
+        "NTP client",
+        "Synchronizes its clock with a configured time source."
+    ],
+    [
+        "Stratum",
+        "A measure of distance from a reference clock in the NTP hierarchy."
+    ]
+];
+
+    $$('[data-explore]').forEach(button => {
+        button.addEventListener('click', () => {
+            $$('[data-explore]').forEach(item => item.classList.remove('active'));
+            button.classList.add('active');
+            const item = explorerItems[Number(button.dataset.explore)];
+            $('#explorerTitle').textContent = item[0];
+            $('#explorerDescription').textContent = item[1];
+        });
+    });
+
+    const questions = [
+    {
+        "q": "Which concept matches this description: Provides time information to clients.",
+        "options": [
+            "NTP client",
+            "NTP server",
+            "Stratum"
+        ],
+        "correct": 1,
+        "explanation": "NTP server: Provides time information to clients."
+    },
+    {
+        "q": "Which concept matches this description: Synchronizes its clock with a configured time source.",
+        "options": [
+            "NTP server",
+            "NTP client",
+            "Stratum"
+        ],
+        "correct": 1,
+        "explanation": "NTP client: Synchronizes its clock with a configured time source."
+    },
+    {
+        "q": "Which concept matches this description: A measure of distance from a reference clock in the NTP hierarchy.",
+        "options": [
+            "NTP server",
+            "Stratum",
+            "NTP client"
+        ],
+        "correct": 1,
+        "explanation": "Stratum: A measure of distance from a reference clock in the NTP hierarchy."
+    },
+    {
+        "q": "Which topic best fits: Accurate timestamps support logging, troubleshooting, and event correlation.",
+        "options": [
+            "NTP client/server",
+            "Why time matters",
+            "Verification"
+        ],
+        "correct": 1,
+        "explanation": "Why time matters: Accurate timestamps support logging, troubleshooting, and event correlation."
+    },
+    {
+        "q": "Which topic best fits: Network Time Protocol synchronizes device clocks using time sources.",
+        "options": [
+            "Why time matters",
+            "NTP client/server",
+            "Verification"
+        ],
+        "correct": 1,
+        "explanation": "NTP client/server: Network Time Protocol synchronizes device clocks using time sources."
+    },
+    {
+        "q": "Which topic best fits: Inspect NTP associations, synchronization state, and the device clock.",
+        "options": [
+            "Why time matters",
+            "Verification",
+            "NTP client/server"
+        ],
+        "correct": 1,
+        "explanation": "Verification: Inspect NTP associations, synchronization state, and the device clock."
+    },
+    {
+        "q": "Which protocol synchronizes device clocks?",
+        "options": [
+            "show ntp associations",
+            "ntp",
+            "show clock"
+        ],
+        "correct": 1,
+        "explanation": "Expected answer: ntp."
+    },
+    {
+        "q": "Which command displays NTP associations?",
+        "options": [
+            "ntp",
+            "show ntp associations",
+            "show clock"
+        ],
+        "correct": 1,
+        "explanation": "Expected answer: show ntp associations."
+    }
+];
+    let answers = {};
+
+    function renderQuiz() {
+        answers = {};
+        const container = $('#questions');
+        container.replaceChildren();
+
+        questions.forEach((question, index) => {
+            const card = document.createElement('div');
+            card.className = 'bg-mapua-panel border border-mapua-border rounded-xl p-5';
+
+            const heading = document.createElement('p');
+            heading.className = 'font-bold text-sm mb-3';
+            heading.textContent = `${index + 1}. ${question.q}`;
+            card.appendChild(heading);
+
+            const options = document.createElement('div');
+            options.className = 'grid sm:grid-cols-2 gap-2';
+
+            const feedback = document.createElement('p');
+            feedback.className = 'text-xs mt-3 hidden';
+            feedback.setAttribute('aria-live', 'polite');
+
+            question.options.forEach((option, optionIndex) => {
+                const button = document.createElement('button');
+                button.className = 'text-left text-xs p-3 rounded-lg bg-mapua-card border border-mapua-border hover:border-mapua-redBright';
+                button.textContent = `${String.fromCharCode(65 + optionIndex)}. ${option}`;
+                button.addEventListener('click', () => {
+                    if (answers[index] !== undefined) return;
+                    answers[index] = optionIndex;
+                    const correct = optionIndex === question.correct;
+                    [...options.children].forEach(item => { item.disabled = true; });
+                    button.classList.add(correct ? 'border-emerald-500' : 'border-rose-500');
+                    feedback.classList.remove('hidden');
+                    feedback.classList.add(correct ? 'text-emerald-300' : 'text-rose-300');
+                    feedback.textContent = `${correct ? 'Correct.' : 'Review this concept.'} ${question.explanation}`;
+                    const score = Object.entries(answers).filter(([key, value]) => {
+                        return questions[Number(key)].correct === value;
+                    }).length;
+                    $('#score').textContent = `Score: ${score} / ${questions.length}`;
+                });
+                options.appendChild(button);
+            });
+            card.appendChild(options);
+            card.appendChild(feedback);
+            container.appendChild(card);
+        });
+        $('#score').textContent = `Score: 0 / ${questions.length}`;
+    }
+
+    renderQuiz();
+    $('#reset').addEventListener('click', renderQuiz);
+
+    const expectedAnswers = [
+    "ntp",
+    "show ntp associations",
+    "show clock"
+];
+    $('#checkAnswers').addEventListener('click', () => {
+        let correct = 0;
+        expectedAnswers.forEach((answer, index) => {
+            const field = document.getElementById(`answer${index}`);
+            const value = field.value.trim().toLowerCase().replace(/\s+/g, ' ');
+            const matches = value === answer;
+            field.style.borderColor = matches ? '#10b981' : '#fb7185';
+            if (matches) correct++;
+        });
+        $('#practiceFeedback').textContent = `${correct} / ${expectedAnswers.length} correct. ${correct === expectedAnswers.length ? 'Ready for Packet Tracer.' : 'Review the concepts and try again.'}`;
+    });
+
+    const labs = [
+    {
+        "title": "Lab 18.1: NTP",
+        "steps": [
+            [
+                "Open the assigned lab",
+                "Download Lab 18.1: NTP, then open the provided Packet Tracer activity."
+            ],
+            [
+                "Inspect the topology",
+                "Identify device roles, relevant interfaces, and the starting configuration."
+            ],
+            [
+                "Review the task requirements",
+                "Locate the activity instructions for ntp; note any assigned values and expected results."
+            ],
+            [
+                "Carry out the assigned configuration",
+                "Apply the commands or GUI settings specified in the activity, using the chapter concepts as a reference."
+            ],
+            [
+                "Verify the outcome",
+                "Inspect relevant device status, tables, or service behavior; compare against the activity requirements."
+            ],
+            [
+                "Save the completed file",
+                "Check the activity assessment where available, then save the Packet Tracer file."
+            ]
+        ]
+    },
+    {
+        "title": "Lab 18.2: Chapter Review",
+        "steps": [
+            [
+                "Open the assigned activity",
+                "Download Lab 18.2, open the official Packet Tracer file, and read its embedded instructions."
+            ],
+            [
+                "Identify requirements",
+                "Review the topology, devices, addressing, and assessment items before changing settings."
+            ],
+            [
+                "Apply the requested tasks",
+                "Perform the configurations or observations specified by the official activity."
+            ],
+            [
+                "Verify your work",
+                "Use appropriate show commands, connectivity tests, and Packet Tracer assessment feedback."
+            ],
+            [
+                "Save and submit",
+                "Save the completed Packet Tracer activity using the required filename and submit it as directed."
+            ]
+        ]
+    }
+];
+    const labContainer = $('#labLists');
+    let totalSteps = 0;
+
+    labs.forEach((lab, labIndex) => {
+        const section = document.createElement('div');
+        section.className = 'space-y-4';
+        const title = document.createElement('h3');
+        title.className = 'text-xl font-extrabold text-white';
+        title.textContent = lab.title;
+        section.appendChild(title);
+
+        lab.steps.forEach((step, stepIndex) => {
+            totalSteps++;
+            const label = document.createElement('label');
+            label.className = 'step flex items-start gap-4 cursor-pointer';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'mt-1 accent-red-600 w-5 h-5 shrink-0';
+            checkbox.dataset.labstep = `${labIndex}-${stepIndex}`;
+            const details = document.createElement('span');
+            const heading = document.createElement('strong');
+            heading.className = 'text-white text-sm';
+            heading.textContent = `Step ${stepIndex + 1}: ${step[0]}`;
+            const description = document.createElement('span');
+            description.className = 'block text-slate-300 text-xs leading-6 mt-2';
+            description.textContent = step[1];
+            details.appendChild(heading);
+            details.appendChild(description);
+            label.appendChild(checkbox);
+            label.appendChild(details);
+            section.appendChild(label);
+        });
+        labContainer.appendChild(section);
+    });
+
+    function updateProgress() {
+        const completed = $$('[data-labstep]:checked').length;
+        $('#labProgress').textContent = `${completed} / ${totalSteps}`;
+        $('#progressBar').style.width = `${100 * completed / totalSteps}%`;
+    }
+
+    $$('[data-labstep]').forEach(input => {
+        input.addEventListener('change', () => {
+            input.closest('.step').classList.toggle('done', input.checked);
+            updateProgress();
+        });
+    });
+    updateProgress();
+
+    const deliverables = [
+    "Lab 18.1 completed",
+    "Lab 18.2 completed",
+    "Saved Packet Tracer files",
+    "Verification evidence reviewed"
+];
+    const readiness = $('#deliverables');
+    deliverables.forEach(item => {
+        const label = document.createElement('label');
+        label.className = 'flex gap-3 items-center bg-mapua-card p-3 rounded-lg';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'accent-red-600';
+        checkbox.addEventListener('change', () => {
+            const count = [...readiness.querySelectorAll('input:checked')].length;
+            $('#ready').textContent = `${count} / ${deliverables.length} items complete.`;
+        });
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(item));
+        readiness.appendChild(label);
+    });
+   </script>
+ </body>
+</html>
